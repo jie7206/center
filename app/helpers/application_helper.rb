@@ -696,6 +696,10 @@ module ApplicationHelper
       compose_small_link('[投幣试算]', 'main', 'btc_income' )
     end
 
+    def btc_income_update_link
+      sub_title_base link_to( '[更新幣價]', :controller => :main, :action => :btc_income, :update_btc_price => 1 )
+    end
+
     def life_pay_link
       compose_small_link('[投幣年金]', 'main', 'life_pay' )
     end

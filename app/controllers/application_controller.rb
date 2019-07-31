@@ -22,12 +22,32 @@ class ApplicationController < ActionController::Base
      end
   end
 
+  def update_my_btc_assets(btc_price)
+    btc_arr = Param.find_by_name("my_btc").value.split(",")
+    trezor_amount = btc_arr[0].to_f #冷钱包
+    jie7206_amount = btc_arr[1].to_f #冷钱包:jie7206
+    huobi_135_amount = btc_arr[2].to_f #火币135
+    huobi_170_amount = btc_arr[3].to_f #火币170
+    bitoex_amount = btc_arr[4].to_f #台湾币托
+    #更新冷钱包
+    AssetItem.find(135).update_attribute(:amount,format("%.2f",btc_price*trezor_amount))
+    #更新冷钱包:jie7206
+    AssetItem.find(28).update_attribute(:amount,format("%.2f",btc_price*jie7206_amount))
+    #更新台湾币托
+    AssetItem.find(117).update_attribute(:amount,format("%.2f",btc_price*bitoex_amount))
+    #更新火币170
+    AssetItem.find(11).update_attribute(:amount,format("%.2f",btc_price*huobi_170_amount))
+    #更新火币135
+    AssetItem.find(134).update_attribute(:amount,format("%.2f",btc_price*huobi_135_amount))
+  end
+
   # 计算总资产净值
   def cal_total_asset_value
     # 计算數字貨幣资产总值
-    if @from_btc_income
+    if @from_btc_income and @btc_price
        @digital_currency_sum = @trezor_jie7206_twd + @total_usdt_twd + @btc_hold_twd
     else
+      @btc_price = value_of('btc_price').to_f
       @digital_currency_sum = sum_money_of('digital_currency')
     end
     # 计算流動資產资产总值
@@ -45,6 +65,7 @@ class ApplicationController < ActionController::Base
     # 新增或更新"我的資產總值(含固定资产)"變化紀錄
     if @update_total_asset_value
       insert_or_update_param_change_record('my_net_asset_value',@total_asset_value)
+      update_my_btc_assets(@btc_price)
     end
   end
 

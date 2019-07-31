@@ -966,25 +966,23 @@ class MainController < ApplicationController
 
   # 显示比特币投资收益
   def btc_income
+    @symbol = value_of('use_husd_or_usdt') == 'husd' ? 'btchusd' : 'btcusdt'
+    # flag for cal_total_asset_value
+    @from_btc_income = true
     # 更新比特币现值
     if params[:update_btc_price] == '1'
       update_btc_price
       @update_btc_price = true
       @update_total_asset_value = true
+      # 获取15分钟K线图数据
+      @k60m = get_kline_data('30min',24*5,@symbol)
+      # 获取4时K线图数据
+      @k1d = get_kline_data('1day',30,@symbol)
     end
     # 更新账户的买卖数据
     update_asset_by_trade
     # 更新我的投资座右铭
     update_my_motto
-    # 获取15分钟K线图数据
-    @symbol = value_of('use_husd_or_usdt') == 'husd' ? 'btchusd' : 'btcusdt'
-    @k60m = get_kline_data('60min',24*5,@symbol)
-    # 获取4时K线图数据
-    @k1d = get_kline_data('1day',30,@symbol)
-    # 每隔60秒自动刷新页面
-    # @auto_refresh_sec = 60*5
-    # flag for cal_total_asset_value
-    @from_btc_income = true
     # 主要处理流程
     btc_income_main_process
   end

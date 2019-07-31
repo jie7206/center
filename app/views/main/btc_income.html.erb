@@ -21,7 +21,7 @@
 <span title="<%=@symbol.upcase%>交易对">时线:<span title="MA5"><%=@k60m_ama5%></span>-<span title="MA10"><%=@k60m_ama10%></span>-<span title="MA20"><%=@k60m_ama20%></span>|日线:<span title="MA5"><%=@k1d_ama5%></span>-<span title="MA15"><%=@k1d_ama15%></span>-<span title="MA30"><%=@k1d_ama30%></span>|<%=@ama_trend%></span>
 <br/>
 价格：
-  <span><%=@k60m.size%>时:<span title="现价/MA5"><%=@p60m_ma5%>%</span>|<span title="区间最低价"><%=@k60m_lowest%></span>-<span title="区间最高价"><%=@k60m_highest%></span>-<span title="区间成交最多的收盘价"><%=@k60m_volume_price%></span>|<%=@k1d.size%>天:<span title="现价/MA5"><%=@p1d_ma5%>%</span>|<span title="区间最低价"><%=@k1d_lowest%></span>-<span title="区间最高价"><%=@k1d_highest%></span>-<span title="区间成交最多的收盘价"><%=@k1d_volume_price%></span></span>
+  <span><%=@k60m.size/2%>时:<span title="现价/MA5"><%=@p60m_ma5%>%</span>|<span title="区间最低价"><%=@k60m_lowest%></span>-<span title="区间最高价"><%=@k60m_highest%></span>-<span title="区间成交最多的收盘价"><%=@k60m_volume_price%></span>|<%=@k1d.size%>天:<span title="现价/MA5"><%=@p1d_ma5%>%</span>|<span title="区间最低价"><%=@k1d_lowest%></span>-<span title="区间最高价"><%=@k1d_highest%></span>-<span title="区间成交最多的收盘价"><%=@k1d_volume_price%></span></span>
   <br/>
 <% end %>
 操作：
