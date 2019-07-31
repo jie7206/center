@@ -1,0 +1,291 @@
+<%
+########## 参数设定 1 ##########
+# 对应的手机号码
+@mobile_number = params[:mobile]
+# BTC 的预计收盘目标价
+@goal_btc_price = params[:t1].to_f
+# 是否以台币计算原始投入总资本
+@total_cost_using_tw = params[:o1]
+# 人民币对新台币汇率
+@mcy_twd_rate = params[:t23].to_f
+# 原始投入总资本
+@ori_pay = params[:t2].to_f
+if @total_cost_using_tw
+    @ori_pay = @ori_pay/@mcy_twd_rate
+end
+# 本次投入的资本
+@this_pay = params[:t3].to_f
+# 本次兑换的美元
+@this_usdt = params[:t4].to_f
+# 尚未交易的美元
+@remain_usdt = params[:t5].to_f
+# 已经投入的总资本
+if @this_usdt > 0
+    @already_pay = (@ori_pay+(@this_pay*((@this_usdt -@remain_usdt)/@this_usdt)))
+else
+    @already_pay = @ori_pay
+end
+# 在火币交易所里的单位数
+@huobi_units = params[:t6].to_f
+# 在WO钱包里的单位数
+@wo_units = params[:t7].to_f
+# 已持有的BTC总数
+@total_units = @wo_units + @huobi_units
+# 美元对人民币汇率
+@usd_rate = params[:t8].to_f
+# 美元对新台币汇率
+@twd_rate = params[:t22].to_f
+# 钱包兑美元汇率
+@begin_wor_rate = params[:t9].to_f
+# 阿波罗机器人每月收益(0.1=10%)
+@apllo_rate_1 = params[:t10].to_f
+@apllo_rate_2 = params[:t20].to_f
+# 期望的最低均价
+@mini_ave_price = params[:t11].to_f
+# 购买计划币别 (是否使用台币计算?)
+@plan_curr_using_tw = params[:o2]
+# 预估每月的收入
+def open_apllo_1
+    @goal_btc_price*@total_units >= 1000
+end
+def open_apllo_2
+    @goal_btc_price*@total_units >= 5000
+end
+def cal_month_income
+    if open_apllo_2
+        @month_income = @goal_btc_price*@total_units*@apllo_rate_2*@usd_rate
+    elsif open_apllo_1
+        @month_income = @goal_btc_price*@total_units*@apllo_rate_1*@usd_rate
+    else
+        @month_income = 0
+    end
+end
+cal_month_income
+# 总获利初始金额
+@init__huo_li = params[:t19].to_f
+# 购买计划字符串
+@plan_text = params[:t99]
+########## 参数设定 2 ##########
+# 试算开始日
+@begin_date = params[:t21]
+# 投资布局完成日
+@invest_completed_date = params[:t12]
+# 投资试算结束日
+@end_date = params[:t13]
+# 每日资产增值率
+def check_apllo
+    if open_apllo_2
+        @day_rate = @apllo_rate_2/30
+    elsif open_apllo_1
+        @day_rate = @apllo_rate_1/30
+    else
+        @day_rate = 0
+    end
+end
+# 钱包币月增值率
+@wor_grow_rate = params[:t14].to_f
+# 比特币月增值率
+@btc_grow_rate = params[:t15].to_f
+# 只显示最终结果
+if params[:t16].to_i > 0
+    @only_result = true
+else
+    @only_result = false
+end
+#隔几天显示结果
+@show_pre_days = params[:t17].to_i
+# 长收益计算模式
+@cal_mode = params[:t18].to_sym
+# 回传结果字符串
+@text_result = ""
+########## 公用函数 ##########
+
+# 建立回传结果字符串
+def build_result(str)
+    @text_result += str
+end
+
+# 试算并显示投资效益
+def show_invest_result( begin_ben_jing, begin_date, end_date, only_result = true, mode = :all )
+    build_result "********** 长期收益预估 **********\n"
+    check_apllo
+    # 初始化参数
+    w_total_lixi = w_this_lixi = w_total_wor = w_this_wor = w_this_benlihe = w_this_huo_li = w_pre_lixi = 0
+    g_total_lixi = g_this_lixi = g_total_wor = g_this_wor = g_this_benlihe = g_this_huo_li = g_pre_lixi = g_pre_wor = 0
+    w_ben_jing = g_ben_jing = pre_w_ben_jing =pre_g_ben_jing = begin_ben_jing
+    w_ben_jing_diff = g_ben_jing_diff = 0
+    w_wor_rate = g_wor_rate = @begin_wor_rate
+    w_title = "累积币"
+    g_title = "利滚利"
+    n = 1
+    begin_date = begin_date.to_date
+    end_date = end_date.to_date
+    ((begin_date+1.day)..end_date).each do |this_day|
+        # 当天的利息
+        w_this_lixi = w_ben_jing*@day_rate
+        # 当天得到的WOR
+        w_this_wor = w_this_lixi/w_wor_rate
+        # 累积的利息和WOR
+        w_total_lixi += w_this_lixi
+        w_total_wor += w_this_wor
+        # 当天的资产总和
+        w_this_benlihe = w_ben_jing + w_total_lixi
+        # 当天的累计获利
+        w_this_huo_li = (w_this_benlihe - begin_ben_jing + @init__huo_li)*@usd_rate
+        # 当天的本金 = 原始本金 + 上一期的收益
+        g_ben_jing += g_pre_lixi
+        g_total_lixi -= g_pre_lixi
+        # 当天的利息
+        g_this_lixi = g_ben_jing*@day_rate
+        # 当天得到的WOR
+        g_this_wor = g_this_lixi/g_wor_rate
+        # 累积的利息和WOR
+        g_total_lixi += g_this_lixi
+        g_total_wor = g_total_lixi/g_wor_rate
+        # 当天的资产总和
+        g_this_benlihe = g_ben_jing + g_total_lixi
+        # 当天的累计获利
+        g_this_huo_li = (g_this_benlihe - begin_ben_jing + @init__huo_li)*@usd_rate
+        # 更新上一期的收益
+        g_pre_lixi = g_this_lixi
+        w_pre_lixi = w_this_lixi
+        # 按照设定的间隔数显示结果
+        if  (!only_result and n % @show_pre_days == 0) or (this_day == end_date)
+            build_result "第#{add_zero((this_day-begin_date).to_i)}天 #{this_day.strftime("%Y%m%d")}" + if_add_n
+            if mode == :wor
+                eval(show_result_str.gsub('mode_','w_'))
+            elsif mode == :lgl
+                eval(show_result_str.gsub('mode_','g_'))
+            elsif mode == :all
+                eval(show_result_str.gsub('mode_','w_'))
+                eval(show_result_str.gsub('mode_','g_'))
+            end
+        end
+        # 计算下一次的本金与WOR兑换美元汇率
+        pre_w_ben_jing = w_ben_jing
+        w_ben_jing = w_ben_jing*(1+@btc_grow_rate/30)
+        w_wor_rate = w_wor_rate*(1+@wor_grow_rate/30)
+        w_ben_jing_diff = w_ben_jing - pre_w_ben_jing
+        pre_g_ben_jing = g_ben_jing
+        g_ben_jing = g_ben_jing*(1+@btc_grow_rate/30)
+        g_wor_rate = g_wor_rate*(1+@wor_grow_rate/30)
+        g_ben_jing_diff = g_ben_jing - pre_g_ben_jing
+        n += 1
+    end
+end
+
+def if_add_n
+    if @cal_mode == :all
+        "\n"
+    else
+        " "
+    end
+end
+
+def show_result_str
+    'build_result "#{mode_title}：$#{mode_ben_jing.to_i} (+#{(mode_pre_lixi*@show_pre_days).to_i},#{(mode_ben_jing_diff*@show_pre_days).to_i}↑) 月入：¥#{(mode_this_lixi*@usd_rate*30).to_i} 当日：w#{format("%.0f", mode_this_wor)} $#{format("%.0f", mode_this_lixi)} ¥#{format("%.0f", mode_this_lixi*@usd_rate)} 总获利：¥#{format("%.0f", mode_this_huo_li)}\n"'
+end
+
+def puts_result
+    'build_result "对应手机号：#{@mobile_number}\n已投入本金：¥#{@already_pay.to_i}/#{@total_invest} 占比 #{format("%.2f",@already_pay.to_f/@total_invest*100)}% 总量：#{format("%.8f",@total_units)} BTC\n"
+     build_result "已购买均价：$#{format("%.2f",@already_pay/@total_units/@usd_rate)} "
+     append_min_price
+     build_result "预估月收入：¥#{@month_income.to_i} (BTC → $#{@goal_btc_price.to_i} Apollo → $#{(@goal_btc_price*@total_units).to_i}) ¥#{(@month_income/30).to_i} $#{(@month_income/30/@usd_rate).to_i} (#{(@month_income/30/@usd_rate/@begin_wor_rate).to_i} WOR) /日\n"'
+end
+
+def append_min_price
+    if @mini_ave_price > 0
+        build_result "(最好小于$#{@mini_ave_price.to_i})\n"
+    else
+        build_result "\n"
+    end
+end
+
+# 显示目前BTC的投资状况
+def show_btc_status
+        build_result "********** 当前收益预估 **********\n"
+        check_apllo
+        eval(puts_result)
+end
+
+# 计算投资计划的总投入成本
+def total_plan_costs( plan_text )
+    result = 0
+    if not plan_text.empty?
+        plan_text.split("\n").each do |plan|
+            items = plan.split(" ")
+            if @plan_curr_using_tw
+                result += items[1].to_f/@mcy_twd_rate
+            else
+                result += items[1].to_f*@usd_rate
+            end
+        end
+    end
+    return result
+end
+
+# 显示BTC分批购买的结果预测
+def show_buy_plan(plan_text, buy_finish_date = Date.today)
+        return false if not total_plan_costs(@plan_text) > 0
+        build_result "********** 分批投资计划 **********\n"
+        prices = []
+        costs = []
+        plan_text.split("\n").each do |plan|
+            @items = plan.split(" ")
+            items = plan.split(" ")
+            if @plan_curr_using_tw
+                items[0] = (items[0].to_f/@twd_rate).to_i
+                items[1] = (items[1].to_f/@twd_rate).to_i
+            end
+            prices << items[0].to_i
+            costs << items[1].to_i
+        end
+        i=0
+        prices.each do |price|
+            if costs[i] > 0
+                new_unit = costs[i]/price.to_f
+            else
+                new_unit = 0
+            end
+            @total_units += new_unit
+            @already_pay += (costs[i])*@usd_rate
+            build_result  "以 #{@items[1]} 元 购入价格为 #{@items[0]} 的 BTC #{format("%.8f", new_unit)} 个，BTC 总数为 #{format("%.8f", @total_units)}，成本为 #{@already_pay.to_i}，均价为 #{format("%.2f", @already_pay/@usd_rate/@total_units)}\n"
+            i += 1
+        end
+        cal_month_income
+        build_result "布局完成日：#{@invest_completed_date}\n"
+        eval(puts_result)
+        @begin_date = buy_finish_date.to_date
+end
+
+# 自动储存参数以便下次快速调用
+def save_default_params
+    input_params_str = ""
+    (1..23).each do |n|
+      input_params_str += "t#{n}=" + params["t#{n}".to_sym] + "&"
+    end
+    (1..2).each do |n|
+      if params["o#{n}"]
+        input_params_str += "o#{n}=" + params["o#{n}".to_sym] + "&"
+      end
+    end
+    input_params_str += "mobile="  + params[:mobile] + "&"
+    input_params_str += "t99=" + params[:t99].gsub("\n","br").gsub(' ','_')
+    Param.find_by_name("params_of_btc_plan_"+params[:no]).update_attribute(:value,input_params_str)
+end
+
+# 预计总投入金额
+@total_invest = (@already_pay + total_plan_costs(@plan_text)).to_i
+
+########## 调用函数 ##########
+
+show_btc_status
+show_invest_result(@goal_btc_price*@total_units,  @begin_date, @end_date, @only_result, @cal_mode)
+if not params[:t99].empty?
+    show_buy_plan(@plan_text, @invest_completed_date)
+    show_invest_result(@goal_btc_price*@total_units,  @begin_date, @end_date, @only_result, @cal_mode)
+end
+save_default_params
+
+%>
+<%= "<p style='font-size:1.2em'>"+@text_result.gsub("\n",'<br/>')+"</p>" %>

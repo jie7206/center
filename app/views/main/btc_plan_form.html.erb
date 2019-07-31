@@ -1,0 +1,92 @@
+<h2>
+    <%
+    @input_size = 12 # 文字框的宽度
+    num_of_btc_plan = value_of('num_of_btc_plan').to_i
+    (1..num_of_btc_plan).each do |n|
+        pname = 'params_of_btc_plan_'+n.to_s
+        Param.create(:name => pname) if not Param.find_by_name(pname) %>
+        <%= sub_title_base link_to( "#{n}", "/main/btc_plan_form?no=#{n}&#{value_of(pname)}" )  %>
+    <% end %>
+    <%= compose_small_link( '清空', 'main', 'btc_plan_form' ) %>
+</h2>
+
+<style>
+.item {
+    font-size: 1.15em;
+    padding-left:  1.5em;
+    line-height:  150%;
+}
+.submit {
+    font-size: 1.2em;
+    margin-top:-5px;
+    margin-bottom:10px;
+}
+.green_title {
+    color: #349d34;
+    font-weight: bold;
+}
+.red_title {
+    color: #d34858;
+    font-weight: bold;
+}
+#main_table .txt {
+    width: 50px;
+    text-align: right;
+    padding-right: 3px;
+    margin-left: 0.1em;
+}
+#main_table .short {
+    width: 35px;
+    text-align: right;
+    padding-right: 2px;
+    margin-left: 0em;
+}
+</style>
+<%
+def show_plan_text
+    if params[:t99]
+        return params[:t99].gsub('br',"\n").gsub('_',' ')
+    end
+end
+
+# 快速組成HTML標籤
+def cb( title, name = 'unset', check_flag = 'checked'  )
+    checked = 'checked' if check_flag == 'checked' or check_flag == '1'
+    "<span>#{check_box_tag(name,1,checked)} #{title}</span>"
+end
+%>
+<% form_tag '/main/cal_btc_plan', :method => :get do -%>
+    <table width="450" align="center" style="background-color:#d8e5f8;border:1px solid;margin-top:5px;padding:7px" id="main_table">
+         <tr><td align="right">参数设定的编号： </td><td><%= text_field_tag 'no', params[:no], :size => @input_size %></td></tr>
+         <tr><td align="right">对应的手机号码： </td><td><%= text_field_tag 'mobile', params[:mobile], :size => @input_size %></td></tr>
+         <tr><td align="right">预计收盘目标价： </td><td><%= text_field_tag 't1', params[:t1], :size => @input_size %></td></tr>
+         <tr><td align="right">已经投入总资本： </td><td><%= text_field_tag 't2', params[:t2], :size => @input_size %>
+             <%= cb( '台币',  'o1', params[:o1] ) %>
+         </td></tr>
+         <tr><td align="right">本次投入的资本： </td><td><%= text_field_tag 't3', params[:t3], :size => @input_size %></td></tr>
+         <tr><td align="right">本次兑换的美元： </td><td><%= text_field_tag 't4', params[:t4], :size => @input_size %></td></tr>
+         <tr><td align="right">尚未交易的美元： </td><td><%= text_field_tag 't5', params[:t5], :size => @input_size %></td></tr>
+         <tr><td align="right">交易所的单位数： </td><td><%= text_field_tag 't6', params[:t6], :size => @input_size %></td></tr>
+         <tr><td align="right">钱包里的单位数： </td><td><%= text_field_tag 't7', params[:t7], :size => @input_size %></td></tr>
+         <tr><td align="right">美元人民币汇率： </td><td><%= text_field_tag 't8', value_of("exchange_rates_USD_to_MCY").to_f, :size => @input_size %></td></tr>
+         <tr><td align="right">美元新台币汇率： </td><td><%= text_field_tag 't22', value_of("exchange_rates_USD").to_f, :size => @input_size %></td></tr>
+         <tr><td align="right">人民币台币汇率： </td><td><%= text_field_tag 't23', value_of("exchange_rates_MCY").to_f, :size => @input_size %></td></tr>
+         <tr><td align="right">钱包兑美元汇率： </td><td><%= text_field_tag 't9', params[:t9], :size => @input_size %></td></tr>
+         <tr><td align="right">阿波罗月收益一： </td><td><%= text_field_tag 't10', params[:t10], :size => @input_size %></td></tr>
+         <tr><td align="right">阿波罗月收益二： </td><td><%= text_field_tag 't20', params[:t20], :size => @input_size %></td></tr>
+         <tr><td align="right">期望的最低均价： </td><td><%= text_field_tag 't11', params[:t11], :size => @input_size %></td></tr>
+         <tr><td align="right">投资试算开始日： </td><td><%= text_field_tag 't21', Date.today, :size => @input_size %></td></tr>
+         <tr><td align="right">投资试算结束日： </td><td><%= text_field_tag 't13', params[:t13], :size => @input_size %></td></tr>
+         <tr><td align="right">投资布局完成日： </td><td><%= text_field_tag 't12', Date.today, :size => @input_size %></td></tr>
+         <tr><td align="right">钱包币月增值率： </td><td><%= text_field_tag 't14', params[:t14], :size => @input_size %></td></tr>
+         <tr><td align="right">比特币月增值率： </td><td><%= text_field_tag 't15', params[:t15], :size => @input_size %></td></tr>
+         <tr><td align="right">只显示最终结果： </td><td><%= text_field_tag 't16', params[:t16], :size => @input_size %></td></tr>
+         <tr><td align="right">隔几天显示结果： </td><td><%= text_field_tag 't17', params[:t17], :size => @input_size %></td></tr>
+         <tr><td align="right">长收益计算模式： </td><td><%= text_field_tag 't18', params[:t18], :size => @input_size %></td></tr>
+        <tr><td align="right">总获利初始金额： </td><td><%= text_field_tag 't19', params[:t19], :size => @input_size %></td></tr>
+         <tr><td align="right">购买计划字符串： </td><td><%= cb( '使用台币计算',  'o2', params[:o2] ) %></td></tr>
+         <tr><td align="center" colspan="2"><%= text_area_tag 't99', show_plan_text, :size=> "42x8" %></td></tr>
+        <td align="center" colspan="2"><br/><%= submit_tag "顯示投资試算表", :class => :submit %></td>
+        </tr>
+   </table>
+<% end -%>

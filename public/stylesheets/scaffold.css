@@ -1,0 +1,331 @@
+body {
+  background-color: #fff; color: #333;
+  background-image: url(/images/light_orange_grid.gif);
+}
+
+body, p, ol, ul, td {
+  font-family: verdana, arial, helvetica, sans-serif;
+  font-size:   1em;
+  line-height: 1.5em;
+}
+body {
+  margin: 2px 5px;
+  padding : 0;
+}
+pre {
+  background-color: #eee;
+  padding: 10px;
+  font-size: 11px;
+}
+
+td {
+  padding-right: 10px;
+}
+a { color: #000; text-decoration:none;}
+a:visited { color: #000;text-decoration:none; }
+a:hover { color: #fff;background-color:#00c;text-decoration:none; }
+a.no_bg:hover { color: #fff;background-color:#96EEEF;text-decoration:none; }
+a.goal_warn { color: #00c; text-decoration:none;}
+a.goal_warn:visited { color: #00c;text-decoration:none; }
+a.goal_warn:hover { color: white;background-color:#00c;text-decoration:none; }
+a.todo_warn { color: #c00; text-decoration:none;}
+a.todo_warn:visited { color: #c00;text-decoration:none; }
+a.todo_warn:hover { color: white;background-color:#c00;text-decoration:none; }
+
+strong {
+  color: #CC0000;
+  font-weight: bold;
+  text-decoration:underline;
+}
+
+.fieldWithErrors {
+  padding: 2px;
+  background-color: red;
+  display: table;
+}
+
+#errorExplanation {
+  width: 400px;
+  border: 2px solid red;
+  padding: 7px;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+  background-color: #f0f0f0;
+}
+
+#errorExplanation h2 {
+  text-align: left;
+  font-weight: bold;
+  padding: 5px 5px 5px 15px;
+  font-size: 12px;
+  margin: -7px;
+  background-color: #c00;
+  color: #fff;
+}
+
+#errorExplanation p {
+  color: #333;
+  margin-bottom: 0;
+  padding: 5px;
+}
+
+#errorExplanation ul li {
+  font-size: 12px;
+  list-style: square;
+}
+
+#try_btc_form input {
+  margin: 0 0.3em;
+}
+.my_motto {
+  font-size:1.1em;
+  font-weight:bold;
+  border:0px
+}
+/*-----------------------------------------------------------------------------------*/
+h1, h2 {
+    font-weight: normal;
+    font-size: 1.5em;
+    letter-spacing: 0.1em;
+}
+h1 {
+  margin-top: 1.5em;
+}
+h2 {
+  margin-bottom: 1em;
+  text-align: center;
+}
+table {
+  background-color: #FFFFFF;
+}
+th {
+    font-weight: normal;
+}
+p {
+  line-height: 1.5em;
+}
+.mem_basic_desr {
+  font-size:   0.8em;
+}
+.last_class_title, .next_class_title {
+    font-size: 0.8em;
+    margin: 0.4em 0;
+}
+.last_class_title {
+    color: #555;
+}
+.class_feel {
+    color: #555;
+}
+.next_class_title {
+    color: #000;
+    font-weight: bold;
+}
+.next_class_title_list {
+    font-size: 0.7em;
+    color: #555;
+}
+.pass_ok_td {
+    text-align: center;
+}
+.trace_class_td, .pass_ok_td {
+    background-color: #EFEEB1;
+}
+#nav_bar {
+    padding-bottom: 2px;
+    border-bottom: 1px #777 solid;
+    width: 100%;
+    font-size: 0.95em;
+}
+#classification_bar {
+    text-align: center;
+}
+#status_bar, #life_catalog_bar {
+	font-size: 0.85em;
+    margin-top: -1.2em;
+    margin-bottom: 1.2em;
+    text-align: center;
+}
+#status_bar_red, #status_bar_red a {
+  font-size: 0.7em;
+  margin-top: -1.2em;
+  margin-bottom: 1.2em;
+  text-align: center;
+  color: #dd0000;
+}
+#status_bar_red a:hover {
+  color: #fff;
+  background-color:#00c;
+  text-decoration:none;
+  font-size: 0.7em;
+  margin-top: -1.2em;
+  margin-bottom: 1.2em;
+  text-align: center;
+}
+.member_short_desr {
+    text-align: center;
+    margin-top: 2px;
+}
+.next_class_student {
+    font-size: 0.8em;
+    color: #444;
+    line-height: 110%;
+}
+.next_class_teacher {
+    margin-left: 0.3em;
+    font-size: 0.7em;
+    color: #555;
+}
+.histories_class_student {
+    font-size: 0.8em;
+    color: #333;
+    line-height: 135%;
+}
+.histories_class_teacher {
+    margin-left: 0.3em;
+    font-size: 0.7em;
+    color: #a00;
+}
+.life_chart_warn_text {
+    font-size: 0.8em;
+    color: #00c;
+    line-height: 140%;
+}
+.todo_list_warn_text {
+    font-size: 0.8em;
+    color: #c00;
+    line-height: 140%;
+}
+.dashed_line {
+  height: 5px;
+  border-width: 0;
+  border-bottom: 1px #555 dashed;
+}
+.link_to_history {
+  font-size: 0.7em;
+  letter-spacing: 0;
+}
+.conductor_img {
+  margin-bottom: 3px;
+  cursor: pointer;
+}
+.next_class_date_already_expired {
+  background-color: #d00;
+  color: #fff;
+}
+.conductor_desr {
+  font-size: 0.9em;
+  text-align: center;
+  margin-top: -1px;
+  margin-bottom: 3px;
+}
+.conductor_member_header {
+  font-size: 0.75em;
+  text-align: center;
+  margin-top: -1px;
+  margin-bottom: 3px;
+}
+.conductor_next_class_date {
+  font-size: 0.8em;
+  text-align: center;
+  margin-top: 2px;
+}
+.picture_list_for_full_time {
+  background-color: #F68792;
+}
+.picture_list_for_core_student {
+  background-color: #7E9BEF;
+}
+.picture_list_for_core_home {
+  background-color: #ABDF8C;
+}
+.th_row {
+  background-color: #F7DCB4;
+  text-align: center;
+}
+.th_row_red {
+  color: #fff;
+  background-color: #e94850;
+  text-align: center;
+}
+.warning {
+  width: 100%;
+  margin-top: 2.5em;
+  font-size: 1.5em;
+  letter-spacing:  0.2em;
+  color: #e00;
+  text-align: center;
+}
+.diff_goal_minutes_str {
+  background-color:#BB0000;
+  color:#FFFF00;
+  padding:2px;
+  font-size: 15px;
+}
+.highlight_keyword {
+  color: #FFF;
+  background-color: #B00;
+}
+.small_words {
+  font-size:0.85em
+}
+.small_word_for_link {
+  font-family: "宋体";
+  font-size:8px;
+}
+.red_warn {
+  background-color:red;
+  color:white;
+  padding:1px 3px
+}
+.green_warn {
+  background-color:green;
+  color:white;
+  padding:1px 3px
+}
+.blue_warn {
+  background-color:blue;
+  color:white;
+  padding:1px 3px;
+  border: 1px #000079 solid;
+}
+form, .del_link {
+  text-align: left;
+}
+a.activity_title, a.activity_title:visited {
+  background-color: #2E3192;
+  color: #FFF;
+  padding: 2px;
+  text-align: center;
+  font-size: 0.95em;
+  margin: 1px;
+}
+#notice_msg {
+	position: fixed;
+	bottom: 7px;
+	left: 5px;
+	color: #fff;
+	background-color: #090;
+}
+#top_msg {
+	top: 10px;
+	right: 10px;
+	color: #fff;
+	background-color: #c00;
+}
+.param_quick_update_input {
+  border: 0px;
+  text-align:right;
+  font-family:Verdana;
+  font-size:15px;
+}
+a.gray_text, a.gray_text:visited {
+  color: #aaa;
+}
+.golden_verse_link {
+  font-family: "宋体";
+  font-size: 0.8em;
+}
+.white_words {
+  color: #fff;
+}

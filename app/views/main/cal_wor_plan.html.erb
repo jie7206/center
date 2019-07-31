@@ -1,0 +1,164 @@
+<%
+# 美元汇率、WOR兑换美元汇率
+@usd_rate = value_of("exchange_rates_USD_to_MCY").to_f
+@twd_rate = value_of("exchange_rates_MCY").to_f
+@twd_usd_rate = value_of("exchange_rates_USD").to_f
+@wor_rate = value_of("ex_rates_WOR").to_f
+# 今日比特币价格
+@today_price = value_of("btc_price").to_f
+# 每月资产增值率
+@apollo_rate_1 = 0.0700
+@apollo_rate_2 = 0.0935
+# 已经拥有的WOR总数(改成利滚利复投后，将此设为0)
+@wors = 0 #value_of("total_wors").to_f
+# 已经拥有的BTC总数
+@my_btc = (value_of('my_btc').split(",").map {|s| s.to_f}).sum
+# 理想的币价(人民币)
+@ideal_wor_price = value_of("goal_wor_price").to_f
+# 智能筛选单位数(输入想要存放的BTC数量，让电脑自动计算出放在哪个卡号最好)
+@smart_unit = params[:smart_unit].to_f
+# 目前各钱包拥有的比特币
+@btcs = []
+(1..10).each do |n|
+  params["t#{n}".to_sym] = "0" if params["t#{n}".to_sym].empty?
+  @btcs << params["t#{n}".to_sym].to_f
+end
+# 投资试算结束日
+@end_date = params[:end_date].to_date
+# 比特币月增值率
+@btc_grow_rate = get_btc_month_grow_rate
+# 回传结果字符串
+@text_result = ""
+########## 公用函数 ##########
+
+# 建立回传结果字符串
+def build_result(str)
+    @text_result += str
+end
+# 自动储存参数以便下次快速调用
+def save_default_params
+    input_params_str = ""
+    (1..10).each do |n|
+        input_params_str += "t#{n}=" + params["t#{n}".to_sym] + "&"
+    end
+    Param.find_by_name("params_of_wor_plan").update_attribute(:value,input_params_str[0..-2])
+end
+# 计算能得到的WOR收入
+def cal_total_wor( btcs, price )
+    wors = []
+    # 不算社区的基本收入
+    btcs.each_with_index do |u, i|
+      if u*price >= 5000
+        wors[i] = u*price*@apollo_rate_2/30/@wor_rate
+      elsif u*price > 0
+        wors[i] = u*price*@apollo_rate_1/30/@wor_rate
+      else
+        wors[i] = 0
+      end
+    end
+    # 第3代的总利息
+    lv_3_lixi = wors[7]+wors[8]+wors[9]
+    # 第2代的社区奖金--看第3代总利息(分享3人拿1代100%，2代50%，3代30%)
+    n2 = 0
+    (7..9).each do |i|
+      n2 += 1 if wors[i] > 0
+    end
+    # 分享1人 50%, 分享2人 80%, 分享3人 100%
+    m2 = 0
+    case n2
+      when 1
+        m2 = 0.5
+      when 2
+        m2 = 0.8
+      when 3
+        m2 = 1.0
+    end
+    lv_2_bonus = lv_3_lixi*m2
+    # 第1代的社区奖金--看第2代总利息(分享3人拿1代100%，2代50%，3代30%)
+    lv_2_lixi = wors[4]+wors[5]+wors[6]
+    n1 = 0
+    (4..6).each do |i|
+      n1 += 1 if wors[i] > 0
+    end
+    # 分享1人 50%, 分享2人 80%, 分享3人 100% => m11
+    # 分享2人拿 1代80% 2代50%，分享3人拿 1代100% 2代50% 3代30% => m12, m13
+    m11 = m12 = m13 = 0
+    case n1
+      when 1
+        m11 = 0.5
+      when 2
+        m11 = 0.8
+        m12 = 0.5
+      when 3
+        m11 = 1.0
+        m12 = 0.5
+        m13 = 0.3
+    end
+    lv_1_bonus_1 = lv_2_lixi*m11
+    lv_1_bonus_2 = lv_3_lixi*m12
+    # 第0代的社区奖金--看第1代总利息(分享3人拿1代100%，2代50%，3代30%)
+    lv_1_lixi = wors[1]+wors[2]+wors[3]
+    n0 = 0
+    (1..3).each do |i|
+      n0 += 1 if wors[i] > 0
+    end
+    # 分享1人 50%, 分享2人 80%, 分享3人 100% => m11
+    # 分享2人拿 1代80% 2代50%，分享3人拿 1代100% 2代50% 3代30% => m12, m13
+    m01 = m02 = m03 = 0
+    case n0
+      when 1
+        m01 = 0.5
+      when 2
+        m01 = 0.8
+        m02 = 0.5
+      when 3
+        m01 = 1.0
+        m02 = 0.5
+        m03 = 0.3
+    end
+    lv_0_bonus_1 = lv_1_lixi*m01
+    lv_0_bonus_2 = lv_2_lixi*m02
+    lv_0_bonus_3 = lv_3_lixi*m03
+    wors[0] += lv_0_bonus_1 + lv_0_bonus_2 + lv_0_bonus_3 if btcs[0] > 0
+    wors[1] += lv_1_bonus_1 + lv_1_bonus_2 if btcs[1] > 0
+    wors[6] += lv_2_bonus if btcs[6] > 0
+    return wors, wors.sum
+end
+# 计算收益
+def cal_wors_after_days
+    price = @today_price
+    @wors_arr, wors = cal_total_wor(@btcs, price)
+    day_income = (wors*@wor_rate*@usd_rate).to_i
+    month_income = day_income*30
+    build_result "第一天估计能挖 #{format("%.4f", wors)} 个WOR，每日收入：¥#{day_income}，每月收入：¥#{month_income}，月利率：#{format("%.2f", (month_income/(@btcs.sum*@today_price*@usd_rate))*100)}%<br/>"
+    ((Date.today+1.day)..@end_date).each do |this_day|
+        @wors += format("%.4f",cal_total_wor(@btcs, price)[1]).to_f
+        price += price*@btc_grow_rate/30
+    end
+    build_result "从今起直到 #{@end_date} 估计能挖 #{@wors.to_i} 个WOR，合 #{(@wors*@wor_rate).to_i} 美元，#{(@wors*@wor_rate*@usd_rate).to_i} 人民币，币价升至 #{@ideal_wor_price}，合人民币 #{(@wors*@ideal_wor_price).to_i}<br/>"
+end
+# 调用函数
+if @smart_unit == 0
+  build_result "总数：#{format("%.8f",@btcs.sum)} BTC，占比：#{format("%.2f",@btcs.sum/@my_btc*100)}%，单价：$#{@today_price.to_i}，总值：¥#{(@btcs.sum*@today_price*@usd_rate).to_i}<br/>"
+  cal_wors_after_days
+  build_result "BTC分布：" + @btcs.map {|n| format("%.4f",n)}.join(",") + "<br/>"
+  build_result "WOR分布：" + @wors_arr.map {|n| format("%.4f",n)}.join(",") + "<br/>"
+  save_default_params
+elsif @smart_unit > 0
+  earn_arr = []
+  (0..9).each do |n|
+    temp_btcs = @btcs.dup
+    temp_btcs[n] = @btcs[n]+@smart_unit
+    wors, earn_wors = cal_total_wor(temp_btcs, @today_price)
+    earn_wors = format("%.4f",earn_wors).to_f
+    earn_arr << earn_wors
+  end
+  best_indexs = []
+  earn_arr.each_with_index do |v,i|
+    best_indexs << i if v == earn_arr.max
+  end
+  build_result "投入单位：#{@smart_unit} BTC，占比：#{format("%.2f",(@btcs.sum+@smart_unit)/@my_btc*100)}%<br/>最佳选择：#{best_indexs.map {|i| wotoken_phone_arr[i]}.join(",")}<br/>每日收入：#{earn_arr[best_indexs[0]]} WOR/ #{(earn_arr.max*@wor_rate*@twd_usd_rate).to_i} TWD/ #{(earn_arr.max*@wor_rate*@usd_rate).to_i} CNY<br/>每月收入：#{earn_arr[best_indexs[0]]*30} WOR/ #{(earn_arr.max*@wor_rate*@twd_usd_rate*30).to_i} TWD/ #{(earn_arr.max*@wor_rate*@usd_rate*30).to_i} CNY<br/>"
+end
+%>
+<p style='font-size:1.2em'><%=@text_result%></p>
+<p><%= link_to "重新試算", :action => 'wor_plan_form' %></p>

@@ -1,0 +1,200 @@
+<%
+# 美元汇率、WOR兑换美元汇率
+@usd_rate = value_of('exchange_rates_USD_to_MCY').to_f
+@twd_rate = value_of('exchange_rates_MCY').to_f
+@twd_usd_rate = value_of('exchange_rates_HUSD').to_f
+@wor_rate = value_of('ex_rates_WOR').to_f
+# 今日比特币价格
+@today_price = value_of('btc_price').to_f
+# 比特币价格幅度(列表时用)
+@price_fudu = value_of('btc_price_fudu').to_f
+@price_fudu_step = value_of('btc_price_fudu_step').to_i
+# 目标币价(人民币)
+@goal_wor_price = value_of('goal_wor_price').to_f
+# 已贷款总额度
+@jinruyi = AssetItem.find(95).amount.to_i
+@jinruyi_start = AssetItem.find(95).loan_begin_date.to_date
+@jinruyi_back = value_of('next_jinruyi_back_date').to_date
+# 貸款總利息
+@total_loan_interests_value = get_total_loan_interest_ntd_array.sum.to_i
+# 目前各钱包拥有的比特币
+@btc_sum = value_of('btc_for_life_sum').to_f
+# 已经拥有的WOR总数
+@wors = @total_wors = eval(value_of('total_wors')).to_f
+# WOR赎回目标值(美金)
+@goal_of_wor_back = value_of("goal_of_wor_back").to_i
+# 每月资产增值率
+@apollo_rate_1 = 0.0700
+@apollo_rate_2 = 0.0935
+# 投资试算结束日
+@end_date = "2019-5-31".to_date
+# 比特币月增值率
+@btc_grow_rate = 0.09
+# 回传结果字符串
+@text_result = ""
+# 达多少比特币则显示可收割
+@btc_harvest_unit = value_of("btc_harvest_unit").to_f
+# 比特币短线每月获利目标(CNY)
+@btc_month_goal = value_of("btc_month_goal").to_i
+
+########## 公用函数 ##########
+
+# 建立回传结果字符串
+def build_result(str)
+    @text_result += str
+end
+
+def cal_total_wor( btcs, price )
+    wors = []
+    # 不算社区的基本收入
+    btcs.each_with_index do |u, i|
+        if u*price >= 5000
+            wors[i] = u*price*@apollo_rate_2/30/@wor_rate
+       elsif u*price >= 1000
+            wors[i] = u*price*@apollo_rate_1/30/@wor_rate
+      else
+            wors[i] = 0
+    end
+    end
+    # 第3代的总利息
+    lv_3_lixi = wors[7]+wors[8]+wors[9]
+    # 第2代的社区奖金--看第3代总利息(分享3人拿1代100%，2代50%，3代30%)
+    lv_2_bonus = lv_3_lixi*1.0
+    # 第1代的社区奖金--看第2代总利息(分享3人拿1代100%，2代50%，3代30%)
+    lv_2_lixi = wors[4]+wors[5]+wors[6]
+    lv_1_bonus_1 = lv_2_lixi*1.0
+    lv_1_bonus_2 = lv_3_lixi*0.5
+    # 第0代的社区奖金--看第1代总利息(分享3人拿1代100%，2代50%，3代30%)
+    lv_1_lixi = wors[1]+wors[2]+wors[3]
+    lv_0_bonus_1 = lv_1_lixi*1.0
+    lv_0_bonus_2 = lv_2_lixi*0.5
+    lv_0_bonus_3 = lv_3_lixi*0.3
+    wors[0] += lv_0_bonus_1 + lv_0_bonus_2 + lv_0_bonus_3
+    wors[1] += lv_1_bonus_1 + lv_1_bonus_2
+    wors[6] += lv_2_bonus
+    return wors.sum
+end
+
+def cal_wors_after_days
+    price = @today_price
+    wors = cal_total_wor(@btcs, price)
+    day_income = (wors*@wor_rate*@twd_usd_rate).to_i
+    month_income = day_income*30
+    lixi_rate = month_income/@total_cost.to_f*100
+    build_result "第一天收入 w#{wors.to_i}/日 | w#{(wors*30).to_i}/月 | #{day_income}/日 | #{month_income}/月 | #{format("%.2f", lixi_rate)}%<br/>"
+    ((Date.today+1.day)..@end_date).each do |this_day|
+        @wors += cal_total_wor @btcs, price
+        price += price*@btc_grow_rate/30
+    end
+    build_result "到 #{@end_date} 预计收入 #{@wors.to_i} WOR = $#{(@wors*@wor_rate).to_i} = ¥#{(@wors*@wor_rate*@usd_rate).to_i} = #{(@wors*@wor_rate*@twd_usd_rate).to_i}<br/>"
+end
+
+def cal_wors_between_prices( low, high, step )
+    (low..high).step(step) do |price|
+        wors = cal_total_wor(@btcs, price)
+        day_income = (wors*@wor_rate*@twd_usd_rate).to_i
+        month_income = day_income*30
+        lixi_rate = month_income/@total_cost.to_f*100
+        now_price_css = @today_price.to_i == price.to_i ? "color:white;background-color:red;" : ""
+        build_result "<span style='#{now_price_css}'>#{price.to_i}： #{wors.to_i} | #{(wors*30).to_i} | #{day_income} | #{month_income} | #{format("%.2f", lixi_rate)}%</span><br>"
+    end
+end
+
+def cal_btc_value
+    (@today_price*@btc_sum*@twd_usd_rate).to_i
+end
+
+def cal_money_back(goal=@goal_of_wor_back)
+  @goal = goal
+  ex = @wor_rate
+  grow = value_of("wor_grow_rate").to_f
+  out = 0.02
+  wor = @total_wors
+  hand = 0
+  min = 100
+  @days = 0
+  @cal_money_back_text = ""
+  (1..1000).each do |n|
+    exw = (wor*out).to_i
+    if exw >= min
+      hand += exw*ex
+      wor -= exw
+      ex *= 1+grow
+      @cal_money_back_text += "#{add_zero(n,2)}：#{Date.today+(n-1).days}：兑换：W#{exw} 汇率：#{format("%.4f",ex)} 剩余：W#{wor.to_i} 赎回：$#{format("%.2f",hand)}<br/>"
+      if hand > @goal
+        @days = n
+        break
+      end
+    else
+      #@cal_money_back_text += "WOR不足#{min}，无法继续兑换！"
+      break
+    end
+  end
+end
+
+################## 函数结束 ##################
+
+@jinruyi_lixi_days = (@jinruyi_back-@jinruyi_start).to_i
+@jinruyi_lixi = (@jinruyi_lixi_days * (@jinruyi*0.065/365)).to_i
+@jinruyi = @jinruyi + @jinruyi_lixi - 300000
+@btc_value = cal_btc_value
+
+%>
+<h4>总数：<span title="<%=@my_btc%>"><%=@btc_sum%></span> X <%= link_to format("$%.2f",@today_price), "http://playruby.top:3002/main/kline_chart?symbol=btchusd&period=1min", :target => "_blank" %> = <%=@btc_value%>|¥<%=(@btc_value/@twd_rate).to_i%>|$<%=format("%.0f",@btc_value/@twd_usd_rate)%><br/>
+<%
+@months = @cost_months = 0
+@life_month_cost_start_date = value_of("life_month_cost_start_date").to_date
+@life_month_cost = @life_month_cost_start = value_of("life_month_cost").to_i
+@life_month_cost_grow_rate = value_of("life_month_cost_grow_rate").to_f
+@btc_max_price = value_of("btc_max_price").to_i
+@pre_btc_sum = @btc_sum
+@ideal_house_price = value_of("ideal_house_price").to_i
+@ideal_house_date = value_of("ideal_house_date").to_date
+@buy_house_flag = true
+@after_buy_house = 0
+(1..1000000).each do |i|
+    @this_date = Date.today+@months.month
+    @btc_grow_rate = get_btc_month_grow_rate(@this_date)
+    @years_old = @this_date.year-1974
+    # 如果日期超过开始计算生活费支出开始日，才开始扣除生活费
+    show_cost_and_remain = ""
+    # 如果有理想房子的买价(人民币)，则先扣除再计算生活费
+    if @ideal_house_price > 0 and @this_date >= @ideal_house_date and @buy_house_flag
+      @btc_sum -= @ideal_house_price/@usd_rate/@today_price
+      @after_buy_house = (@btc_sum*@today_price*@usd_rate).to_i
+      @buy_house_flag = false
+      show_cost_and_remain = "-¥#{@ideal_house_price.to_i}=#{format("%.8f",@btc_sum)} BTC"
+    end
+    if @this_date >= @life_month_cost_start_date
+      @show_month_cost_start ||= @life_month_cost.to_i # 用于显示年金的头月支出
+      if @btc_sum > 0
+        @btc_sum -= @life_month_cost/@usd_rate/@today_price
+        show_cost_and_remain += "-¥#{@life_month_cost.to_i}=#{format("%.8f",@btc_sum)} BTC"
+        @cost_months += 1
+      end
+    elsif @this_date < @life_month_cost_start_date and show_cost_and_remain.empty?
+      show_cost_and_remain = "=¥#{(@btc_sum*@today_price*@usd_rate).to_i}|#{(@btc_sum*@today_price*@twd_usd_rate).to_i}"
+    end
+    if @btc_sum > 0
+        build_result "#{@years_old}: #{@this_date}(#{@btc_grow_rate*100}): $#{@today_price.to_i}*#{format("%.8f",@pre_btc_sum)}#{show_cost_and_remain}<br/>"
+        @months += 1
+        @today_price *= (1+@btc_grow_rate)
+        @today_price = @btc_max_price if @today_price >= @btc_max_price
+        @life_month_cost *= (1+@life_month_cost_grow_rate/100)
+        @pre_btc_sum = @btc_sum
+    else
+        break
+    end
+end
+%>
+<% if @ideal_house_price > 0 and @after_buy_house > 0 %>
+  房产：<%=@ideal_house_date%> 扣除购房款 ¥<%=@ideal_house_price%> 剩 <%=(@after_buy_house*@twd_rate).to_i%>|¥<%=@after_buy_house%>|$<%=(@after_buy_house/@usd_rate).to_i%><br/>
+<% end %>
+<% if @cost_months > 0 %>
+  年金：<%=@life_month_cost_start_date%> 起每月支出 <%=(@show_month_cost_start*@twd_rate).to_i%>|¥<%=@show_month_cost_start%>|$<%=(@show_month_cost_start/@usd_rate).to_i%>, 可付<%=@cost_months%>月|<%=format("%.0f", @cost_months/12.0)%>年|<span class="red_warn"><%=@years_old%>岁</span><br/>
+<% end %>
+
+<% if @cost_months > 0 %>
+  <hr/>
+  <%=@text_result%>
+<% end %>
