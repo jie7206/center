@@ -14,14 +14,30 @@
     平仓:<span class="<%=@harvest_unit_warn%>"><%=format("%.2f",@settle_profit)%></span>BTC|$<%=@settle_price%>|<%=link_to(@total_asset_value, {:controller => 'param_changes', :action => 'new', :param_id => '129'}, {:title => "¥#{(@total_asset_value/@cny2twd).to_i}", :target => '_blank'})%>|<span title="平均月收入：<%=@ave_month_income_twd%>|¥<%=@ave_month_income_cny%>|$<%=@ave_month_income_usd%>"><%=link_to(format("%.0f",(@ave_month_income_twd/10000.0))+"萬", {:action => "life_pay"}, {:target => "_blank"})%></span></span>
   <br/>
 <% if @update_btc_price %>
-走势：
-  <span title="<%=@symbol.upcase%>交易对">时线:<span title="MA5"><%=@k60m_ma5%></span>-<span title="MA10"><%=@k60m_ma10%></span>-<span title="MA20"><%=@k60m_ma20%></span>:<span title="买卖比"><%=@bsp60m%></span>|日线:<span title="MA5"><%=@k1d_ma5%></span>-<span title="MA15"><%=@k1d_ma15%></span>-<span title="MA30"><%=@k1d_ma30%></span>:<span title="买卖比"><%=@bsp1d%></span>|<%=@ma_trend%></span>
-  <br/>
 量能：
-<span title="<%=@symbol.upcase%>交易对">时线:<span title="MA5"><%=@k60m_ama5%></span>-<span title="MA10"><%=@k60m_ama10%></span>-<span title="MA20"><%=@k60m_ama20%></span>|日线:<span title="MA5"><%=@k1d_ama5%></span>-<span title="MA15"><%=@k1d_ama15%></span>-<span title="MA30"><%=@k1d_ama30%></span>|<%=@ama_trend%></span>
+<span title="<%=@symbol.upcase%>交易对"><%=period_title(@kline_short_period)%>:<span title="MA5"><%=@k60m_ama5%></span>-<span title="MA10"><%=@k60m_ama10%></span>-<span title="MA20"><%=@k60m_ama20%></span>|<%=period_title(@kline_long_period)%>:<span title="MA5"><%=@k1d_ama5%></span>-<span title="MA15"><%=@k1d_ama15%></span>-<span title="MA30"><%=@k1d_ama30%></span>|<%=@ama_trend%></span>
 <br/>
+走势：
+  <span title="<%=@symbol.upcase%>交易对"><%=period_title(@kline_short_period)%>:<span title="MA5"><%=@k60m_ma5%></span>-<span title="MA10"><%=@k60m_ma10%></span>-<span title="MA20"><%=@k60m_ma20%></span>:<span title="买卖比"><%=@bsp60m%></span>|<%=period_title(@kline_long_period)%>:<span title="MA5"><%=@k1d_ma5%></span>-<span title="MA15"><%=@k1d_ma15%></span>-<span title="MA30"><%=@k1d_ma30%></span>:<span title="买卖比"><%=@bsp1d%></span>|<%=@ma_trend%></span>
+  <br/>
 价格：
-  <span><%=@k60m.size/2%>时:<span title="现价/MA5"><%=@p60m_ma5%>%</span>|<span title="区间最低价"><%=@k60m_lowest%></span>-<span title="区间最高价"><%=@k60m_highest%></span>-<span title="区间成交最多的收盘价"><%=@k60m_volume_price%></span>|<%=@k1d.size%>天:<span title="现价/MA5"><%=@p1d_ma5%>%</span>|<span title="区间最低价"><%=@k1d_lowest%></span>-<span title="区间最高价"><%=@k1d_highest%></span>-<span title="区间成交最多的收盘价"><%=@k1d_volume_price%></span></span>
+  <span><%=@k60m.size%>笔:<span title="现价/MA5"><%=@p60m_ma5%>%</span>|<span title="区间最低价"><%=@k60m_lowest%></span>-<span title="区间最高价"><%=@k60m_highest%></span>-<span title="区间成交最多的收盘价"><%=@k60m_volume_price%></span>|<%=@k1d.size%>笔:<span title="现价/MA5"><%=@p1d_ma5%>%</span>|<span title="区间最低价"><%=@k1d_lowest%></span>-<span title="区间最高价"><%=@k1d_highest%></span>-<span title="区间成交最多的收盘价"><%=@k1d_volume_price%></span></span>
+  <br/>
+区间：
+  <span>
+<% [1,5,15,30,60].each do |n| %>
+  <%= link_to("#{n}分","/main/btc_income?update_btc_price=1&kline_short_period=#{n}min") %>
+<% end %>
+<% [40,120,240].each do |n| %>
+  <%= link_to("#{n}笔","/main/btc_income?update_btc_price=1&kline_short_size=#{n}") %>
+<% end %>|
+<% %w(4hour 1day 1week).each do |w| %>
+  <%= link_to(period_title(w),"/main/btc_income?update_btc_price=1&kline_long_period=#{w}") %>
+<% end %>
+<% [40,120,240].each do |n| %>
+  <%= link_to("#{n}笔","/main/btc_income?update_btc_price=1&kline_long_size=#{n}") %>
+<% end %>
+</span>
   <br/>
 <% end %>
 操作：

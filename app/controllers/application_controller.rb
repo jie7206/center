@@ -1419,6 +1419,10 @@ end
     Param.find_by_name(param_name).content
   end
 
+  def update_of( param_name, param_value )
+    Param.find_by_name(param_name).update_attribute(:value,param_value)
+  end
+
   def trip_title( title )
     return title.sub('【','').sub('】','')
   end

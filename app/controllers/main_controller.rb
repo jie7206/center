@@ -972,12 +972,17 @@ class MainController < ApplicationController
     # 更新比特币现值
     if params[:update_btc_price] == '1'
       update_btc_price
+      update_kline_params
       @update_btc_price = true
       @update_total_asset_value = true
+      @kline_short_period = value_of('kline_short_period')
+      @kline_short_size = value_of('kline_short_size').to_i
+      @kline_long_period = value_of('kline_long_period')
+      @kline_long_size = value_of('kline_long_size').to_i
       # 获取15分钟K线图数据
-      @k60m = get_kline_data('30min',24*5,@symbol)
+      @k60m = get_kline_data(@kline_short_period,@kline_short_size,@symbol)
       # 获取4时K线图数据
-      @k1d = get_kline_data('1day',30,@symbol)
+      @k1d = get_kline_data(@kline_long_period,@kline_long_size,@symbol)
     end
     # 更新账户的买卖数据
     update_asset_by_trade
@@ -1619,6 +1624,25 @@ class MainController < ApplicationController
   def update_my_motto
     if params[:my_motto] and !params[:my_motto].empty?
       Param.find_by_name("my_motto").update_attribute(:value, params[:my_motto])
+    end
+  end
+
+  # 更新K线数据长短线区间及笔数设定
+  def update_kline_params
+    sp = %w(1min 5min 15min 30min 60min)
+    lp = %w(4hour 1day 1week)
+    size = %w(40 120 240)
+    if params[:kline_short_period] and sp.include?(params[:kline_short_period])
+      update_of('kline_short_period',params[:kline_short_period])
+    end
+    if params[:kline_long_period] and lp.include?(params[:kline_long_period])
+      update_of('kline_long_period',params[:kline_long_period])
+    end
+    if params[:kline_short_size] and size.include?(params[:kline_short_size])
+      update_of('kline_short_size',params[:kline_short_size])
+    end
+    if params[:kline_long_size] and size.include?(params[:kline_long_size])
+      update_of('kline_long_size',params[:kline_long_size])
     end
   end
 

@@ -22,73 +22,11 @@ module ApplicationHelper
         result << book_search_input << member_search_input  #<< life_search_input
         return "<div id='nav_bar' style='text-align: center;font-size:1.15em'>#{result.join(' ').to_s}</div>"
     end
-    #
-    # # 计算比特币总投资预算
-    # def cal_btc_total_budget
-    #   # 比特币总投资预算 - 下个月给孟丽的生活费(比特币短线已实现获利)
-    #   value_of('btc_total_budget').to_i - AssetItem.find(55).to_ntd
-    # end
-    #
-    # # 模拟比特币总投资预算
-    # def sim_btc_total_budget(btc_price)
-    #   # 火币USDT资产总值
-    #   total_budget = total_usdt
-    #   # 如果有模拟买入
-    #   if @try_btc_unit != 0
-    #     total_budget -= @try_btc_unit*@try_btc_price*@twd_usd_rate
-    #   end
-    #   total_budget += sim_btc_hold(btc_price)
-    #   # 模拟比特币总投资预算 - 下个月给孟丽的生活费(比特币短线已实现获利)
-    #   return total_budget.to_i - AssetItem.find(55).to_ntd
-    # end
-    #
-    # # 火币USDT资产总值
-    # def total_usdt
-    #   result = 0
-    #   [5,119].each do |index|
-    #     result += AssetItem.find(index).to_ntd
-    #   end
-    #   return result
-    # end
-    #
-    # def sim_btc_hold(btc_price)
-    #   result = 0
-    #   my_btcs = value_of('my_btc').split(",")
-    #   [2,3].each do |index|
-    #     result += my_btcs[index].to_f*btc_price*@twd_usd_rate
-    #   end
-    #   # 如果有模拟买入
-    #   if @try_btc_unit != 0
-    #     result += @try_btc_unit*btc_price*@twd_usd_rate
-    #   end
-    #   return result.to_i
-    # end
-    #
-    # # 计算BTC持仓总值
-    # def cal_btc_ntd_value
-    #   total_value = 0
-    #   # 火币BTC资产总值
-    #   [11,134].each do |index|
-    #     total_value += AssetItem.find(index).to_ntd
-    #   end
-    #   return total_value
-    # end
-    #
-    # # 计算比特币投资成本
-    # def cal_btc_total_cost
-    #   return ((eval(value_of("btc_total_cost")))*(value_of("exchange_rates_HUSD").to_f)).to_i
-    #   # total_budget = 0
-    #   # # 火币USDT资产总值
-    #   # [5,119].each do |index|
-    #   #   total_budget += AssetItem.find(index).to_ntd
-    #   # end
-    #   # result = value_of("btc_total_budget_warning").to_i-total_budget
-    #   # if result > 0
-    #   #   return result
-    #   # else
-    #   #   return 0
-    #   # end
-    # end
+
+    # 显示K线图时间区间
+    def period_title(period)
+      period.sub("min","分").sub("hour","时").sub("day","天").sub("week","周").sub("mon","月").sub("year","年")
+    end
 
     def build_search_input( model_name, action_name, default_text )
       "<form name='#{model_name}_search_form' action='/#{action_name}/' method='get' style='display:inline;'><input type='text' name='#{model_name}_keywords_for_search' value='#{default_text}' style='width:50px;height:50%;margin-bottom:3px;font-size:0.1em;background:#FFFFEE;' onclick='this.select()'/>#{image_submit_tag('icon/empty.gif', :width=> 1)}</form>"
