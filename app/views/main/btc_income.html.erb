@@ -7,10 +7,10 @@
   <br/>
 仓位：
   <span title="¥<%=@ex_cost_cny%>|$<%=@ex_cost_usd%>"><%=@ex_cost_twd%></span>|<%=format("%.2f",@ex_cost_twd_level)%>%|<span title="¥<%=@btc_hold_cny%>|$<%=@btc_hold_usd%>"><%=@btc_hold_twd%></span>/<span class="<%=@btc_total_budget_warn%>" title="现值：¥<%=@btc_total_budget_cny%>|$<%=@btc_total_budget_usd%>，初始本金：<%=@btc_total_budget_warning%> TWD"><%=@btc_total_budget_twd%></span>|<%=format("%.2f",@btc_hold_twd_level)%>%
-  每单位均价:<span class="<%=@ave_price_warn%>"><%=format("%.2f", @unit_ave_price)%></span>
+  均价:<%=@trezor_ave_price%>/<span class="<%=@ave_price_warn%>"><%=format("%.2f", @unit_ave_price)%></span>
   <br/>
 损益：
-  <%=@btc_profit_twd%>|<span class="<%=@cny_profit_warn%>">¥<%=@btc_profit_cny%></span>|$<%=@btc_profit_usd%>|<span class="<%=@btc_profit_warn%>"><%=format("%.1f", @btc_profit_rate)%>%</span><span title="超过<%=@btc_harvest_unit%>BTC即可平仓(包含每月¥<%=@btc_month_goal%>的收益)">
+  <span class="<%=@twd_profit_warn%>"><%=@btc_profit_twd%></span>|<span class="<%=@cny_profit_warn%>">¥<%=@btc_profit_cny%></span>|<span class="<%=@usd_profit_warn%>">$<%=@btc_profit_usd%></span>|<span class="<%=@btc_profit_warn%>"><%=format("%.1f", @btc_profit_rate)%>%</span><span title="超过<%=@btc_harvest_unit%>BTC即可平仓(包含每月<%=@btc_month_goal_twd%>|¥<%=@btc_month_goal_cny%>|$<%=@btc_month_goal_usd%>的收益)">
     平仓:<span class="<%=@harvest_unit_warn%>"><%=format("%.2f",@settle_profit)%></span>BTC|$<%=@settle_price%>|<%=link_to(@total_asset_value, {:controller => 'param_changes', :action => 'new', :param_id => '129'}, {:title => "¥#{(@total_asset_value/@cny2twd).to_i}", :target => '_blank'})%>|<span title="平均月收入：<%=@ave_month_income_twd%>|¥<%=@ave_month_income_cny%>|$<%=@ave_month_income_usd%>"><%=link_to(format("%.0f",(@ave_month_income_twd/10000.0))+"萬", {:action => "life_pay"}, {:target => "_blank"})%></span></span>
   <br/>
 <% if @update_btc_price %>
@@ -28,13 +28,13 @@
 <% [1,5,15,30,60].each do |n| %>
   <%= link_to("#{n}分","/main/btc_income?update_btc_price=1&kline_short_period=#{n}min") %>
 <% end %>
-<% [40,120,240].each do |n| %>
+<% [40,80,120].each do |n| %>
   <%= link_to("#{n}笔","/main/btc_income?update_btc_price=1&kline_short_size=#{n}") %>
 <% end %>|
 <% %w(4hour 1day 1week).each do |w| %>
   <%= link_to(period_title(w),"/main/btc_income?update_btc_price=1&kline_long_period=#{w}") %>
 <% end %>
-<% [40,120,240].each do |n| %>
+<% [80,120,240].each do |n| %>
   <%= link_to("#{n}笔","/main/btc_income?update_btc_price=1&kline_long_size=#{n}") %>
 <% end %>
 </span>

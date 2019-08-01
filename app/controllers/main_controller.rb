@@ -1043,8 +1043,24 @@ class MainController < ApplicationController
     @btc_total_budget_warning = value_of('btc_total_budget_warning').to_i
     # 达多少比特币则显示可收割
     @btc_harvest_unit = value_of("btc_harvest_unit").to_f
-    # 比特币短线每月获利目标(CNY)
-    @btc_month_goal = value_of("btc_month_goal").to_i
+    # 比特币短线每月获利目标(twd/cny/usd)
+    @btc_month_goal_arr = value_of("btc_month_goal").split(" ")
+    @btc_month_goal = @btc_month_goal_arr[0].to_i
+    @btc_month_goal_curr = @btc_month_goal_arr[1]
+    case @btc_month_goal_curr
+      when 'twd','TWD'
+        @btc_month_goal_twd = @btc_month_goal
+        @btc_month_goal_cny = (@btc_month_goal/@cny2twd).to_i
+        @btc_month_goal_usd = (@btc_month_goal/@usd2twd).to_i
+      when 'cny','CNY'
+        @btc_month_goal_twd = (@btc_month_goal*@cny2twd).to_i
+        @btc_month_goal_cny = @btc_month_goal
+        @btc_month_goal_usd = (@btc_month_goal/@usd2cny).to_i
+      when 'usd','USD'
+        @btc_month_goal_twd = (@btc_month_goal*@usd2twd).to_i
+        @btc_month_goal_cny = (@btc_month_goal*@usd2cny).to_i
+        @btc_month_goal_usd = @btc_month_goal
+    end
     # 比特币总投资损益警示
     @btc_profit_highest_warn = value_of('btc_profit_highest_warn').to_f
     @btc_profit_lowest_warn = value_of('btc_profit_lowest_warn').to_f
@@ -1209,9 +1225,9 @@ class MainController < ApplicationController
   #8.计算平仓后的损益与可直接平仓的值
   def cal_settle
     if @ex_cost_twd > 0
-    @settle_profit = (@btc_hold_twd > 0 and @btc_profit_twd > 0) ? (@btc_total_budget_twd-@btc_total_budget_warning-@btc_month_goal*@cny2twd)/@usd2twd/@btc_price : 0
+    @settle_profit = (@btc_hold_twd > 0 and @btc_profit_twd > 0) ? (@btc_total_budget_twd-@btc_total_budget_warning-@btc_month_goal_twd)/@usd2twd/@btc_price : 0
     @settle_profit = 0 if @settle_profit < 0
-    @settle_price = ((@btc_total_budget_warning+@btc_month_goal*@cny2twd-@total_usdt_twd)/((@btc_sum_ex-@btc_harvest_unit)*@usd2twd)).to_i
+    @settle_price = ((@btc_total_budget_warning+@btc_month_goal_twd-@total_usdt_twd)/((@btc_sum_ex-@btc_harvest_unit)*@usd2twd)).to_i
     @settle_price = 0 if @settle_price < 0
     else
       @settle_profit = 0
@@ -1238,10 +1254,14 @@ class MainController < ApplicationController
     else
       @btc_profit_warn = ""
     end
-    if @btc_profit_twd/@cny2twd >= @btc_month_goal
-      @cny_profit_warn = "red_warn"
-    else
-      @cny_profit_warn = ""
+    # 依照目标币种的不同而有不同的栏位显示
+    case @btc_month_goal_curr
+      when 'twd','TWD'
+        @twd_profit_warn = @btc_profit_twd >= @btc_month_goal_twd ? "red_warn" : ""
+      when 'cny','CNY'
+        @cny_profit_warn = @btc_profit_twd/@cny2twd >= @btc_month_goal_cny ? "red_warn" : ""
+      when 'usd','USD'
+        @usd_profit_warn = @btc_profit_twd/@usd2twd >= @btc_month_goal_usd ? "red_warn" : ""
     end
     if @btc_harvest_unit > 0 and @settle_profit > @btc_harvest_unit
       @harvest_unit_warn = "red_warn"
@@ -1502,8 +1522,10 @@ class MainController < ApplicationController
 
   # 给定均价和买价，计算单位数
   def cal_ave_buy_unit
-    unit = (format("%.4f",(@btc_sum_ex*(@unit_ave_price-@try_ave_price))/(@try_ave_price-@try_buy_price))).to_f
-    if unit.abs > @btc_sum_ex
+    unit = (@btc_sum_ex*(@unit_ave_price-@try_ave_price))/(@try_ave_price-@try_buy_price)
+    unit /= 1.0-@ex_fee_rate
+    unit = format("%.6f",unit).to_f
+    if unit < 0 and unit.abs > @btc_sum_ex
       return 0
     else
       return unit
@@ -1631,17 +1653,17 @@ class MainController < ApplicationController
   def update_kline_params
     sp = %w(1min 5min 15min 30min 60min)
     lp = %w(4hour 1day 1week)
-    size = %w(40 120 240)
+    size = (40..480).step(10).to_a
     if params[:kline_short_period] and sp.include?(params[:kline_short_period])
       update_of('kline_short_period',params[:kline_short_period])
     end
     if params[:kline_long_period] and lp.include?(params[:kline_long_period])
       update_of('kline_long_period',params[:kline_long_period])
     end
-    if params[:kline_short_size] and size.include?(params[:kline_short_size])
+    if params[:kline_short_size] and size.include?(params[:kline_short_size].to_i)
       update_of('kline_short_size',params[:kline_short_size])
     end
-    if params[:kline_long_size] and size.include?(params[:kline_long_size])
+    if params[:kline_long_size] and size.include?(params[:kline_long_size].to_i)
       update_of('kline_long_size',params[:kline_long_size])
     end
   end
