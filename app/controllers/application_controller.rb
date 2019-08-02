@@ -847,10 +847,6 @@ class ApplicationController < ActionController::Base
     @btc_api_price = format("%.2f",get_price_from_api).to_f
     if @btc_api_price > 0
       Param.find(192).update_attribute(:value, @btc_api_price)
-      # 更新火币USDT/HUSD交易对汇率
-      update_husd_rate
-      # 当我的家庭流动资产变化的时候，自动更新Param中流动资产的总值
-      # update_my_assets_and_insert_change_record
     end
   end
 

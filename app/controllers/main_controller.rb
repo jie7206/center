@@ -1,5 +1,6 @@
 require 'net/http'
 require 'rexml/document'
+require 'timeout'
 
 class MainController < ApplicationController
 
@@ -971,18 +972,25 @@ class MainController < ApplicationController
     @from_btc_income = true
     # 更新比特币现值
     if params[:update_btc_price] == '1'
-      update_btc_price
-      update_kline_params
-      @update_btc_price = true
-      @update_total_asset_value = true
-      @kline_short_period = value_of('kline_short_period')
-      @kline_short_size = value_of('kline_short_size').to_i
-      @kline_long_period = value_of('kline_long_period')
-      @kline_long_size = value_of('kline_long_size').to_i
-      # 获取15分钟K线图数据
-      @k60m = get_kline_data(@kline_short_period,@kline_short_size,@symbol)
-      # 获取4时K线图数据
-      @k1d = get_kline_data(@kline_long_period,@kline_long_size,@symbol)
+      begin
+        timeout(60) do
+          update_btc_price
+          update_kline_params
+          @update_btc_price = true
+          @update_total_asset_value = true
+          @kline_short_period = value_of('kline_short_period')
+          @kline_short_size = value_of('kline_short_size').to_i
+          @kline_long_period = value_of('kline_long_period')
+          @kline_long_size = value_of('kline_long_size').to_i
+          # 获取15分钟K线图数据
+          @k60m = get_kline_data(@kline_short_period,@kline_short_size,@symbol)
+          # 获取4时K线图数据
+          @k1d = get_kline_data(@kline_long_period,@kline_long_size,@symbol)
+        end
+      rescue TimeoutError
+        @update_btc_price = false
+        @update_btc_price = false
+      end
     end
     # 更新账户的买卖数据
     update_asset_by_trade
@@ -1545,7 +1553,6 @@ class MainController < ApplicationController
       end
       @try_buy_unit = opt_units
       params[:try_buy_unit] = format("%.4f",opt_units)
-      @try_buy_price = @btc_price
       params[:try_buy_price] = opt_price
     end
   end
