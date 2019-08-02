@@ -987,7 +987,7 @@ class MainController < ApplicationController
           # 获取4时K线图数据
           @k1d = get_kline_data(@kline_long_period,@kline_long_size,@symbol)
         end
-      rescue TimeoutError
+      rescue TimeoutError,OpenSSL::SSL::SSLError
         @update_btc_price = false
         @update_btc_price = false
       end
@@ -1125,9 +1125,14 @@ class MainController < ApplicationController
           cal_price_by_batch
         end
         # 如果超出预算则自动降低能购买的单位数
-        check_try_buy_unit if @cal_mode != "LEV" # 打补丁(patch#1)
-        @btc_sum += @try_buy_unit*(1-@ex_fee_rate)
-        @btc_sum_ex += @try_buy_unit*(1-@ex_fee_rate)
+        check_try_buy_unit if @cal_mode != "LEV" # 打补丁(patch#1
+        if @try_buy_unit > 0
+          @btc_sum += @try_buy_unit*(1-@ex_fee_rate)
+          @btc_sum_ex += @try_buy_unit*(1-@ex_fee_rate)
+        else
+          @btc_sum += @try_buy_unit
+          @btc_sum_ex += @try_buy_unit
+        end
         # 更新在冷钱包里的比特币总值与比例
         cal_trezor_twd
     end
@@ -1223,20 +1228,28 @@ class MainController < ApplicationController
     @btc_total_profit_usd = (@btc_total_profit_twd/@usd2twd).to_i # 总获利值换成美元
     if @btc_hold_twd > 0 and @btc_sum_ex > 0.0001
       # 交易所里的投资损益
-      @btc_profit_twd = (@btc_sum_ex*@btc_price*@usd2twd - @ex_cost_twd).to_i
+      # 由持币的损益改成整体与原始本金的损益
+      # @btc_profit_twd = (@btc_sum_ex*@btc_price*@usd2twd - @ex_cost_twd).to_i
+      @btc_profit_twd = @btc_total_budget_twd - @btc_total_budget_warning
       @btc_profit_cny = (@btc_profit_twd/@cny2twd).to_i
       @btc_profit_usd = (@btc_profit_twd/@usd2twd).to_i
-      @btc_profit_rate = (@btc_profit_twd.to_f/@ex_cost_twd)*100
+      # 由持币的报酬率改成整体与原始本金的报酬率
+      # @btc_profit_rate = (@btc_profit_twd.to_f/@ex_cost_twd)*100
+      @btc_profit_rate = (@btc_profit_twd.to_f/@btc_total_budget_warning)*100
     end
   end
 
   #8.计算平仓后的损益与可直接平仓的值
   def cal_settle
     if @ex_cost_twd > 0
-    @settle_profit = (@btc_hold_twd > 0 and @btc_profit_twd > 0) ? (@btc_total_budget_twd-@btc_total_budget_warning-@btc_month_goal_twd)/@usd2twd/@btc_price : 0
-    @settle_profit = 0 if @settle_profit < 0
-    @settle_price = ((@btc_total_budget_warning+@btc_month_goal_twd-@total_usdt_twd)/((@btc_sum_ex-@btc_harvest_unit)*@usd2twd)).to_i
-    @settle_price = 0 if @settle_price < 0
+      @settle_profit = (@btc_hold_twd > 0 and @btc_profit_twd > 0) ? (@btc_total_budget_twd-@btc_total_budget_warning-@btc_month_goal_twd)/@usd2twd/@btc_price : 0
+      @settle_profit = 0 if @settle_profit < 0
+      @settle_price = ((@btc_total_budget_warning+@btc_month_goal_twd-@total_usdt_twd)/((@btc_sum_ex-@btc_harvest_unit)*@usd2twd)).to_i
+      if @settle_price < 0
+        @settle_price = 0
+      else
+        @settle_price += 1
+      end
     else
       @settle_profit = 0
       @settle_price = 0
@@ -1553,6 +1566,7 @@ class MainController < ApplicationController
       end
       @try_buy_unit = opt_units
       params[:try_buy_unit] = format("%.4f",opt_units)
+      @try_buy_price = @try_buy_price > 0 ? @try_buy_price.to_f : @btc_price.to_i
       params[:try_buy_price] = opt_price
     end
   end

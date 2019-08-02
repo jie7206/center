@@ -45,7 +45,7 @@ class ApplicationController < ActionController::Base
   def cal_total_asset_value
     # 计算數字貨幣资产总值
     if @from_btc_income and @btc_price
-       @digital_currency_sum = @trezor_jie7206_twd + @total_usdt_twd + @btc_hold_twd
+       @digital_currency_sum = format("%.2f",@trezor_jie7206_twd).to_f + format("%.2f",@total_usdt_twd).to_f + format("%.2f",@btc_hold_twd).to_f
     else
       @btc_price = value_of('btc_price').to_f
       @digital_currency_sum = sum_money_of('digital_currency')
