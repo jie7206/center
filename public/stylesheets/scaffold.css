@@ -276,16 +276,31 @@ p {
 .red_warn {
   background-color:red;
   color:white;
-  padding:1px 3px
+  padding:1px 3px;
+  border: 1px #000079 solid;
 }
 .green_warn {
   background-color:green;
   color:white;
-  padding:1px 3px
+  padding:1px 3px;
+  border: 1px #000079 solid;
 }
 .blue_warn {
   background-color:blue;
   color:white;
+  padding:1px 3px;
+  border: 1px #000079 solid;
+}
+.gold_warn {
+  background-color:gold;
+  color:black;
+  font-weight:bold;
+  padding:1px 3px;
+  border: 1px #000079 solid;
+}
+.square_warn {
+  color:black;
+  font-weight:bold;
   padding:1px 3px;
   border: 1px #000079 solid;
 }

@@ -972,6 +972,7 @@ class MainController < ApplicationController
     @from_btc_income = true
     # 更新比特币现值
     if params[:update_btc_price] == '1'
+      #@auto_refresh_sec = 60
       begin
         timeout(60) do
           update_btc_price
@@ -1020,12 +1021,12 @@ class MainController < ApplicationController
     cal_btc_profits
     #8.计算平仓后的损益与可直接平仓的值
     cal_settle
-    #9.根据值大小设定显示的style
-    set_css_style
-    #10.计算K线资料的MA值并判断趋势(如果有连线更新才显示)
+    #9.计算K线资料的MA值并判断趋势(如果有连线更新才显示)
     cal_ma_trend if @update_btc_price
-    #11.显示操作记录
+    #10.显示操作记录
     operate_info
+    #11.根据值大小设定显示的style
+    set_css_style
   end
 
   #1.获取需要的数据
@@ -1257,7 +1258,75 @@ class MainController < ApplicationController
     end
   end
 
-  #9.根据值大小设定显示的style
+  #9.计算K线资料的MA值
+  def cal_ma_trend
+    @short_long_ma = value_of("short_long_ma").split(";")
+    @short_ma = @short_long_ma[0].split(",").map {|i| i.to_i}
+    @long_ma = @short_long_ma[1].split(",").map {|i| i.to_i}
+    @k60m_ma5 = ma(@short_ma[0],@k60m)
+    @k60m_ma10 = ma(@short_ma[1],@k60m)
+    @k60m_ma20 = ma(@short_ma[2],@k60m)
+    @k1d_ma5 = ma(@long_ma[0],@k1d)
+    @k1d_ma10 = ma(@long_ma[1],@k1d)
+    @k1d_ma20 = ma(@long_ma[2],@k1d)
+    volume_vol_name = "vol"
+    @k60m_ama5 = ma(@short_ma[0],@k60m,volume_vol_name)/1000
+    @k60m_ama10 = ma(@short_ma[1],@k60m,volume_vol_name)/1000
+    @k60m_ama20 = ma(@short_ma[2],@k60m,volume_vol_name)/1000
+    @k1d_ama5 = ma(@long_ma[0],@k1d,volume_vol_name)/1000
+    @k1d_ama10 = ma(@long_ma[1],@k1d,volume_vol_name)/1000
+    @k1d_ama20 = ma(@long_ma[2],@k1d,volume_vol_name)/1000
+    @bsp60m = bsp(@k60m)
+    @bsp1d = bsp(@k1d)
+    # 简单判断走势多或空
+    @ma_trend = ""
+    @ma_trend += "短空" if @k60m_ma5 < @k60m_ma10 and @k60m_ma10 < @k60m_ma20
+    @ma_trend += "短多" if @k60m_ma5 > @k60m_ma10 and @k60m_ma10 > @k60m_ma20
+    @ma_trend += "短抛" if @bsp60m < 0.9
+    @ma_trend += "短拉" if @bsp60m > 1.1
+    @ma_trend += "长空" if @k1d_ma5 < @k1d_ma10 and @k1d_ma10 < @k1d_ma20
+    @ma_trend += "长多" if @k1d_ma5 > @k1d_ma10 and @k1d_ma10 > @k1d_ma20
+    @ma_trend += "长抛" if @bsp1d < 0.9
+    @ma_trend += "长拉" if @bsp1d > 1.1
+    @ama_trend = ""
+    @ama_trend += "短缩" if @k60m_ama5 < @k60m_ama10 and @k60m_ama10 < @k60m_ama20
+    @ama_trend += "短增" if @k60m_ama5 > @k60m_ama10 and @k60m_ama10 > @k60m_ama20
+    @ama_trend += "长缩" if @k1d_ama5 < @k1d_ama10 and @k1d_ama10 < @k1d_ama20
+    @ama_trend += "长增" if @k1d_ama5 > @k1d_ama10 and @k1d_ama10 > @k1d_ama20
+    # 计算现价与MA的溢价比例
+    @p60m_ma5 = pom(@k60m[-1]["close"].to_f, @k60m_ma5)
+    @p1d_ma5 = pom(@k1d[-1]["close"].to_f, @k1d_ma5)
+    # 计算比特币区间最高价
+    @k60m_highest = get_highest_price(@k60m).to_i
+    @k60m_lowest = get_lowest_price(@k60m).to_i
+    @k1d_highest = get_highest_price(@k1d).to_i
+    @k1d_lowest = get_lowest_price(@k1d).to_i
+    # 获取成交量最大的收盘价
+    @k60m_volume_price = get_volume_price(@k60m)
+    @k1d_volume_price = get_volume_price(@k1d)
+  end
+
+  #10.显示操作记录
+  def operate_info
+    @last_trade_time = Param.find_by_name("btc_total_cost").updated_at
+    @last_trade_str = @last_trade_time.strftime("%m%d-%H:%M")
+    @interval_hours = format("%.2f",(Time.now - @last_trade_time).to_int/(60*60).to_f)
+    @trade_usd = (@btc_total_cost.gsub("-","+").split("+")[-1]).to_f
+    @trade_twd = (@trade_usd*@usd2twd).to_i
+    @trade_cny = (@trade_twd/@cny2twd).to_i
+    # 每操作1000元台币必须等几小时才能再操作下一笔
+    @next_operate_hours, @next_operate_time = cal_next_trade_time(@last_trade_time,@trade_twd)
+    @next_trade_str = @next_operate_time.to_time.strftime("%m%d-%H:%M")
+    @trade_usd_p = format("%.2f",(@trade_usd*@usd2twd)/(@total_usdt_twd+@trade_usd*@usd2twd)*100)
+    @trade_type = cal_trade_type
+    # 显示CSS警示
+    @next_operate_warn = ""
+    if @interval_hours.to_f >= @next_operate_hours
+      @next_operate_warn = "red_warn"
+    end
+  end
+
+  #11.根据值大小设定显示的style
   def set_css_style
     if @btc_total_budget_twd < @btc_total_budget_warning
       @btc_total_budget_warn = "green_warn"
@@ -1266,8 +1335,10 @@ class MainController < ApplicationController
     end
     if @btc_price < @unit_ave_price
       @ave_price_warn = "green_warn"
+    elsif @k60m_ma20 and @unit_ave_price > @k60m_ma20
+      @ave_price_warn = "red_warn"
     else
-      @ave_price_warn = ""
+      @ave_price_warn = "square_warn"
     end
     if @btc_profit_rate > @btc_profit_highest_warn
       @btc_profit_warn = "red_warn"
@@ -1289,71 +1360,6 @@ class MainController < ApplicationController
       @harvest_unit_warn = "red_warn"
     else
       @harvest_unit_warn = ""
-    end
-  end
-
-  #10.计算K线资料的MA值
-  def cal_ma_trend
-    @k60m_ma5 = ma(5,@k60m)
-    @k60m_ma10 = ma(10,@k60m)
-    @k60m_ma20 = ma(20,@k60m)
-    @k1d_ma5 = ma(5,@k1d)
-    @k1d_ma15 = ma(15,@k1d)
-    @k1d_ma30 = ma(30,@k1d)
-    volume_vol_name = "vol"
-    @k60m_ama5 = ma(5,@k60m,volume_vol_name)/1000
-    @k60m_ama10 = ma(10,@k60m,volume_vol_name)/1000
-    @k60m_ama20 = ma(20,@k60m,volume_vol_name)/1000
-    @k1d_ama5 = ma(5,@k1d,volume_vol_name)/1000
-    @k1d_ama15 = ma(15,@k1d,volume_vol_name)/1000
-    @k1d_ama30 = ma(30,@k1d,volume_vol_name)/1000
-    @bsp60m = bsp(@k60m)
-    @bsp1d = bsp(@k1d)
-    # 简单判断走势多或空
-    @ma_trend = ""
-    @ma_trend += "短空" if @k60m_ma5 < @k60m_ma10 and @k60m_ma10 < @k60m_ma20
-    @ma_trend += "短多" if @k60m_ma5 > @k60m_ma10 and @k60m_ma10 > @k60m_ma20
-    @ma_trend += "短抛" if @bsp60m < 0.9
-    @ma_trend += "短拉" if @bsp60m > 1.1
-    @ma_trend += "长空" if @k1d_ma5 < @k1d_ma15 and @k1d_ma15 < @k1d_ma30
-    @ma_trend += "长多" if @k1d_ma5 > @k1d_ma15 and @k1d_ma15 > @k1d_ma30
-    @ma_trend += "长抛" if @bsp1d < 0.9
-    @ma_trend += "长拉" if @bsp1d > 1.1
-    @ama_trend = ""
-    @ama_trend += "短缩" if @k60m_ama5 < @k60m_ama10 and @k60m_ama10 < @k60m_ama20
-    @ama_trend += "短增" if @k60m_ama5 > @k60m_ama10 and @k60m_ama10 > @k60m_ama20
-    @ama_trend += "长缩" if @k1d_ama5 < @k1d_ama15 and @k1d_ama15 < @k1d_ama30
-    @ama_trend += "长增" if @k1d_ama5 > @k1d_ama15 and @k1d_ama15 > @k1d_ama30
-    # 计算现价与MA的溢价比例
-    @p60m_ma5 = pom(@k60m[-1]["close"].to_f, @k60m_ma5)
-    @p1d_ma5 = pom(@k1d[-1]["close"].to_f, @k1d_ma5)
-    # 计算比特币区间最高价
-    @k60m_highest = get_highest_price(@k60m).to_i
-    @k60m_lowest = get_lowest_price(@k60m).to_i
-    @k1d_highest = get_highest_price(@k1d).to_i
-    @k1d_lowest = get_lowest_price(@k1d).to_i
-    # 获取成交量最大的收盘价
-    @k60m_volume_price = get_volume_price(@k60m)
-    @k1d_volume_price = get_volume_price(@k1d)
-  end
-
-  #11.显示操作记录
-  def operate_info
-    @last_trade_time = Param.find_by_name("btc_total_cost").updated_at
-    @last_trade_str = @last_trade_time.strftime("%m%d-%H:%M")
-    @interval_hours = format("%.2f",(Time.now - @last_trade_time).to_int/(60*60).to_f)
-    @trade_usd = (@btc_total_cost.gsub("-","+").split("+")[-1]).to_f
-    @trade_twd = (@trade_usd*@usd2twd).to_i
-    @trade_cny = (@trade_twd/@cny2twd).to_i
-    # 每操作1000元台币必须等几小时才能再操作下一笔
-    @next_operate_hours, @next_operate_time = cal_next_trade_time(@last_trade_time,@trade_twd)
-    @next_trade_str = @next_operate_time.to_time.strftime("%m%d-%H:%M")
-    @trade_usd_p = format("%.2f",(@trade_usd*@usd2twd)/(@total_usdt_twd+@trade_usd*@usd2twd)*100)
-    @trade_type = cal_trade_type
-    # 显示CSS警示
-    @next_operate_warn = ""
-    if @interval_hours.to_f >= @next_operate_hours
-      @next_operate_warn = "red_warn"
     end
   end
 
@@ -1510,7 +1516,7 @@ class MainController < ApplicationController
     get_total_usdt
     max_buy_unit = @total_usdt_twd/@usd2twd/@try_buy_price
     if @try_buy_unit > max_buy_unit
-      @try_buy_unit = (format("%.4f",max_buy_unit)).to_f
+      @try_buy_unit = (format("%.6f",max_buy_unit)).to_f
       params[:try_buy_unit] = @try_buy_unit
     end
   end
@@ -1567,7 +1573,7 @@ class MainController < ApplicationController
         opt_units = (new_total_cost-@ex_cost_twd)/(opt_price*@usd2twd)
       end
       @try_buy_unit = opt_units
-      params[:try_buy_unit] = format("%.4f",opt_units)
+      params[:try_buy_unit] = format("%.6f",opt_units)
       @try_buy_price = @try_buy_price > 0 ? @try_buy_price.to_f : @btc_price.to_i
       params[:try_buy_price] = opt_price
     end
@@ -1588,7 +1594,7 @@ class MainController < ApplicationController
   def cal_price_and_units_by_amount(amount)
     # 默认的价格为现价，计算可投资的单位数
     opt_price = @btc_price.to_i
-    opt_units = (format("%.4f",amount.to_f/opt_price)).to_f
+    opt_units = (format("%.6f",amount.to_f/opt_price)).to_f
     @try_buy_price = opt_price
     params[:try_buy_price] = opt_price
     @try_buy_unit = opt_units
@@ -1615,19 +1621,19 @@ class MainController < ApplicationController
     @btc_total_cost = value_of("btc_total_cost")
     @my_btc_arr = value_of("my_btc").split(",")
     # 获取账户更新资料
-    @h135_cost_change = params[:h135_cost_change]
+    @h135_cost_change = params[:h135_cost_change] ? eval(params[:h135_cost_change]) : nil
     @h135_btc_sum = params[:h135_btc_sum]
-    @h135_usd_sum = params[:h135_usd_sum]
-    @h170_cost_change = params[:h170_cost_change]
+    @h135_usd_sum = params[:h135_usd_sum] ? eval(params[:h135_usd_sum]) : nil
+    @h170_cost_change = params[:h170_cost_change] ? eval(params[:h170_cost_change]) : nil
     @h170_btc_sum = params[:h170_btc_sum]
-    @h170_usd_sum = params[:h170_usd_sum]
+    @h170_usd_sum = params[:h170_usd_sum] ? eval(params[:h170_usd_sum]) : nil
     # 更新买卖成本
     update_btc_total_cost = false
-    if @h135_cost_change and !@h135_cost_change.empty? and @h135_cost_change.to_f.abs != 0
+    if @h135_cost_change and @h135_cost_change != 0
       @btc_total_cost += add_num_plus(@h135_cost_change)
       update_btc_total_cost = true
     end
-    if @h170_cost_change and !@h170_cost_change.empty? and @h170_cost_change.to_f.abs != 0
+    if @h170_cost_change and @h170_cost_change != 0
       @btc_total_cost += add_num_plus(@h170_cost_change)
       update_btc_total_cost = true
     end
@@ -1649,12 +1655,12 @@ class MainController < ApplicationController
     end
     # 更新账户USD资产
     update_asset_items = false
-    if @h135_usd_sum and !@h135_usd_sum.empty?
+    if @h135_usd_sum and @h135_usd_sum != 0
       # 火币资产总值 13581706025: HUSD
       AssetItem.find(5).update_attribute(:amount, @h135_usd_sum)
       update_asset_items = true
     end
-    if @h170_usd_sum and !@h170_usd_sum.empty?
+    if @h170_usd_sum and @h170_usd_sum != 0
       # 火币资产总值 17099311026: HUSD
       AssetItem.find(119).update_attribute(:amount, @h170_usd_sum)
       update_asset_items = true
@@ -1676,7 +1682,7 @@ class MainController < ApplicationController
   def update_kline_params
     sp = %w(1min 5min 15min 30min 60min)
     lp = %w(4hour 1day 1week)
-    size = (40..480).step(10).to_a
+    size = (20..480).step(10).to_a
     if params[:kline_short_period] and sp.include?(params[:kline_short_period])
       update_of('kline_short_period',params[:kline_short_period])
     end

@@ -1466,7 +1466,7 @@ module ApplicationHelper
 
     # 计算MA值
     def ma(size, data, type="close") # 要算几个值的平均, 原始数据阵列, 价格类型, 小数点几位
-      if data.size >= size
+      if (data.size).to_i and size.to_i
         size = data.size if size > data.size
         temp = 0
         data[size*-1..-1].each do |item|
