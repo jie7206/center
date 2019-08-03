@@ -1079,7 +1079,7 @@ class MainController < ApplicationController
     # 火币USDT/HUSD交易对汇率
     @usdt2husd = value_of('ex_rates_USDT_to_HUSD').to_f
     # 火币手续费率
-    @ex_fee_rate = 0.002
+    @ex_fee_rate = 0.002 # 扣USDT(买入时)
     # 获取用户表单输入的资料
     get_inputs
     # 设定表单计算模式
@@ -1127,8 +1127,9 @@ class MainController < ApplicationController
         # 如果超出预算则自动降低能购买的单位数
         check_try_buy_unit if @cal_mode != "LEV" # 打补丁(patch#1
         if @try_buy_unit > 0
-          @btc_sum += @try_buy_unit*(1-@ex_fee_rate)
-          @btc_sum_ex += @try_buy_unit*(1-@ex_fee_rate)
+          p = 1.0-@ex_fee_rate
+          @btc_sum += @try_buy_unit*p
+          @btc_sum_ex += @try_buy_unit*p
         else
           @btc_sum += @try_buy_unit
           @btc_sum_ex += @try_buy_unit
