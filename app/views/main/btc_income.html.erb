@@ -1,10 +1,9 @@
-<%=@test_show%>
 <h4>
 <%= link_to "总数：", :action => :btc_income %>
   <span title="<%=@my_btc%>"><%=format("%.8f",@btc_sum_ex)%>/<%=format("%.8f",@btc_sum)%></span>|<span title="总数：<%=@trezor_jie7206_sum%>，占比：<%=@trezor_jie7206_p%>%，成本：<%=@trezor_cost_twd%>，均价：$<%=@trezor_ave_price%>，投资报酬率：<%=@trezor_profit%>%"><%=@trezor_jie7206_twd%></span>/<%=@btc_value_twd%>|¥<%=@btc_value_cny%>|$<%=@btc_value_usd%><br/>
 获利：
   <%=@btc_total_profit_twd%>|¥<%=@btc_total_profit_cny%>|$<%=@btc_total_profit_usd%>|<%=format("%.2f", @btc_total_profit_rate)%>%
-  <span title="初始本金：<%=@btc_total_budget_warning%>，可用余额：<%=@total_usdt_twd.to_i%>|¥<%=@total_usdt_cny%>|$<%=@total_usdt_usd%>，贷款利息：<%=@total_loan_interests_value%>，从<%=@loan_begin_date%>到<%=@next_jinruyi_back_date%>共有<%=@loan_lixi_days%>天，届时贷款余额为<%=@loan_amount%>">可用:<%=format("%.0f",(@total_usdt_twd/10000.0).abs)%>萬</span>|最多:<%=format("%.8f",@max_btc_sum)%> BTC
+  <span title="初始本金：<%=@btc_total_budget_warning%>，可用余额：<%=@total_usdt_twd.to_i%>|¥<%=@total_usdt_cny%>|$<%=@total_usdt_usd%>，贷款利息：<%=@total_loan_interests_value%>，从<%=@loan_begin_date%>到<%=@next_jinruyi_back_date%>共有<%=@loan_lixi_days%>天，届时贷款余额为<%=@loan_amount%>">可用:<%=format("%.0f",(@total_usdt_twd/10000.0).abs)%>萬</span>|<span title="最多能持有的比特币总数"><%=format("%.6f",@max_ex_sum)%>/<%=format("%.6f",@max_btc_sum)%></span>
   <br/>
 仓位：
   <span title="¥<%=@ex_cost_cny%>|$<%=@ex_cost_usd%>"><%=@ex_cost_twd%></span>|<%=format("%.2f",@ex_cost_twd_level)%>%|<span title="¥<%=@btc_hold_cny%>|$<%=@btc_hold_usd%>"><%=@btc_hold_twd%></span>/<span class="<%=@btc_total_budget_warn%>" title="现值：¥<%=@btc_total_budget_cny%>|$<%=@btc_total_budget_usd%>，初始本金：<%=@btc_total_budget_warning%> TWD"><%=@btc_total_budget_twd%></span>|<%=format("%.2f",@btc_hold_twd_level)%>%
@@ -48,7 +47,7 @@
     <% else %>
       <%=@last_trade_str%> ~ <%=@next_trade_str%>
       <% if @next_operate_hours > 0 %>
-      |间隔:<span class="<%=@next_operate_warn%>" title="至少<%=@next_operate_hours%>小时后，相当于：<%=@next_operate_time%>"><%=@interval_hours.to_i%>/<%=@next_operate_hours.to_i%></span>小时|<%=@trade_type%>:<span title="¥<%=@trade_cny%>|$<%=@trade_usd%>"><%=@trade_twd%>TWD|</span>占比:<%=@trade_usd_p%>%
+      |间隔:<span class="<%=@next_operate_warn%>" title="至少<%=@next_operate_hours%>小时后，相当于：<%=@next_operate_time%>"><%=@interval_hours.to_i%>/<%=@next_operate_hours.to_i%>小时</span>|<%=@trade_type%>:<span title="¥<%=@trade_cny%>|$<%=@trade_usd%>"><%=@trade_twd%>TWD|</span>占比:<%=@trade_usd_p%>%
       <% end %>
     <% end %>
   </span>

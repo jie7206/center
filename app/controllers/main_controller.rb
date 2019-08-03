@@ -1460,7 +1460,8 @@ class MainController < ApplicationController
 
   # 计算能拥有比特币的最大数量
   def cal_max_btc_sum
-    @max_btc_sum = @btc_sum + @total_usdt_twd/(@btc_price*@usd2twd)
+    @max_ex_sum = @total_usdt_twd/(@btc_price*@usd2twd)
+    @max_btc_sum = @btc_sum + @max_ex_sum
   end
 
   # 比特币短线已实现获利(下个月给孟丽的生活费)
