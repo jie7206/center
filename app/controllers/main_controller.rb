@@ -1263,23 +1263,21 @@ class MainController < ApplicationController
     @short_long_ma = value_of("short_long_ma").split(";")
     @short_ma = @short_long_ma[0].split(",").map {|i| i.to_i}
     @long_ma = @short_long_ma[1].split(",").map {|i| i.to_i}
-    @k60m_ma5 = ma(@short_ma[0],@k60m)
-    @k60m_ma10 = ma(@short_ma[1],@k60m)
-    @k60m_ma20 = ma(@short_ma[2],@k60m)
-    @k60m_ma20_prev = ma(@short_ma[2],@k60m,"close",-2)
-    @k60m_ma20_updown = @k60m_ma20 >= @k60m_ma20_prev ? "↑" : "↓"
-    @k1d_ma5 = ma(@long_ma[0],@k1d)
-    @k1d_ma10 = ma(@long_ma[1],@k1d)
-    @k1d_ma20 = ma(@long_ma[2],@k1d)
-    @k1d_ma20_prev = ma(@long_ma[2],@k1d,"close",-2)
-    @k1d_ma20_updown = @k1d_ma20 >= @k1d_ma20_prev ? "↑" : "↓"
+    @k60m_ma5 = ma(@short_ma[0],@k60m).to_i
+    @k60m_ma10 = ma(@short_ma[1],@k60m).to_i
+    @k60m_ma20 = ma(@short_ma[2],@k60m).to_i
+    @k60m_ma20_updown = ma_arrow_str(10,@short_ma[2],@k60m)
+    @k1d_ma5 = ma(@long_ma[0],@k1d).to_i
+    @k1d_ma10 = ma(@long_ma[1],@k1d).to_i
+    @k1d_ma20 = ma(@long_ma[2],@k1d).to_i
+    @k1d_ma20_updown = ma_arrow_str(10,@long_ma[2],@k1d)
     volume_vol_name = "vol"
-    @k60m_ama5 = ma(@short_ma[0],@k60m,volume_vol_name)/1000
-    @k60m_ama10 = ma(@short_ma[1],@k60m,volume_vol_name)/1000
-    @k60m_ama20 = ma(@short_ma[2],@k60m,volume_vol_name)/1000
-    @k1d_ama5 = ma(@long_ma[0],@k1d,volume_vol_name)/1000
-    @k1d_ama10 = ma(@long_ma[1],@k1d,volume_vol_name)/1000
-    @k1d_ama20 = ma(@long_ma[2],@k1d,volume_vol_name)/1000
+    @k60m_ama5 = ma(@short_ma[0],@k60m,volume_vol_name).to_i/1000
+    @k60m_ama10 = ma(@short_ma[1],@k60m,volume_vol_name).to_i/1000
+    @k60m_ama20 = ma(@short_ma[2],@k60m,volume_vol_name).to_i/1000
+    @k1d_ama5 = ma(@long_ma[0],@k1d,volume_vol_name).to_i/1000
+    @k1d_ama10 = ma(@long_ma[1],@k1d,volume_vol_name).to_i/1000
+    @k1d_ama20 = ma(@long_ma[2],@k1d,volume_vol_name).to_i/1000
     @bsp60m = bsp(@k60m)
     @bsp1d = bsp(@k1d)
     # 简单判断走势多或空

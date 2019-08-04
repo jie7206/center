@@ -1487,9 +1487,42 @@ module ApplicationHelper
             temp += item[type].to_f
           end
         end
-        return (temp/size).to_i
+        return (temp/size).to_f
       else
         return 0
+      end
+    end
+
+    # 以箭头形式显示MA的变化
+    def ma_arrow_str(num, ma_size, ma_data) # 要显示几个MA值的变化, ma的size, ma的data
+      result = ""
+      have_first_arrow = false
+      first_arrow = ""
+      (2..(1+num)).each do |i|
+        this_value = ma(ma_size,ma_data,"close",-1*i+1)
+        prev_value = ma(ma_size,ma_data,"close",-1*i)
+        arrow = this_value > prev_value ? "u" : "d"
+        if !have_first_arrow
+          result = arrow + result
+          first_arrow = arrow
+          have_first_arrow = true
+        else
+          if first_arrow != arrow
+            return result
+          else
+            result = arrow + result
+          end
+        end
+      end
+      return result
+    end
+
+    # 根据字符显示箭头
+    def show_arrow(str)
+      if str == 117
+        return "↑"
+      elsif str == 100
+        return "↓"
       end
     end
 
