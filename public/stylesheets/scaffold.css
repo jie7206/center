@@ -304,6 +304,9 @@ p {
   padding:1px 3px;
   border: 1px #000079 solid;
 }
+.small_multiple {
+  font-size:0.3em;
+}
 form, .del_link {
   text-align: left;
 }

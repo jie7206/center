@@ -1266,9 +1266,13 @@ class MainController < ApplicationController
     @k60m_ma5 = ma(@short_ma[0],@k60m)
     @k60m_ma10 = ma(@short_ma[1],@k60m)
     @k60m_ma20 = ma(@short_ma[2],@k60m)
+    @k60m_ma20_prev = ma(@short_ma[2],@k60m,"close",-2)
+    @k60m_ma20_updown = @k60m_ma20 >= @k60m_ma20_prev ? "↑" : "↓"
     @k1d_ma5 = ma(@long_ma[0],@k1d)
     @k1d_ma10 = ma(@long_ma[1],@k1d)
     @k1d_ma20 = ma(@long_ma[2],@k1d)
+    @k1d_ma20_prev = ma(@long_ma[2],@k1d,"close",-2)
+    @k1d_ma20_updown = @k1d_ma20 >= @k1d_ma20_prev ? "↑" : "↓"
     volume_vol_name = "vol"
     @k60m_ama5 = ma(@short_ma[0],@k60m,volume_vol_name)/1000
     @k60m_ama10 = ma(@short_ma[1],@k60m,volume_vol_name)/1000

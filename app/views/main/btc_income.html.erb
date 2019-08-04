@@ -19,7 +19,7 @@
 <span title="<%=@symbol.upcase%>交易对"><%=period_title(@kline_short_period)%>:<span title="MA<%=@short_ma[0]%>"><%=@k60m_ama5%></span>-<span title="MA<%=@short_ma[1]%>"><%=@k60m_ama10%></span>-<span title="MA<%=@short_ma[2]%>"><%=@k60m_ama20%></span>|<%=period_title(@kline_long_period)%>:<span title="MA<%=@long_ma[0]%>"><%=@k1d_ama5%></span>-<span title="MA<%=@long_ma[1]%>"><%=@k1d_ama10%></span>-<span title="MA<%=@long_ma[2]%>"><%=@k1d_ama20%></span>|<%=@ama_trend%></span>
 <br/>
 走势：
-  <span title="<%=@symbol.upcase%>交易对"><%=period_title(@kline_short_period)%>:<span title="MA<%=@short_ma[0]%>"><%=@k60m_ma5%></span>-<span title="MA<%=@short_ma[1]%>"><%=@k60m_ma10%></span>-<span title="MA<%=@short_ma[2]%>" class="square_warn"><%=@k60m_ma20%></span>:<span title="买卖比"><%=@bsp60m%></span>|<%=period_title(@kline_long_period)%>:<span title="MA<%=@long_ma[0]%>"><%=@k1d_ma5%></span>-<span title="MA<%=@long_ma[1]%>"><%=@k1d_ma10%></span>-<span title="MA<%=@long_ma[2]%>"><%=@k1d_ma20%></span>:<span title="买卖比"><%=@bsp1d%></span>|<%=@ma_trend%></span>
+  <span title="<%=@symbol.upcase%>交易对"><%=period_title(@kline_short_period)%>:<span title="MA<%=@short_ma[0]%>"><%=@k60m_ma5%></span>-<span title="MA<%=@short_ma[1]%>"><%=@k60m_ma10%></span>-<span title="MA<%=@short_ma[2]%>" class="square_warn"><%=@k60m_ma20%><%=@k60m_ma20_updown%><span class="small_multiple"></span></span>:<span title="买卖比"><%=@bsp60m%></span>|<%=period_title(@kline_long_period)%>:<span title="MA<%=@long_ma[0]%>"><%=@k1d_ma5%></span>-<span title="MA<%=@long_ma[1]%>"><%=@k1d_ma10%></span>-<span title="MA<%=@long_ma[2]%>" class="square_warn"><%=@k1d_ma20%><%=@k1d_ma20_updown%><span class="small_multiple"></span></span>:<span title="买卖比"><%=@bsp1d%></span>|<%=@ma_trend%></span>
   <br/>
 价格：
   <span><%=@k60m.size%>笔:<span title="现价/MA<%=@short_ma[0]%>"><%=@p60m_ma5%>%</span>|<span title="区间最低价"><%=@k60m_lowest%></span>-<span title="区间最高价"><%=@k60m_highest%></span>-<span title="区间成交最多的收盘价"><%=@k60m_volume_price%></span>|<%=@k1d.size%>笔:<span title="现价/MA<%=@long_ma[0]%>"><%=@p1d_ma5%>%</span>|<span title="区间最低价"><%=@k1d_lowest%></span>-<span title="区间最高价"><%=@k1d_highest%></span>-<span title="区间成交最多的收盘价"><%=@k1d_volume_price%></span></span>
@@ -29,13 +29,13 @@
 <% [1,5,15,30,60].each do |n| %>
   <%= link_to("#{n}m","/main/btc_income?update_btc_price=1&kline_short_period=#{n}min") %>
 <% end %>
-<% [20,40,80,120].each do |n| %>
+<% [40,80,120].each do |n| %>
   <%= link_to("#{n}.","/main/btc_income?update_btc_price=1&kline_short_size=#{n}") %>
 <% end %>|
 <% %w(4hour 1day 1week).each do |w| %>
   <%= link_to(period_title(w),"/main/btc_income?update_btc_price=1&kline_long_period=#{w}") %>
 <% end %>
-<% [20,40,80,100,120].each do |n| %>
+<% [40,80,120,160].each do |n| %>
   <%= link_to("#{n}.","/main/btc_income?update_btc_price=1&kline_long_size=#{n}") %>
 <% end %>
 </span>

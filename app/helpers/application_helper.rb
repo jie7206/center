@@ -1465,11 +1465,21 @@ module ApplicationHelper
     end
 
     # 计算MA值
-    def ma(size, data, type="close") # 要算几个值的平均, 原始数据阵列, 价格类型, 小数点几位
-      if (data.size).to_i and size.to_i
+    def ma(size, data, type="close", end_index=-1) # 要算几个值的平均, 原始数据阵列, 价格类型, 算到第几笔
+      if (data.size).to_i and size.to_i and -1*end_index < data.size-1
         size = data.size if size > data.size
         temp = 0
-        data[size*-1..-1].each do |item|
+        start_index = -1*size
+        # 如果要计算上个MA值以比较这个MA值与上个MA值的大小
+        if end_index != -1
+          start_index = start_index - (-1-end_index)
+          # 如果超出边界
+          if -1*start_index > data.size
+            start_index = 0
+            size = data[0..end_index].size
+          end
+        end
+        data[start_index..end_index].each do |item|
           if type == "middle" # 最高价与最低价的平均
             middle_price = mid(item["high"], item["low"])
             temp += middle_price
