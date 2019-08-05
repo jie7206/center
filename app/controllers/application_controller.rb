@@ -761,6 +761,26 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # 获取火币资产资料
+  def get_huobi_assets
+    resp = get_remote_files('playruby.top','/main/get_huobi_assets.json','',3002)
+    json_str = ActiveSupport::JSON.decode(resp.to_json)
+    @btc_sum_api = index_huobi_assets(json_str).to_f
+    @usdt_sum_api = index_huobi_assets(json_str,'usdt',6).to_f
+    @new_usd_cost = get_new_135_btc_cost(@usdt_sum_api)
+  end
+
+  def index_huobi_assets(str,code='btc',length=9)
+    s = '"'+code+'","type":"trade","balance":"'
+    i = str.index(s)
+    return str[(i+s.size)..((i+s.size+length))]
+  end
+
+  # 计算这一笔下单所需花费的美元
+  def get_new_135_btc_cost(new_usd)
+    return format("%.4f",AssetItem.find(5).amount-new_usd).to_f
+  end
+
   # 从网路API获取最新的比特币报价
   def  get_price_from_api(url='https://api.huobi.br.com/market/history/kline?period=1min&size=1&symbol=btchusd',param_name='btc_price',symbol=nil)
     if !symbol

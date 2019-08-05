@@ -963,6 +963,7 @@ class MainController < ApplicationController
   end
 
   def btc_plan_form
+    get_huobi_assets
   end
 
   # 显示比特币投资收益
@@ -987,6 +988,8 @@ class MainController < ApplicationController
           @k60m = get_kline_data(@kline_short_period,@kline_short_size,@symbol)
           # 获取4时K线图数据
           @k1d = get_kline_data(@kline_long_period,@kline_long_size,@symbol)
+          # 获取在火币上的资产资料
+          #huobi_assets_raw
         end
       rescue TimeoutError,OpenSSL::SSL::SSLError
         @update_btc_price = false
