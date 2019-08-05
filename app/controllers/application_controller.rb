@@ -765,9 +765,9 @@ class ApplicationController < ActionController::Base
   def get_huobi_assets
     resp = get_remote_files('playruby.top','/main/get_huobi_assets.json','',3002)
     json_str = ActiveSupport::JSON.decode(resp.to_json)
-    @btc_sum_api = index_huobi_assets(json_str).to_f
-    @usdt_sum_api = index_huobi_assets(json_str,'usdt',6).to_f
-    @new_usd_cost = get_new_135_btc_cost(@usdt_sum_api)
+    @btc_135_sum_api = index_huobi_assets(json_str).to_f
+    @usd_135_sum_api = index_huobi_assets(json_str,'usdt',6).to_f
+    @new_135_usd_cost = get_new_135_btc_cost(@usd_135_sum_api)
   end
 
   def index_huobi_assets(str,code='btc',length=9)
@@ -778,7 +778,11 @@ class ApplicationController < ActionController::Base
 
   # 计算这一笔下单所需花费的美元
   def get_new_135_btc_cost(new_usd)
-    return format("%.4f",AssetItem.find(5).amount-new_usd).to_f
+    if new_usd and new_usd > 0
+      return format("%.4f",AssetItem.find(5).amount-new_usd).to_f
+    else
+      return 0
+    end
   end
 
   # 从网路API获取最新的比特币报价

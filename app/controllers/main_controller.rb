@@ -989,7 +989,9 @@ class MainController < ApplicationController
           # 获取4时K线图数据
           @k1d = get_kline_data(@kline_long_period,@kline_long_size,@symbol)
           # 获取在火币上的资产资料
-          #huobi_assets_raw
+          get_huobi_assets
+          # 如果交易所里的BTC总数有变化，则自动更新资产资料
+          auto_update_asset_from_api
         end
       rescue TimeoutError,OpenSSL::SSL::SSLError
         @update_btc_price = false
@@ -1625,8 +1627,6 @@ class MainController < ApplicationController
 
   # 更新账户的买卖数据
   def update_asset_by_trade
-    @btc_total_cost = value_of("btc_total_cost")
-    @my_btc_arr = value_of("my_btc").split(",")
     # 获取账户更新资料
     @h135_cost_change = params[:h135_cost_change] ? eval(params[:h135_cost_change]) : nil
     @h135_btc_sum = params[:h135_btc_sum]
@@ -1634,6 +1634,29 @@ class MainController < ApplicationController
     @h170_cost_change = params[:h170_cost_change] ? eval(params[:h170_cost_change]) : nil
     @h170_btc_sum = params[:h170_btc_sum]
     @h170_usd_sum = params[:h170_usd_sum] ? eval(params[:h170_usd_sum]) : nil
+    # 执行更新账户的买卖数据
+    exe_update_btc_assets
+  end
+
+  # 从API获得资产资料然后自动更新
+  def auto_update_asset_from_api
+    # 获取账户更新资料
+    @h135_cost_change = @new_135_usd_cost
+    @h135_btc_sum = @btc_135_sum_api
+    @h135_usd_sum = @usd_135_sum_api
+    @h170_cost_change = nil
+    @h170_btc_sum = nil
+    @h170_usd_sum = nil
+    # 执行更新账户的买卖数据
+    if @btc_135_sum_api != value_of("my_btc").split(",")[2]
+      exe_update_btc_assets
+    end
+  end
+
+  # 执行更新账户的买卖数据
+  def exe_update_btc_assets
+    @btc_total_cost = value_of("btc_total_cost")
+    @my_btc_arr = value_of("my_btc").split(",")
     # 更新买卖成本
     update_btc_total_cost = false
     if @h135_cost_change and @h135_cost_change != 0
@@ -1649,11 +1672,11 @@ class MainController < ApplicationController
     end
     # 更新账户BTC资产
     update_my_btc = false
-    if @h135_btc_sum and !@h135_btc_sum.empty?
+    if @h135_btc_sum and @h135_btc_sum.to_f > 0
       @my_btc_arr[2] = @h135_btc_sum
       update_my_btc = true
     end
-    if @h170_btc_sum and !@h170_btc_sum.empty?
+    if @h170_btc_sum and @h170_btc_sum.to_f > 0
       @my_btc_arr[3] = @h170_btc_sum
       update_my_btc = true
     end
