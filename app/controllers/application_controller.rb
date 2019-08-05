@@ -766,14 +766,18 @@ class ApplicationController < ActionController::Base
     resp = get_remote_files('playruby.top','/main/get_huobi_assets.json','',3002)
     json_str = ActiveSupport::JSON.decode(resp.to_json)
     @btc_135_sum_api = index_huobi_assets(json_str).to_f
-    @usd_135_sum_api = index_huobi_assets(json_str,'usdt',6).to_f
+    @usd_135_sum_api = format("%.2f",index_huobi_assets(json_str,'usdt',8)).to_f
     @new_135_usd_cost = get_new_135_btc_cost(@usd_135_sum_api)
   end
 
   def index_huobi_assets(str,code='btc',length=9)
-    s = '"'+code+'","type":"trade","balance":"'
-    i = str.index(s)
-    return str[(i+s.size)..((i+s.size+length))]
+    s1 = '"'+code+'","type":"trade","balance":"'
+    i1 = str.index(s1)
+    trade_value = str[(i1+s1.size)..((i1+s1.size+length))]
+    s2 = '"'+code+'","type":"frozen","balance":"'
+    i2 = str.index(s2)
+    frozen_value = str[(i2+s2.size)..((i2+s2.size+20))].split('"')[0]
+    return trade_value.to_f + frozen_value.to_f
   end
 
   # 计算这一笔下单所需花费的美元

@@ -1417,7 +1417,7 @@ class MainController < ApplicationController
     elsif @try_buy_unit != 0 or (@try_buy_price > 0 and @try_buy_unit != 0)
       @cal_mode = "BUY"
     else
-      @cal_mode = ""
+      @cal_mode = nil
     end
   end
 
@@ -1471,7 +1471,7 @@ class MainController < ApplicationController
 
   def total_usdt2cny_usd
     @total_usdt_cny = (@total_usdt_twd/@cny2twd).to_i
-    @total_usdt_usd = (@total_usdt_twd/@usd2twd).to_i
+    @total_usdt_usd = AssetItem.find(5).amount
   end
 
   # 计算能拥有比特币的最大数量
@@ -1640,16 +1640,18 @@ class MainController < ApplicationController
 
   # 从API获得资产资料然后自动更新
   def auto_update_asset_from_api
-    # 获取账户更新资料
-    @h135_cost_change = @new_135_usd_cost
-    @h135_btc_sum = @btc_135_sum_api
-    @h135_usd_sum = @usd_135_sum_api
-    @h170_cost_change = nil
-    @h170_btc_sum = nil
-    @h170_usd_sum = nil
-    # 执行更新账户的买卖数据
-    if @btc_135_sum_api != value_of("my_btc").split(",")[2]
-      exe_update_btc_assets
+    if value_of('use_auto_update_asset_from_api') == '1'
+      # 获取账户更新资料
+      @h135_cost_change = @new_135_usd_cost
+      @h135_btc_sum = @btc_135_sum_api
+      @h135_usd_sum = @usd_135_sum_api
+      @h170_cost_change = nil
+      @h170_btc_sum = nil
+      @h170_usd_sum = nil
+      # 执行更新账户的买卖数据
+      if !@cal_mode and @btc_135_sum_api.to_s != value_of("my_btc").split(",")[2]
+        exe_update_btc_assets
+      end
     end
   end
 
