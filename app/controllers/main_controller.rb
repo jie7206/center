@@ -972,9 +972,9 @@ class MainController < ApplicationController
     @from_btc_income = true
     # 更新比特币现值
     if params[:update_btc_price] == '1'
-      #@auto_refresh_sec = 60
+      @auto_refresh_sec = 60
       begin
-        timeout(60) do
+        timeout(90) do
           update_btc_price
           update_kline_params
           @update_btc_price = true
@@ -1349,14 +1349,16 @@ class MainController < ApplicationController
     else
       @btc_profit_warn = ""
     end
-    # 依照目标币种的不同而有不同的栏位显示
-    case @btc_month_goal_curr
-      when 'twd','TWD'
-        @twd_profit_warn = @btc_profit_twd >= @btc_month_goal_twd ? "red_warn" : ""
-      when 'cny','CNY'
-        @cny_profit_warn = @btc_profit_twd/@cny2twd >= @btc_month_goal_cny ? "red_warn" : ""
-      when 'usd','USD'
-        @usd_profit_warn = @btc_profit_twd/@usd2twd >= @btc_month_goal_usd ? "red_warn" : ""
+    # 依照目标币种的不同而有不同的栏位显示(前提是每月现金获利目标>0)
+    if @btc_month_goal > 0
+      case @btc_month_goal_curr
+        when 'twd','TWD'
+          @twd_profit_warn = @btc_profit_twd >= @btc_month_goal_twd ? "red_warn" : ""
+        when 'cny','CNY'
+          @cny_profit_warn = @btc_profit_twd/@cny2twd >= @btc_month_goal_cny ? "red_warn" : ""
+        when 'usd','USD'
+          @usd_profit_warn = @btc_profit_twd/@usd2twd >= @btc_month_goal_usd ? "red_warn" : ""
+      end
     end
     if @btc_harvest_unit > 0 and @settle_profit > @btc_harvest_unit
       @harvest_unit_warn = "red_warn"
@@ -1607,7 +1609,7 @@ class MainController < ApplicationController
   def cal_try_trade_amount
     @try_trade_twd = (@try_buy_price*@try_buy_unit*@usd2twd).to_i
     @try_trade_cny = (@try_trade_twd/@cny2twd).to_i
-    @try_trade_usd = (@try_trade_twd/@usd2twd).to_i
+    @try_trade_usd = format("%.2f",@try_buy_price*@try_buy_unit).to_f
     @next_trade_hours, @next_trade_time = cal_next_trade_time(Time.now, @try_trade_twd)
   end
 
