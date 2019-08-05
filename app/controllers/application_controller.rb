@@ -63,7 +63,7 @@ class ApplicationController < ActionController::Base
     # 更新平均月收入
     @ave_month_income_twd = cal_ave_month_income(@total_asset_value)
     # 新增或更新"我的資產總值(含固定资产)"變化紀錄
-    if @update_total_asset_value
+    if @update_total_asset_value and !@cal_mode # 不能在试算模式中更新
       insert_or_update_param_change_record('my_net_asset_value',@total_asset_value)
       update_my_btc_assets(@btc_price)
     end
