@@ -973,7 +973,7 @@ class MainController < ApplicationController
     @from_btc_income = true
     # 更新比特币现值
     if params[:update_btc_price] == '1'
-      @auto_refresh_sec = 60
+      @auto_refresh_sec = value_of('auto_refresh_sec').to_i
       begin
         timeout(90) do
           update_btc_price
