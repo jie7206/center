@@ -25,7 +25,7 @@
   <br/>
 区间：
   <span>
-<% [1,5,15,30].each do |n| %>
+<% [1,5,15,30,60].each do |n| %>
   <%= link_to("#{n}m","/main/btc_income?update_btc_price=1&kline_short_period=#{n}min") %>
 <% end %>
 <% [40,80,120].each do |n| %>

@@ -1712,7 +1712,7 @@ class MainController < ApplicationController
 
   # 更新K线数据长短线区间及笔数设定
   def update_kline_params
-    sp = %w(1min 5min 15min 30min)
+    sp = %w(1min 5min 15min 30min 60min)
     lp = %w(60min 4hour 1day 1week)
     size = (20..480).step(10).to_a
     if params[:kline_short_period] and sp.include?(params[:kline_short_period])
