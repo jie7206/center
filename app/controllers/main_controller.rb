@@ -966,6 +966,24 @@ class MainController < ApplicationController
     get_huobi_assets
   end
 
+  # 向火币API下单
+  def place_btc_order
+    if params[:price] and params[:price].to_f > 0 and params[:count] and params[:count].to_f != 0
+      price = params[:price].to_f
+      count = params[:count].to_f
+      side = count > 0 ? 'buy' : 'sell'
+      type = count > 0 ? '买进' : '卖出'
+      count = count.abs
+      resp = get_remote_files('playruby.top',"/main/place_btc_order?side=#{side}&price=#{price}&count=#{count}",'',3002)
+      if resp == 'new_order_to_huobi_ok'
+        flash[:notice] = "您的下单已提交(于#{Time.now.strftime("%Y-%m-%d %H:%M")}#{type}#{count}BTC价格为#{price})"
+      else
+        flash[:notice] = "您的下单失败！"
+      end
+    end
+    redirect_to :action => :btc_income
+  end
+
   # 显示比特币投资收益
   def btc_income
     @symbol = value_of('use_husd_or_usdt') == 'husd' ? 'btchusd' : 'btcusdt'
@@ -974,11 +992,11 @@ class MainController < ApplicationController
     # 更新比特币现值
     if params[:update_btc_price] == '1'
       @auto_refresh_sec = value_of('auto_refresh_sec').to_i
-      @update_btc_price = true
-      @update_total_asset_value = true
       begin
         timeout(90) do
           update_btc_price
+          @update_btc_price = true
+          @update_total_asset_value = true
           update_kline_params
           @kline_short_period = value_of('kline_short_period')
           @kline_short_size = value_of('kline_short_size').to_i
@@ -993,7 +1011,7 @@ class MainController < ApplicationController
           # 如果交易所里的BTC总数有变化，则自动更新资产资料
           auto_update_asset_from_api
         end
-      rescue TimeoutError,OpenSSL::SSL::SSLError
+      rescue TimeoutError,OpenSSL::SSL::SSLError,SocketError
         @update_btc_price = false
         @update_btc_price = false
       end
@@ -1314,7 +1332,7 @@ class MainController < ApplicationController
     # 计算安全性：成本均价在5分MA30以下且价差大于10%?
     if @update_btc_price
       @aveprice_shortma_diff_rate = (@k60m_ma20-@unit_ave_price)/@k60m_ma20*100
-      @aveprice_shortma_diff_str = "#{format("%.1f",@aveprice_shortma_diff_rate)}%"
+      @aveprice_shortma_diff_str = "#{add_plus(format("%.1f",-1*@aveprice_shortma_diff_rate))}%"
     end
   end
 

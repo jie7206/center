@@ -41,6 +41,11 @@ class ApplicationController < ActionController::Base
     AssetItem.find(134).update_attribute(:amount,format("%.2f",btc_price*huobi_135_amount))
   end
 
+  # 若为正数则在数字前面加上"+"
+  def add_plus( num )
+    num.to_f > 0 ? "+#{num}" : "#{num}"
+  end
+
   # 计算总资产净值
   def cal_total_asset_value
     # 计算數字貨幣资产总值

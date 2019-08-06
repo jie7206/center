@@ -1054,7 +1054,7 @@ module ApplicationHelper
 
     # 若为正数则在数字前面加上"+"
     def add_plus( num )
-      num > 0 ? "+#{num}" : "#{num}"
+      num.to_f > 0 ? "+#{num}" : "#{num}"
     end
 
     # 取得本月份的流动资产目标

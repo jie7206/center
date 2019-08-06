@@ -31,6 +31,17 @@ a.goal_warn:hover { color: white;background-color:#00c;text-decoration:none; }
 a.todo_warn { color: #c00; text-decoration:none;}
 a.todo_warn:visited { color: #c00;text-decoration:none; }
 a.todo_warn:hover { color: white;background-color:#c00;text-decoration:none; }
+a.order_button_link {
+  display:inline-block;
+  width:315px;
+  height:21px;
+  border:1px solid lightgray;
+  color:#fff;
+  background:#4169E1;
+  font-size: 0.7em;
+  font-weight: normal;
+  text-align: center;
+}
 
 strong {
   color: #CC0000;
