@@ -307,6 +307,10 @@ p {
 .small_multiple {
   font-size:0.3em;
 }
+.small_price_diff {
+  margin-left: 0.3em;
+  font-size:0.2em;
+}
 form, .del_link {
   text-align: left;
 }

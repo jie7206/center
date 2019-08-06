@@ -7,7 +7,7 @@
   <br/>
 仓位：
   <span title="¥<%=@ex_cost_cny%>|$<%=@ex_cost_usd%>"><%=@ex_cost_twd%></span>|<%=format("%.2f",@ex_cost_twd_level)%>%|<span title="¥<%=@btc_hold_cny%>|$<%=@btc_hold_usd%>"><%=@btc_hold_twd%></span>/<span class="<%=@btc_total_budget_warn%>" title="现值：¥<%=@btc_total_budget_cny%>|$<%=@btc_total_budget_usd%>，初始本金：<%=@btc_total_budget_warning%> TWD"><%=@btc_total_budget_twd%></span>|<%=format("%.2f",@btc_hold_twd_level)%>%
-  均价:<%=@trezor_ave_price%>/<span class="<%=@ave_price_warn%>"><%=format("%.2f", @unit_ave_price)%></span>
+  均价:<%=@trezor_ave_price%>/<span class="<%=@ave_price_warn%>"><%=format("%.2f", @unit_ave_price)%><span class="small_price_diff"><%=@aveprice_shortma_diff_str%></span></span>
   <br/>
 损益：
   <%= link_to format("%.2f",@btc_price), "http://playruby.top:3002/main/kline_chart?symbol=#{@symbol}&period=5min", {:target => "_blank", :title => "汇率：C2T:#{@cny2twd}|U2T:#{@usd2twd}|U2C:#{@usd2cny}|U2H:#{@usdt2husd}"} %>|<span class="<%=@twd_profit_warn%>"><%=@btc_profit_twd%></span>|<span class="<%=@cny_profit_warn%>">¥<%=@btc_profit_cny%></span>|<span class="<%=@usd_profit_warn%>">$<%=@btc_profit_usd%></span>|<span class="<%=@btc_profit_warn%>"><%=format("%.1f", @btc_profit_rate)%>%</span><span title="超过<%=@btc_harvest_unit%>BTC即可卖出[<%=@btc_sum_ex-@btc_harvest_unit%>]BTC平仓(包含每月<%=@btc_month_goal_twd%>|¥<%=@btc_month_goal_cny%>|$<%=@btc_month_goal_usd%>的收益)">
@@ -59,9 +59,9 @@
 <% end %>
 <h4>
   <ul style="margin-left:-1em">
-    <li>安全性：成本均价在15分MA20以下且仓位未高于60%<span style="font-weight:bold;color:green;margin:0em 0.35em">√</span></li>
+    <li>安全性：成本均价在5分MA30以下且价差大于10%<span style="font-weight:bold;color:green;margin:0em 0.35em">√</span></li>
     <li>方向性：60分MA30持续10次走扬宜分批加仓做多<span style="font-weight:bold;color:red;margin:0em 0.3em;font-size:1.4em">↑</span></li>
-    <li>下一步：静待15分MA20持续3次走扬再来加仓做多<span style="margin:0em 0.05em;font-size:1.4em">💰</span></li>
+    <li>下一步：5分MA30持续10次走扬可分批加仓做多<span style="margin:0em 0.05em;font-size:1.4em">💰</span></li>
   </ul>
   <%= link_to "价位", :action => :btc_income, :update_btc_price => 1 %><input type="text" style="width:<%=@text_input_width%>px" name="try_buy_price" value="<%=params[:try_buy_price]%>" onclick="this.select()">
     <% if @try_trade_twd -%>

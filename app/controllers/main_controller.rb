@@ -974,12 +974,12 @@ class MainController < ApplicationController
     # 更新比特币现值
     if params[:update_btc_price] == '1'
       @auto_refresh_sec = value_of('auto_refresh_sec').to_i
+      @update_btc_price = true
+      @update_total_asset_value = true
       begin
         timeout(90) do
           update_btc_price
           update_kline_params
-          @update_btc_price = true
-          @update_total_asset_value = true
           @kline_short_period = value_of('kline_short_period')
           @kline_short_size = value_of('kline_short_size').to_i
           @kline_long_period = value_of('kline_long_period')
@@ -1311,6 +1311,11 @@ class MainController < ApplicationController
     # 获取成交量最大的收盘价
     @k60m_volume_price = get_volume_price(@k60m)
     @k1d_volume_price = get_volume_price(@k1d)
+    # 计算安全性：成本均价在5分MA30以下且价差大于10%?
+    if @update_btc_price
+      @aveprice_shortma_diff_rate = (@k60m_ma20-@unit_ave_price)/@k60m_ma20*100
+      @aveprice_shortma_diff_str = "#{format("%.1f",@aveprice_shortma_diff_rate)}%"
+    end
   end
 
   #10.显示操作记录
@@ -1727,6 +1732,14 @@ class MainController < ApplicationController
     if params[:kline_long_size] and size.include?(params[:kline_long_size].to_i)
       update_of('kline_long_size',params[:kline_long_size])
     end
+  end
+
+  def reset_btc_total_cost
+    p = Param.find_by_name('btc_total_cost')
+    ori_value = p.value
+    p.update_attributes(:value => "0",:content => ori_value)
+    flash[:notice] = "比特幣投資成本已歸零！"
+    redirect_to :controller => :params
   end
 
   ########## Function Area Ended ##########

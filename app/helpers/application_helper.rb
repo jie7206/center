@@ -634,6 +634,10 @@ module ApplicationHelper
       compose_small_link('[投幣试算]', 'main', 'btc_income' )
     end
 
+    def reset_btc_total_cost_link
+      compose_small_link('[投幣成本歸零]', 'main', 'reset_btc_total_cost' )
+    end
+
     def btc_income_update_link
       sub_title_base link_to( '[更新幣價]', :controller => :main, :action => :btc_income, :update_btc_price => 1 )
     end
