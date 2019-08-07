@@ -5,11 +5,11 @@
 <%= link_to "获利：", :action => :btc_income, :update_btc_price => 1 %>
   <%=@btc_total_profit_twd%>|¥<%=@btc_total_profit_cny%>|$<%=@btc_total_profit_usd%>|<%=format("%.0f", @btc_total_profit_rate)%>%|<span title="初始本金：<%=@btc_total_budget_warning%>，可用余额：<%=@total_usdt_twd.to_i%>|¥<%=@total_usdt_cny%>|$<%=@total_usdt_usd%>，贷款利息：<%=@total_loan_interests_value%>，从<%=@loan_begin_date%>到<%=@next_jinruyi_back_date%>共有<%=@loan_lixi_days%>天，届时贷款余额为<%=@loan_amount%>"><%=@total_usdt_twd.to_i%>(<%=@total_usdt_usd%>)</span>-><span title="最多能持有的比特币总数"><%=format("%.4f",@max_ex_sum)%>/<%=format("%.4f",@max_btc_sum)%></span>
   <br/>
-仓位：
+<%= link_to "仓位：", :action => :btc_income, :update_btc_price => 1, :get_btc_orders => 1 %>
   <span title="¥<%=@ex_cost_cny%>|$<%=@ex_cost_usd%>"><%=@ex_cost_twd%></span>|<%=format("%.2f",@ex_cost_twd_level)%>%|<span title="¥<%=@btc_hold_cny%>|$<%=@btc_hold_usd%>"><%=@btc_hold_twd%></span>/<span class="<%=@btc_total_budget_warn%>" title="现值：¥<%=@btc_total_budget_cny%>|$<%=@btc_total_budget_usd%>，初始本金：<%=@btc_total_budget_warning%> TWD"><%=@btc_total_budget_twd%></span>|<%=format("%.2f",@btc_hold_twd_level)%>%
   均价:<%=@trezor_ave_price%>/<span class="<%=@ave_price_warn%>"><%=format("%.2f", @unit_ave_price)%><span class="small_price_diff"><%=@aveprice_shortma_diff_str%></span></span>
   <br/>
-损益：
+<%= link_to "损益：", :action => :btc_income, :update_btc_price => 1, :get_btc_orders => 1, :update_huobi_assets => 1 %>
   <%= link_to format("%.2f",@btc_price), "http://playruby.top:3002/main/kline_chart?symbol=#{@symbol}&period=5min", {:target => "_blank", :title => "汇率：C2T:#{@cny2twd}|U2T:#{@usd2twd}|U2C:#{@usd2cny}|U2H:#{@usdt2husd}"} %>|<span class="<%=@twd_profit_warn%>"><%=@btc_profit_twd%></span>|<span class="<%=@cny_profit_warn%>">¥<%=@btc_profit_cny%></span>|<span class="<%=@usd_profit_warn%>">$<%=@btc_profit_usd%></span>|<span class="<%=@btc_profit_warn%>"><%=format("%.1f", @btc_profit_rate)%>%</span><span title="超过<%=@btc_harvest_unit%>BTC即可卖出[<%=@btc_sum_ex-@btc_harvest_unit%>]BTC平仓(包含每月<%=@btc_month_goal_twd%>|¥<%=@btc_month_goal_cny%>|$<%=@btc_month_goal_usd%>的收益)">
     <% if @btc_sum_ex-@btc_harvest_unit > 0 %>
     <%= link_to "平仓:", "/main/btc_income?try_buy_price=#{@settle_price}&try_buy_unit=-#{show_btc_sum((@btc_sum_ex-@btc_harvest_unit).to_s)}" %>
@@ -133,6 +133,7 @@ l3_class = set_class(l3_sign,l3_size)
 </form>
 <hr/>
 <% form_tag :action => "btc_income", :method => :post do -%>
+  <input type="hidden" name="update_btc_price" value="1"/>
   <%= text_area_tag 'my_motto', @my_motto, :size => "70x12", :class => "my_motto" %>
   <%= image_submit_tag('icon/empty.gif', :width=> 10) %>
 <% end %>

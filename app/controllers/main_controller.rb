@@ -1016,12 +1016,16 @@ class MainController < ApplicationController
           @k60m = get_kline_data(@kline_short_period,@kline_short_size,@symbol)
           # 获取4时K线图数据
           @k1d = get_kline_data(@kline_long_period,@kline_long_size,@symbol)
-          # 获取在火币上的资产资料
-          get_huobi_assets
-          # 如果交易所里的BTC总数有变化，则自动更新资产资料
-          auto_update_asset_from_api
-          # 获取在火币上未成交订单资料
-          get_btc_orders
+          if params[:get_btc_orders] == '1'
+            # 获取在火币上未成交订单资料
+            get_btc_orders
+          end
+          if params[:update_huobi_assets] == '1'
+            # 获取在火币上的资产资料
+            get_huobi_assets
+            # 如果交易所里的BTC总数有变化，则自动更新资产资料
+            auto_update_asset_from_api
+          end
         end
       rescue TimeoutError,OpenSSL::SSL::SSLError,SocketError
         @update_btc_price = false
