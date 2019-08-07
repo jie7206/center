@@ -32,6 +32,13 @@ module ApplicationHelper
       "<form name='#{model_name}_search_form' action='/#{action_name}/' method='get' style='display:inline;'><input type='text' name='#{model_name}_keywords_for_search' value='#{default_text}' style='width:50px;height:50%;margin-bottom:3px;font-size:0.1em;background:#FFFFEE;' onclick='this.select()'/>#{image_submit_tag('icon/empty.gif', :width=> 1)}</form>"
     end
 
+    # 显示成与交易所相同的比特币总数(只保留小数点后8位)
+    def show_btc_sum(str)
+      i = str.split(".")[0]
+      f = str.split(".")[1][0..7]
+      return "#{i}.#{f}"
+    end
+
     def member_search_input
       build_search_input 'member', 'members', '会员搜索'
     end
