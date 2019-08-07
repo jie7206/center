@@ -1753,8 +1753,9 @@ class MainController < ApplicationController
 
   # 更新我的投资座右铭
   def update_my_motto
-    if params[:my_motto] and !params[:my_motto].empty?
+    if params[:from_my_motto_form] == '1' and params[:my_motto] and !params[:my_motto].empty?
       Param.find_by_name("my_motto").update_attribute(:value, params[:my_motto])
+      redirect_to :action => :btc_income, :update_btc_price => 1
     end
   end
 

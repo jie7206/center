@@ -133,7 +133,7 @@ l3_class = set_class(l3_sign,l3_size)
 </form>
 <hr/>
 <% form_tag :action => "btc_income", :method => :post do -%>
-  <input type="hidden" name="update_btc_price" value="1"/>
+  <input type="hidden" name="from_my_motto_form" value="1"/>
   <%= text_area_tag 'my_motto', @my_motto, :size => "70x12", :class => "my_motto" %>
   <%= image_submit_tag('icon/empty.gif', :width=> 10) %>
 <% end %>
