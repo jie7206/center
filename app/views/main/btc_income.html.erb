@@ -88,11 +88,13 @@ l3_class = set_class(l3_sign,l3_size)
 操作：
   <span>
     <% if @try_buy_price > 0 and @try_buy_unit != 0 %>
-      额度：<%=@try_trade_twd%>|¥<%=@try_trade_cny%>|$<%=@try_trade_usd%>|预计下次交易时间:<%=@next_trade_time%>(<%=@next_trade_hours%>小时)
+      额度：<%=@try_trade_twd%>|¥<%=@try_trade_cny%>|$<%=@try_trade_usd%>|预计下次交易时间:<%=@next_trade_time.strftime("%Y-%m%d %H:%M")%>(<%=@next_trade_hours%>小时)
     <% else %>
       <%=@last_trade_str%> ~ <%=@next_trade_str%>
       <% if @next_operate_hours > 0 %>
-      |间隔:<span class="<%=@next_operate_warn%>" title="至少<%=@next_operate_hours%>小时后，相当于：<%=@next_operate_time%>"><%=@interval_hours.to_i%>/<%=@next_operate_hours.to_i%>小时</span>|<%=@trade_type%>:<span title="¥<%=@trade_cny%>|$<%=@trade_usd%>"><%=@trade_twd%> TWD|</span>占比:<%=@trade_usd_p%>%
+        <% minutes_diff = (@next_operate_time-Time.now).to_i/60 %>
+        <% label_diff = minutes_diff > 0 ? "剩余" : "超过" %>
+      |<%=label_diff%>:<span class="<%=@next_operate_warn%>"><%=minutes_diff.abs%>分</span>|<%=@trade_type%>:<span title="¥<%=@trade_cny%>|$<%=@trade_usd%>"><%=@trade_twd%> TWD|</span>占比:<%=@trade_usd_p%>%
       <% end %>
     <% end %>
     <% if @total_open_orders_num and @total_open_orders[:buy_ids].size > 0 %>

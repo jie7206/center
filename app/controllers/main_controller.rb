@@ -1357,14 +1357,14 @@ class MainController < ApplicationController
   #10.显示操作记录
   def operate_info
     @last_trade_time = Param.find_by_name("btc_total_cost").updated_at
-    @last_trade_str = @last_trade_time.strftime("%m%d-%H:%M")
+    @last_trade_str = @last_trade_time.strftime("%m%d %H:%M")
     @interval_hours = format("%.2f",(Time.now - @last_trade_time).to_int/(60*60).to_f)
     @trade_usd = (@btc_total_cost.gsub("-","+").split("+")[-1]).to_f
     @trade_twd = (@trade_usd*@usd2twd).to_i
     @trade_cny = (@trade_twd/@cny2twd).to_i
     # 每操作1000元台币必须等几小时才能再操作下一笔
     @next_operate_hours, @next_operate_time = cal_next_trade_time(@last_trade_time,@trade_twd)
-    @next_trade_str = @next_operate_time.to_time.strftime("%m%d-%H:%M")
+    @next_trade_str = @next_operate_time.strftime("%m%d %H:%M")
     @trade_usd_p = format("%.2f",(@trade_usd*@usd2twd)/(@total_usdt_twd+@trade_usd*@usd2twd)*100)
     @trade_type = cal_trade_type
     # 显示CSS警示
@@ -1664,7 +1664,7 @@ class MainController < ApplicationController
   # 计算下次交易时间
   def cal_next_trade_time(from_time, amount_twd)
     next_operate_hours = amount_twd/1000.0*@btc_operate_interval_hours
-    next_operate_time = (from_time+next_operate_hours.hours).strftime("%Y-%m-%d %H:%M")
+    next_operate_time = from_time+next_operate_hours.hours
     return format("%.2f",next_operate_hours).to_f, next_operate_time
   end
 
