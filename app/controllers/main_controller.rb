@@ -984,6 +984,16 @@ class MainController < ApplicationController
     redirect_to :action => :btc_income
   end
 
+  def del_huobi_orders
+    resp = get_remote_files('playruby.top',"/main/del_huobi_orders?order_ids=#{params[:order_ids]}",'',3002)
+    if resp == 'del_huobi_orders_ok'
+      flash[:notice] = "您的撤销下单已提交(于#{Time.now.strftime("%Y-%m-%d %H:%M")} 下单编号：#{params[:order_ids]})"
+    else
+      flash[:notice] = "您的撤销下单失败！"
+    end
+    redirect_to :action => :btc_income
+  end
+
   # 显示比特币投资收益
   def btc_income
     @symbol = value_of('use_husd_or_usdt') == 'husd' ? 'btchusd' : 'btcusdt'

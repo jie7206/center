@@ -775,6 +775,7 @@ class ApplicationController < ActionController::Base
       buy_size = buy_ids.size
       sell_ids = ids[1] ? ids[1].split(",") : []
       sell_size = sell_ids.size
+      @total_open_orders = {:buy_ids => buy_ids,:sell_ids => sell_ids}
       @total_open_orders_num = buy_size+sell_size
     end
   end

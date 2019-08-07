@@ -90,8 +90,11 @@ l3_class = set_class(l3_sign,l3_size)
       |间隔:<span class="<%=@next_operate_warn%>" title="至少<%=@next_operate_hours%>小时后，相当于：<%=@next_operate_time%>"><%=@interval_hours.to_i%>/<%=@next_operate_hours.to_i%>小时</span>|<%=@trade_type%>:<span title="¥<%=@trade_cny%>|$<%=@trade_usd%>"><%=@trade_twd%> TWD|</span>占比:<%=@trade_usd_p%>%
       <% end %>
     <% end %>
-    <% if @total_open_orders_num and @total_open_orders_num > 0 %>
-      <span class="red_warn"><%= link_to "未成交(#{@total_open_orders_num})", '' %></span>
+    <% if @total_open_orders_num and @total_open_orders[:buy_ids].size > 0 %>
+      <span class="red_warn"><%= link_to "未成交(#{@total_open_orders[:buy_ids].size})", "/main/del_huobi_orders?order_ids=#{@total_open_orders[:buy_ids].join(",")}" %></span>
+    <% end %>
+    <% if @total_open_orders_num and @total_open_orders[:sell_ids].size > 0 %>
+      <span class="green_warn"><%= link_to "未成交(#{@total_open_orders[:sell_ids].size})", "/main/del_huobi_orders?order_ids=#{@total_open_orders[:sell_ids].join(",")}" %></span>
     <% end %>
   </span><br/>
 </h4>

@@ -42,10 +42,9 @@ a.order_button_link {
   font-weight: normal;
   text-align: center;
 }
-.red_warn a {
+.red_warn a, .green_warn a {
   color:#fff;
 }
-
 strong {
   color: #CC0000;
   font-weight: bold;
