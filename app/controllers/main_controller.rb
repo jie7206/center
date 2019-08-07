@@ -842,24 +842,6 @@ class MainController < ApplicationController
           end
           i += 1
         end
-=begin
-        pattern_begin = //
-        pattern_end = /(。)$+|(？)$+|(”)$+|(！)$+|(」)$+/
-        if line.length >= min_length and line.length <= max_length and line.index(pattern_end)
-          if keywords and !keywords.empty? # 如果有输入搜索关键字
-            if line.index(keywords)
-              @verses << line.sub(pattern_begin,'')
-              result_arr << i
-            end
-          elsif list_collect
-            order_i = @collect_arr.index(i.to_s)
-            @verses[order_i] = line.sub(pattern_begin,'') if order_i
-          else
-            @verses << line.sub(pattern_begin,'')
-          end
-          i += 1
-        end
-=end
       end
     end
     if keywords and !keywords.empty? # 如果有输入搜索关键字
@@ -1114,8 +1096,10 @@ class MainController < ApplicationController
     @my_motto = value_of('my_motto')
     # 每操作1000元台币必须等几小时才能再操作下一笔
     @btc_operate_interval_hours = value_of('btc_operate_interval_hours').to_f
-    # 火币USDT/HUSD交易对汇率
-    @usdt2husd = value_of('ex_rates_USDT_to_HUSD').to_f
+    # 均价相对于哪个MA值显示警示
+    @ave_price_vs_ma = value_of('ave_price_vs_ma')
+    # MA值亮灯的阀值(需连续几次涨跌)
+    @num_of_ma_warn = value_of('num_of_ma_warn').to_i
     # 火币手续费率
     @ex_fee_rate = 0.002 # 扣USDT(买入时)
     # 获取用户表单输入的资料
@@ -1350,7 +1334,7 @@ class MainController < ApplicationController
     # 计算安全性：成本均价在5分MA30以下且价差大于10%?
     if @update_btc_price
       if @unit_ave_price > 0
-        @aveprice_shortma_diff_rate = (@k60m_ma20-@unit_ave_price)/@k60m_ma20*100
+        @aveprice_shortma_diff_rate = (eval(@ave_price_vs_ma)-@unit_ave_price)/eval(@ave_price_vs_ma)*100
         @aveprice_shortma_diff_str = "#{add_plus(format("%.1f",-1*@aveprice_shortma_diff_rate))}%"
       end
     end
@@ -1385,7 +1369,7 @@ class MainController < ApplicationController
     end
     if @btc_price < @unit_ave_price
       @ave_price_warn = "green_warn"
-    elsif @k60m_ma20 and @unit_ave_price > @k60m_ma20
+    elsif eval(@ave_price_vs_ma) and @unit_ave_price > eval(@ave_price_vs_ma)
       @ave_price_warn = "red_warn"
     else
       @ave_price_warn = "square_warn"
@@ -1422,6 +1406,8 @@ class MainController < ApplicationController
     @cny2twd = value_of('exchange_rates_MCY').to_f
     # 1美元兑换多少新台币
     @usd2twd = @use_husd_or_usdt == 'husd' ? value_of('exchange_rates_HUSD').to_f : value_of('exchange_rates_USD').to_f
+    # 火币USDT/HUSD交易对汇率
+    @usdt2husd = value_of('ex_rates_USDT_to_HUSD').to_f
   end
 
   # 计算最近一笔交易类别
@@ -1797,6 +1783,13 @@ class MainController < ApplicationController
     p_budget.update_attributes(:value => @total_usdt_twd,:content => p_budget_content)
     flash[:notice] = "比特幣投資成本已歸零，且已更新初始投资预算为#{@total_usdt_twd}"
     redirect_to :controller => :params
+  end
+
+  # 更新均价相对于哪个MA值显示警示
+  def update_ave_price_vs_ma
+    Param.find_by_name('ave_price_vs_ma').update_attribute(:value,params[:value])
+    flash[:notice] = "均价相对于MA值已更新为#{params[:value]}"
+    redirect_to :action => :btc_income, :update_btc_price => 1
   end
 
   ########## Function Area Ended ##########
