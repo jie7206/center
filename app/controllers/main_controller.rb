@@ -1694,6 +1694,7 @@ class MainController < ApplicationController
       # 执行更新账户的买卖数据
       if !@cal_mode and @btc_135_sum_api.to_s != value_of("my_btc").split(",")[2]
         exe_update_btc_assets
+        flash[:notice] = "已通过火币API自动更新比特币资产为：#{@h135_btc_sum} BTC"
       end
     end
   end
