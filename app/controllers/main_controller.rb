@@ -1010,6 +1010,8 @@ class MainController < ApplicationController
           get_huobi_assets
           # 如果交易所里的BTC总数有变化，则自动更新资产资料
           auto_update_asset_from_api
+          # 获取在火币上未成交订单资料
+          get_btc_orders
         end
       rescue TimeoutError,OpenSSL::SSL::SSLError,SocketError
         @update_btc_price = false
@@ -1289,10 +1291,14 @@ class MainController < ApplicationController
     @k60m_ma5 = ma(@short_ma[0],@k60m).to_i
     @k60m_ma10 = ma(@short_ma[1],@k60m).to_i
     @k60m_ma20 = ma(@short_ma[2],@k60m).to_i
+    @k60m_ma5_updown = ma_arrow_str(10,@short_ma[0],@k60m)
+    @k60m_ma10_updown = ma_arrow_str(10,@short_ma[1],@k60m)
     @k60m_ma20_updown = ma_arrow_str(10,@short_ma[2],@k60m)
     @k1d_ma5 = ma(@long_ma[0],@k1d).to_i
     @k1d_ma10 = ma(@long_ma[1],@k1d).to_i
     @k1d_ma20 = ma(@long_ma[2],@k1d).to_i
+    @k1d_ma5_updown = ma_arrow_str(10,@long_ma[0],@k1d)
+    @k1d_ma10_updown = ma_arrow_str(10,@long_ma[1],@k1d)
     @k1d_ma20_updown = ma_arrow_str(10,@long_ma[2],@k1d)
     volume_vol_name = "vol"
     @k60m_ama5 = ma(@short_ma[0],@k60m,volume_vol_name).to_i/1000
@@ -1331,8 +1337,10 @@ class MainController < ApplicationController
     @k1d_volume_price = get_volume_price(@k1d)
     # 计算安全性：成本均价在5分MA30以下且价差大于10%?
     if @update_btc_price
-      @aveprice_shortma_diff_rate = (@k60m_ma20-@unit_ave_price)/@k60m_ma20*100
-      @aveprice_shortma_diff_str = "#{add_plus(format("%.1f",-1*@aveprice_shortma_diff_rate))}%"
+      if @unit_ave_price > 0
+        @aveprice_shortma_diff_rate = (@k60m_ma20-@unit_ave_price)/@k60m_ma20*100
+        @aveprice_shortma_diff_str = "#{add_plus(format("%.1f",-1*@aveprice_shortma_diff_rate))}%"
+      end
     end
   end
 
@@ -1493,8 +1501,10 @@ class MainController < ApplicationController
   end
 
   def total_usdt2cny_usd
-    @total_usdt_cny = (@total_usdt_twd/@cny2twd).to_i
-    @total_usdt_usd = AssetItem.find(5).amount
+    if @total_usdt_twd and @cny2twd and @usd2twd
+      @total_usdt_cny = (@total_usdt_twd/@cny2twd).to_i
+      @total_usdt_usd = @cal_mode ? (@total_usdt_twd/@usd2twd).to_i : AssetItem.find(5).amount
+    end
   end
 
   # 计算能拥有比特币的最大数量
@@ -1753,10 +1763,16 @@ class MainController < ApplicationController
   end
 
   def reset_btc_total_cost
-    p = Param.find_by_name('btc_total_cost')
-    ori_value = p.value
-    p.update_attributes(:value => "0",:content => ori_value)
-    flash[:notice] = "比特幣投資成本已歸零！"
+    # 将比特币投资成本记录归零
+    p_cost = Param.find_by_name('btc_total_cost')
+    p_cost_ori_value = p_cost.value
+    p_cost.update_attributes(:value => "0",:content => p_cost_ori_value)
+    # 更新初始投资预算
+    get_total_usdt # 获取火币USDT资产总值
+    p_budget = Param.find_by_name('btc_total_budget_warning')
+    p_budget_content = p_budget.content+','+p_budget.value
+    p_budget.update_attributes(:value => @total_usdt_twd,:content => p_budget_content)
+    flash[:notice] = "比特幣投資成本已歸零，且已更新初始投资预算为#{@total_usdt_twd}"
     redirect_to :controller => :params
   end
 

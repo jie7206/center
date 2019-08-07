@@ -42,6 +42,9 @@ a.order_button_link {
   font-weight: normal;
   text-align: center;
 }
+.red_warn a {
+  color:#fff;
+}
 
 strong {
   color: #CC0000;
@@ -315,8 +318,9 @@ p {
   padding:1px 3px;
   border: 1px #000079 solid;
 }
-.small_multiple {
+.small_note {
   font-size:0.3em;
+  margin-left: -0.2em;
 }
 .small_price_diff {
   margin-left: 0.3em;

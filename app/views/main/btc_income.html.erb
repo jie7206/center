@@ -14,11 +14,51 @@
     平仓:<span class="<%=@harvest_unit_warn%>" title="单位：BTC"><%=format("%.4f",@settle_profit)%></span>|$<%=@settle_price%>|<%=link_to(@total_asset_value, {:controller => 'param_changes', :action => 'new', :param_id => '129'}, {:title => "¥#{(@total_asset_value/@cny2twd).to_i}|$#{(@total_asset_value/@usd2twd).to_i}", :target => '_blank'})%>|<span title="平均月收入：<%=@ave_month_income_twd%>|¥<%=@ave_month_income_cny%>|$<%=@ave_month_income_usd%>"><%=link_to(format("%.0f",(@ave_month_income_twd/10000.0))+"萬", {:action => "life_pay"}, {:target => "_blank"})%></span></span>
   <br/>
 <% if @update_btc_price %>
+<%
+spt = period_title(@kline_short_period)
+lpt = period_title(@kline_long_period)
+%>
 量能：
-<span title="<%=@symbol.upcase%>交易对"><%=period_title(@kline_short_period)%>:<span title="MA<%=@short_ma[0]%>"><%=@k60m_ama5%></span>-<span title="MA<%=@short_ma[1]%>"><%=@k60m_ama10%></span>-<span title="MA<%=@short_ma[2]%>"><%=@k60m_ama20%></span>|<%=period_title(@kline_long_period)%>:<span title="MA<%=@long_ma[0]%>"><%=@k1d_ama5%></span>-<span title="MA<%=@long_ma[1]%>"><%=@k1d_ama10%></span>-<span title="MA<%=@long_ma[2]%>"><%=@k1d_ama20%></span>|<%=@ama_trend%></span>
+<span title="<%=@symbol.upcase%>交易对"><%=spt%>:<span title="MA<%=@short_ma[0]%>"><%=@k60m_ama5%></span>-<span title="MA<%=@short_ma[1]%>"><%=@k60m_ama10%></span>-<span title="MA<%=@short_ma[2]%>"><%=@k60m_ama20%></span>:<span title="买卖比"><%=@bsp60m%></span>|<%=lpt%>:<span title="MA<%=@long_ma[0]%>"><%=@k1d_ama5%></span>-<span title="MA<%=@long_ma[1]%>"><%=@k1d_ama10%></span>-<span title="MA<%=@long_ma[2]%>"><%=@k1d_ama20%></span>:<span title="买卖比"><%=@bsp1d%></span>|<%=@ama_trend%></span>
 <br/>
+<%
+def set_class(sign,size,num=3)
+  result = (sign == '+' and size >= num) ? 'red_warn' : 'square_warn'
+  (sign == '-' and size >= num) ? 'green_warn' : result
+end
+s1_sign = show_sign(@k60m_ma5_updown[0])
+s1_size = @k60m_ma5_updown.size
+s1_class = set_class(s1_sign,s1_size)
+s2_sign = show_sign(@k60m_ma10_updown[0])
+s2_size = @k60m_ma10_updown.size
+s2_class = set_class(s2_sign,s2_size)
+s3_sign = show_sign(@k60m_ma20_updown[0])
+s3_size = @k60m_ma20_updown.size
+s3_class = set_class(s3_sign,s3_size)
+l1_sign = show_sign(@k1d_ma20_updown[0])
+l1_size = @k1d_ma5_updown.size
+l1_class = set_class(l1_sign,l1_size)
+l2_sign = show_sign(@k1d_ma20_updown[0])
+l2_size = @k1d_ma10_updown.size
+l2_class = set_class(l2_sign,l2_size)
+l3_sign = show_sign(@k1d_ma20_updown[0])
+l3_size = @k1d_ma20_updown.size
+l3_class = set_class(l3_sign,l3_size)
+%>
 走势：
-  <span title="<%=@symbol.upcase%>交易对"><%=period_title(@kline_short_period)%>:<span title="MA<%=@short_ma[0]%>"><%=@k60m_ma5%></span>-<span title="MA<%=@short_ma[1]%>"><%=@k60m_ma10%></span>-<span title="MA<%=@short_ma[2]%>" class="square_warn"><%=@k60m_ma20%><%=show_arrow(@k60m_ma20_updown[0])%><span class="small_multiple">x<%=@k60m_ma20_updown.size%></span></span>:<span title="买卖比"><%=@bsp60m%></span>|<%=period_title(@kline_long_period)%>:<span title="MA<%=@long_ma[0]%>"><%=@k1d_ma5%></span>-<span title="MA<%=@long_ma[1]%>"><%=@k1d_ma10%></span>-<span title="MA<%=@long_ma[2]%>" class="square_warn"><%=@k1d_ma20%><%=show_arrow(@k1d_ma20_updown[0])%><span class="small_multiple">x<%=@k1d_ma20_updown.size%></span></span>:<span title="买卖比"><%=@bsp1d%></span>|<%=@ma_trend%></span>
+  <span title="<%=spt%> MA<%=@short_ma[0]%>" class="<%=s1_class%>"><%=@k60m_ma5%>
+    <span class="small_note"><%=s1_sign%><%=s1_size%></span></span>
+  <span title="<%=spt%> MA<%=@short_ma[1]%>" class="<%=s2_class%>"><%=@k60m_ma10%>
+    <span class="small_note"><%=s2_sign%><%=s2_size%></span></span>
+  <span title="<%=spt%> MA<%=@short_ma[2]%>" class="<%=s3_class%>"><%=@k60m_ma20%>
+    <span class="small_note"><%=s3_sign%><%=s3_size%></span></span>
+  <span title="<%=lpt%> MA<%=@long_ma[0]%>" class="<%=l1_class%>"><%=@k1d_ma5%>
+    <span class="small_note"><%=l1_sign%><%=l1_size%></span></span>
+  <span title="<%=lpt%> MA<%=@long_ma[1]%>" class="<%=l2_class%>"><%=@k1d_ma10%>
+    <span class="small_note"><%=l2_sign%><%=l2_size%></span></span>
+  <span title="<%=lpt%> MA<%=@long_ma[2]%>" class="<%=l3_class%>"><%=@k1d_ma20%>
+    <span class="small_note"><%=l3_sign%><%=l3_size%></span></span>
+  <%=@ma_trend%>
   <br/>
 价格：
   <span><%=@k60m.size%>笔:<span title="现价/MA<%=@short_ma[0]%>"><%=@p60m_ma5%>%</span>|<span title="区间最低价"><%=@k60m_lowest%></span>-<span title="区间最高价"><%=@k60m_highest%></span>-<span title="区间成交最多的收盘价"><%=@k60m_volume_price%></span>|<%=@k1d.size%>笔:<span title="现价/MA<%=@long_ma[0]%>"><%=@p1d_ma5%>%</span>|<span title="区间最低价"><%=@k1d_lowest%></span>-<span title="区间最高价"><%=@k1d_highest%></span>-<span title="区间成交最多的收盘价"><%=@k1d_volume_price%></span></span>
@@ -49,6 +89,9 @@
       <% if @next_operate_hours > 0 %>
       |间隔:<span class="<%=@next_operate_warn%>" title="至少<%=@next_operate_hours%>小时后，相当于：<%=@next_operate_time%>"><%=@interval_hours.to_i%>/<%=@next_operate_hours.to_i%>小时</span>|<%=@trade_type%>:<span title="¥<%=@trade_cny%>|$<%=@trade_usd%>"><%=@trade_twd%> TWD|</span>占比:<%=@trade_usd_p%>%
       <% end %>
+    <% end %>
+    <% if @total_open_orders_num and @total_open_orders_num > 0 %>
+      <span class="red_warn"><%= link_to "未成交(#{@total_open_orders_num})", '' %></span>
     <% end %>
   </span><br/>
 </h4>

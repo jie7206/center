@@ -1522,11 +1522,11 @@ module ApplicationHelper
     end
 
     # 根据字符显示箭头
-    def show_arrow(str)
+    def show_sign(str)
       if str == 117
-        return "↑"
+        return '+' #"↑"
       elsif str == 100
-        return "↓"
+        return '-' #"↓"
       end
     end
 

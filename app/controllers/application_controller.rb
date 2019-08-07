@@ -766,6 +766,19 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # 获取在火币上未成交订单资料
+  def get_btc_orders
+    resp = get_remote_files('playruby.top','/main/get_btc_orders','',3002)
+    if resp and resp.index(";")
+      ids = resp.split(";")
+      buy_ids = ids[0] ? ids[0].split(",") : []
+      buy_size = buy_ids.size
+      sell_ids = ids[1] ? ids[1].split(",") : []
+      sell_size = sell_ids.size
+      @total_open_orders_num = buy_size+sell_size
+    end
+  end
+
   # 获取火币资产资料
   def get_huobi_assets
     resp = get_remote_files('playruby.top','/main/get_huobi_assets.json','',3002)
