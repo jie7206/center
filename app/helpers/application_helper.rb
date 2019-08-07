@@ -45,6 +45,13 @@ module ApplicationHelper
       return "#{i}.#{f}"
     end
 
+    # 计算下单总额度
+    def cal_order_amount(price,unit)
+      @order_amount_usd = format("%.2f",unit.abs*price).to_f
+      @order_amount_twd = (@order_amount_usd*@usd2twd).to_i
+      @order_amount_cny = (@order_amount_usd*@usd2cny).to_i
+    end
+
     def member_search_input
       build_search_input 'member', 'members', '会员搜索'
     end

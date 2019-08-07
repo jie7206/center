@@ -33,7 +33,7 @@ a.todo_warn:visited { color: #c00;text-decoration:none; }
 a.todo_warn:hover { color: white;background-color:#c00;text-decoration:none; }
 a.order_button_link {
   display:inline-block;
-  width:315px;
+  width:380px;
   height:21px;
   border:1px solid lightgray;
   color:#fff;

@@ -976,7 +976,9 @@ class MainController < ApplicationController
       count = count.abs
       resp = get_remote_files('playruby.top',"/main/place_btc_order?side=#{side}&price=#{price}&count=#{count}",'',3002)
       if resp == 'new_order_to_huobi_ok'
-        flash[:notice] = "您的下单已提交(于#{Time.now.strftime("%Y-%m-%d %H:%M")}#{type}#{count}BTC价格为#{price})"
+        get_exchange_rate_from_params
+        cal_order_amount(price,count)
+        flash[:notice] = "您的下单已提交(于#{Time.now.strftime("%Y-%m-%d %H:%M")}#{type}#{count}BTC价格为#{price}，总额:#{@order_amount_twd}|¥#{@order_amount_cny}|$#{@order_amount_usd})"
       else
         flash[:notice] = "您的下单失败！"
       end
@@ -1077,12 +1079,8 @@ class MainController < ApplicationController
     @use_husd_or_usdt = value_of('use_husd_or_usdt')
     # 比特币最新价格
     @btc_price = value_of('btc_price').to_f
-    # 1美元兑换多少人民币
-    @usd2cny = value_of('exchange_rates_USD_to_MCY').to_f
-    # 1人民币兑换多少新台币
-    @cny2twd = value_of('exchange_rates_MCY').to_f
-    # 1美元兑换多少新台币
-    @usd2twd = @use_husd_or_usdt == 'husd' ? value_of('exchange_rates_HUSD').to_f : value_of('exchange_rates_USD').to_f
+    # 获取汇率报价
+    get_exchange_rate_from_params
     # 比特币投资成本记录
     @btc_total_cost = value_of("btc_total_cost")
     # 比特币实际总投资本金
@@ -1415,6 +1413,15 @@ class MainController < ApplicationController
     else
       @harvest_unit_warn = ""
     end
+  end
+
+  def get_exchange_rate_from_params
+    # 1美元兑换多少人民币
+    @usd2cny = value_of('exchange_rates_USD_to_MCY').to_f
+    # 1人民币兑换多少新台币
+    @cny2twd = value_of('exchange_rates_MCY').to_f
+    # 1美元兑换多少新台币
+    @usd2twd = @use_husd_or_usdt == 'husd' ? value_of('exchange_rates_HUSD').to_f : value_of('exchange_rates_USD').to_f
   end
 
   # 计算最近一笔交易类别
