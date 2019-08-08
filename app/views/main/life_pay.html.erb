@@ -143,7 +143,9 @@ end
 <h4>总数：<span title="<%=@my_btc%>"><%=@btc_sum%></span> X <%= link_to format("$%.2f",@today_price), "http://playruby.top:3002/main/kline_chart?symbol=btchusd&period=1min", :target => "_blank" %> = <%=@btc_value%>|¥<%=(@btc_value/@twd_rate).to_i%>|$<%=format("%.0f",@btc_value/@twd_usd_rate)%><br/>
 <%
 @months = @cost_months = 0
-@life_month_cost_start_date = value_of("life_month_cost_start_date").to_date
+# 如果值为today，则以今日开始计算
+start_date = value_of("life_month_cost_start_date")
+@life_month_cost_start_date = start_date == "today" ? Date.today : value_of("life_month_cost_start_date").to_date
 @life_month_cost = @life_month_cost_start = value_of("life_month_cost").to_i
 @life_month_cost_grow_rate = value_of("life_month_cost_grow_rate").to_f
 @btc_max_price = value_of("btc_max_price").to_i

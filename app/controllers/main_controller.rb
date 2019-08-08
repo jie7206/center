@@ -1372,6 +1372,10 @@ class MainController < ApplicationController
 
   #11.根据值大小设定显示的style
   def set_css_style
+    if @should_update_ave_price_vs_ma
+      auto_update_ave_price_vs_ma # 根据仓位大小，自动更新MA目标值
+      flash[:notice] += " 且已更新MA目标值"
+    end
     if @btc_total_budget_twd < @btc_total_budget_warning
       @btc_total_budget_warn = "green_warn"
     else
@@ -1704,7 +1708,8 @@ class MainController < ApplicationController
       # 执行更新账户的买卖数据
       if !@cal_mode and @btc_135_sum_api.to_s != value_of("my_btc").split(",")[2]
         exe_update_btc_assets
-        flash[:notice] = "已通过火币API自动更新比特币资产为：#{@h135_btc_sum} BTC"
+        flash[:notice] = "已通过火币API自动更新资产：#{@h135_btc_sum} BTC|#{@h135_usd_sum} USDT"
+        @should_update_ave_price_vs_ma = true
       end
     end
   end
@@ -1800,10 +1805,29 @@ class MainController < ApplicationController
   end
 
   # 更新均价相对于哪个MA值显示警示
-  def update_ave_price_vs_ma
-    Param.find_by_name('ave_price_vs_ma').update_attribute(:value,params[:value])
-    flash[:notice] = "均价相对于MA值已更新为#{params[:value]}"
+  def update_ave_price_vs_ma(value=params[:value])
+    Param.find_by_name('ave_price_vs_ma').update_attribute(:value,value)
+    flash[:notice] = "均价相对于MA值已更新为#{params[:value]}" if params[:value]
     redirect_to :action => :btc_income, :update_btc_price => 1
+  end
+
+  # 根据仓位大小，自动更新MA目标值
+  def auto_update_ave_price_vs_ma
+    lv = value_of('btc_ma_setup_by_level').split(",").map {|i| i.to_i}
+    case @ex_cost_twd_level
+      when (0..lv[0])
+        update_ave_price_vs_ma '@k60m_ma5'
+      when (lv[0]..lv[1])
+        update_ave_price_vs_ma '@k60m_ma10'
+      when (lv[1]..lv[2])
+        update_ave_price_vs_ma '@k60m_ma20'
+      when (lv[2]..lv[3])
+        update_ave_price_vs_ma '@k1d_ma5'
+      when (lv[3]..lv[4])
+        update_ave_price_vs_ma '@k1d_ma10'
+      when (lv[4]..lv[5])
+        update_ave_price_vs_ma '@k1d_ma20'
+    end
   end
 
   ########## Function Area Ended ##########
