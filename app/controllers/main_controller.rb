@@ -955,11 +955,11 @@ class MainController < ApplicationController
       count = params[:count].to_f
       side = count > 0 ? 'buy' : 'sell'
       type = count > 0 ? '买进' : '卖出'
-      count = count.abs
+      count = show_btc_sum(count.abs.to_s,6)
       resp = get_remote_files('playruby.top',"/main/place_btc_order?side=#{side}&price=#{price}&count=#{count}",'',3002)
       if resp == 'new_order_to_huobi_ok'
         get_exchange_rate_from_params
-        cal_order_amount(price,count)
+        cal_order_amount(price,count.to_f)
         order_log = "#{type}#{count}BTC价格为#{price}，总额:#{@order_amount_twd}|¥#{@order_amount_cny}|$#{@order_amount_usd})，成本均价：#{format("%.2f",params[:ave_price])}"
         Param.find_by_name('btc_order_log').update_attribute(:value,order_log)
         flash[:notice]= "您的下单已提交(于#{Time.now.strftime("%Y-%m-%d %H:%M")}#{order_log}"
@@ -1108,6 +1108,8 @@ class MainController < ApplicationController
     @ave_price_vs_ma = value_of('ave_price_vs_ma')
     # MA值亮灯的阀值(需连续几次涨跌)
     @num_of_ma_warn = value_of('num_of_ma_warn').to_i
+    # BTC单次下单额度上限(台币)
+    @btc_order_limit = value_of('btc_order_limit').to_i
     # BTC下单记录
     @btc_order_log = value_of('btc_order_log')
     # 火币手续费率
@@ -1579,12 +1581,24 @@ class MainController < ApplicationController
 
   # 如果超出预算则自动降低能购买的单位数
   def check_try_buy_unit
+    # 验证买入的基本条件
     get_total_usdt
     max_buy_unit = @total_usdt_twd/@usd2twd/@try_buy_price
-    if @try_buy_unit > max_buy_unit
-      @try_buy_unit = (format("%.6f",max_buy_unit)).to_f
-      params[:try_buy_unit] = @try_buy_unit
-    end
+    adjust_buy_unit(max_buy_unit) if @try_buy_unit > max_buy_unit
+    # 验证买入的进阶条件：是否大于BTC单次下单额度上限
+    adjust_buy_unit(@btc_order_limit/@usd2twd/@try_buy_price) if @btc_order_limit > 0 and  @try_buy_price*@try_buy_unit*@usd2twd > @btc_order_limit
+    # 验证卖出的基本条件
+    max_sell_unit = @btc_sum_ex*-1
+    adjust_buy_unit(max_sell_unit) if @try_buy_unit < max_sell_unit
+    # 验证卖出的进阶条件：是否大于BTC单次下单额度上限
+    adjust_buy_unit(-1*@btc_order_limit/@usd2twd/@try_buy_price) if @btc_order_limit > 0 and  @try_buy_price*@try_buy_unit.abs*@usd2twd > @btc_order_limit
+  end
+
+  def adjust_buy_unit(max_buy_unit)
+    unit_str = show_btc_sum(max_buy_unit.abs.to_s,6)
+    params[:try_buy_unit] = unit_str
+    @try_buy_unit = max_buy_unit
+    #@try_buy_unit = max_buy_unit > 0 ? @try_buy_unit : -1*@try_buy_unit
   end
 
   # 给定均价，回传买价和单位数
@@ -1627,11 +1641,28 @@ class MainController < ApplicationController
     end
   end
 
+  # 调整新的仓位值(防止一次性买卖太多)
+  def adjust_level(new_total_cost)
+    @try_set_level = format("%.2f",new_total_cost.to_f/@btc_total_budget_warning*100).to_f
+    params[:try_set_level] = @try_set_level
+  end
+
   # 依据仓位计算买卖量
   def cal_price_by_level(new_level=@try_set_level)
     if @try_set_level and @try_set_level > 0
       cal_ex_cost_twd # 取出原有的实际成本
       new_total_cost = @btc_total_budget_warning*(new_level/100.0)
+      # 设定BTC单次下单额度上限(台币)
+      # 买太多
+      if @btc_order_limit > 0 and @ex_cost_twd + @btc_order_limit < new_total_cost
+        new_total_cost = @ex_cost_twd + @btc_order_limit
+        adjust_level(new_total_cost)
+      end
+      # 卖太多
+      if @btc_order_limit > 0 and @ex_cost_twd - @btc_order_limit > new_total_cost
+        new_total_cost = @ex_cost_twd - @btc_order_limit
+        adjust_level(new_total_cost)
+      end
       opt_price = @try_buy_price > 0 ? @try_buy_price.to_f : @btc_price.to_i
       if @ex_cost_twd > new_total_cost
         opt_units = (@ex_cost_twd-new_total_cost)/(opt_price*@usd2twd)*(-1)
@@ -1639,7 +1670,7 @@ class MainController < ApplicationController
         opt_units = (new_total_cost-@ex_cost_twd)/(opt_price*@usd2twd)
       end
       @try_buy_unit = opt_units
-      params[:try_buy_unit] = format("%.6f",opt_units)
+      params[:try_buy_unit] = show_btc_sum(opt_units.abs.to_s,6)
       @try_buy_price = @try_buy_price > 0 ? @try_buy_price.to_f : @btc_price.to_i
       params[:try_buy_price] = opt_price
     end

@@ -33,7 +33,7 @@ module ApplicationHelper
     end
 
     # 显示成与交易所相同的比特币总数(只保留小数点后8位)
-    def show_btc_sum(str)
+    def show_btc_sum(str,pos=8)
       if str.to_f < 0.00000001
         @btc_sum_ex = 0
         @ex_cost_twd = 0
@@ -41,7 +41,7 @@ module ApplicationHelper
         return "0.00000000"
       end
       i = str.split(".")[0]
-      f = str.split(".")[1][0..7]
+      f = str.split(".")[1][0..pos-1]
       return "#{i}.#{f}"
     end
 
