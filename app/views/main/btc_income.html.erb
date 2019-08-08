@@ -110,10 +110,10 @@ l3_link = "/main/update_ave_price_vs_ma?value=@k1d_ma20"
       <% end %>
     <% end %>
     <% if @total_open_orders_num and @total_open_orders[:buy_ids].size > 0 %>
-      <span class="red_warn"><%= link_to "未成交(#{@total_open_orders[:buy_ids].size})", "/main/del_huobi_orders?order_ids=#{@total_open_orders[:buy_ids].join(",")}" %></span>
+      <span class="red_warn" title="<%=@btc_order_log%>"><%= link_to "未成交(#{@total_open_orders[:buy_ids].size})", "/main/del_huobi_orders?order_ids=#{@total_open_orders[:buy_ids].join(",")}" %></span>
     <% end %>
     <% if @total_open_orders_num and @total_open_orders[:sell_ids].size > 0 %>
-      <span class="green_warn"><%= link_to "未成交(#{@total_open_orders[:sell_ids].size})", "/main/del_huobi_orders?order_ids=#{@total_open_orders[:sell_ids].join(",")}" %></span>
+      <span class="green_warn" title="<%=@btc_order_log%>"><%= link_to "未成交(#{@total_open_orders[:sell_ids].size})", "/main/del_huobi_orders?order_ids=#{@total_open_orders[:sell_ids].join(",")}" %></span>
     <% end %>
   </span><br/>
 </h4>

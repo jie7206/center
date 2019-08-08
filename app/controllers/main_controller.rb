@@ -960,7 +960,9 @@ class MainController < ApplicationController
       if resp == 'new_order_to_huobi_ok'
         get_exchange_rate_from_params
         cal_order_amount(price,count)
-        flash[:notice] = "您的下单已提交(于#{Time.now.strftime("%Y-%m-%d %H:%M")}#{type}#{count}BTC价格为#{price}，总额:#{@order_amount_twd}|¥#{@order_amount_cny}|$#{@order_amount_usd})，成本均价：#{format("%.2f",params[:ave_price])}"
+        order_log = "#{type}#{count}BTC价格为#{price}，总额:#{@order_amount_twd}|¥#{@order_amount_cny}|$#{@order_amount_usd})，成本均价：#{format("%.2f",params[:ave_price])}"
+        Param.find_by_name('btc_order_log').update_attribute(:value,order_log)
+        flash[:notice]= "您的下单已提交(于#{Time.now.strftime("%Y-%m-%d %H:%M")}#{order_log}"
       else
         flash[:notice] = "您的下单失败！"
       end
@@ -971,11 +973,17 @@ class MainController < ApplicationController
   def del_huobi_orders
     resp = get_remote_files('playruby.top',"/main/del_huobi_orders?order_ids=#{params[:order_ids]}",'',3002)
     if resp == 'del_huobi_orders_ok'
+      clear_btc_order_log
       flash[:notice] = "您的撤销下单已提交(于#{Time.now.strftime("%Y-%m-%d %H:%M")} 下单编号：#{params[:order_ids]})"
     else
       flash[:notice] = "您的撤销下单失败！"
     end
     redirect_to :action => :btc_income
+  end
+
+  # 清除BTC下单记录
+  def clear_btc_order_log
+    Param.find_by_name('btc_order_log').update_attribute(:value,"")
   end
 
   # 显示比特币投资收益
@@ -1100,6 +1108,8 @@ class MainController < ApplicationController
     @ave_price_vs_ma = value_of('ave_price_vs_ma')
     # MA值亮灯的阀值(需连续几次涨跌)
     @num_of_ma_warn = value_of('num_of_ma_warn').to_i
+    # BTC下单记录
+    @btc_order_log = value_of('btc_order_log')
     # 火币手续费率
     @ex_fee_rate = 0.002 # 扣USDT(买入时)
     # 获取用户表单输入的资料
@@ -1712,6 +1722,7 @@ class MainController < ApplicationController
     end
     if update_btc_total_cost
       Param.find_by_name("btc_total_cost").update_attribute(:value, @btc_total_cost)
+      clear_btc_order_log
     end
     # 更新账户BTC资产
     update_my_btc = false
