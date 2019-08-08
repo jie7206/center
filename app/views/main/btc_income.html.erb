@@ -14,7 +14,8 @@
     </span>
   <br/>
 <%= link_to "损益：", :action => :btc_income, :update_btc_price => 1, :get_btc_orders => 1, :update_huobi_assets => 1 %>
-  <%= link_to format("%.2f",@btc_price), "http://playruby.top:3002/main/kline_chart?symbol=#{@symbol}&period=5min", {:target => "_blank", :title => "汇率：C2T:#{@cny2twd}|U2T:#{@usd2twd}|U2C:#{@usd2cny}|U2H:#{@usdt2husd}"} %>|<span class="<%=@twd_profit_warn%>"><%=@btc_profit_twd%></span>|<span class="<%=@cny_profit_warn%>">¥<%=@btc_profit_cny%></span>|<span class="<%=@usd_profit_warn%>">$<%=@btc_profit_usd%></span>|<span class="<%=@btc_profit_warn%>"><%=format("%.1f", @btc_profit_rate)%>%</span><span title="点击后即可以平仓目标价卖出(预先保留要赚取的<%=@btc_harvest_unit%>BTC及包含每月<%=@btc_month_goal_twd%>|¥<%=@btc_month_goal_cny%>|$<%=@btc_month_goal_usd%>的收益)">
+  <span class="<%=@btc_price_warn%>">
+  <%= link_to format("%.2f",@btc_price), "http://playruby.top:3002/main/kline_chart?symbol=#{@symbol}&period=5min", {:target => "_blank", :title => "汇率：C2T:#{@cny2twd}|U2T:#{@usd2twd}|U2C:#{@usd2cny}|U2H:#{@usdt2husd}"} %></span>|<span class="<%=@twd_profit_warn%>"><%=@btc_profit_twd%></span>|<span class="<%=@cny_profit_warn%>">¥<%=@btc_profit_cny%></span>|<span class="<%=@usd_profit_warn%>">$<%=@btc_profit_usd%></span>|<span class="<%=@btc_profit_warn%>"><%=format("%.1f", @btc_profit_rate)%>%</span><span title="点击后即可以平仓目标价卖出(预先保留要赚取的<%=@btc_harvest_unit%>BTC及包含每月<%=@btc_month_goal_twd%>|¥<%=@btc_month_goal_cny%>|$<%=@btc_month_goal_usd%>的收益)">
     <% if @btc_sum_ex-@btc_harvest_unit > 0 %>
     <%= link_to "平仓:", "/main/btc_income?try_buy_price=#{@settle_price}&try_buy_unit=-#{show_btc_sum((@btc_sum_ex-@btc_harvest_unit).to_s)}" %>
     <% else %>

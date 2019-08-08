@@ -1377,6 +1377,9 @@ class MainController < ApplicationController
     else
       @btc_total_budget_warn = ""
     end
+    if eval(@ave_price_vs_ma) and @btc_price < eval(@ave_price_vs_ma)
+      @btc_price_warn = "green_warn"
+    end
     if eval(@ave_price_vs_ma) and @unit_ave_price > eval(@ave_price_vs_ma)
       @ave_price_warn = "red_warn"
     elsif @btc_price < @unit_ave_price
