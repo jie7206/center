@@ -1364,11 +1364,13 @@ class MainController < ApplicationController
     @next_operate_hours, @next_operate_time = cal_next_trade_time(@last_trade_time,@trade_twd)
     @next_trade_str = @next_operate_time.strftime("%m%d %H:%M")
     @trade_usd_p = format("%.2f",(@trade_usd*@usd2twd)/(@total_usdt_twd+@trade_usd*@usd2twd)*100)
+    @remain_minutes_to_order = (@next_operate_time-Time.now).to_i/60
     @trade_type = cal_trade_type
     # 显示CSS警示
     @next_operate_warn = ""
     if @interval_hours.to_f >= @next_operate_hours
       @next_operate_warn = "red_warn"
+      @enable_order = true
     end
   end
 

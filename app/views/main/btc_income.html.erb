@@ -105,9 +105,8 @@ l3_link = "/main/update_ave_price_vs_ma?value=@k1d_ma20"
     <% else %>
       <%=@last_trade_str%> ~ <%=@next_trade_str%>
       <% if @next_operate_hours > 0 %>
-        <% minutes_diff = (@next_operate_time-Time.now).to_i/60 %>
-        <% label_diff = minutes_diff > 0 ? "剩余" : "超过" %>
-      |<%=label_diff%>:<span class="<%=@next_operate_warn%>"><%=minutes_diff.abs%>分</span>|<%=@trade_type%>:<span title="¥<%=@trade_cny%>|$<%=@trade_usd%>"><%=@trade_twd%> TWD|</span>占比:<%=@trade_usd_p%>%
+        <% label_diff = @remain_minutes_to_order > 0 ? "剩余" : "超过" %>
+      |<%=label_diff%>:<span class="<%=@next_operate_warn%>"><%=@remain_minutes_to_order.abs%>分</span>|<%=@trade_type%>:<span title="¥<%=@trade_cny%>|$<%=@trade_usd%>"><%=@trade_twd%> TWD|</span>占比:<%=@trade_usd_p%>%
       <% end %>
     <% end %>
     <% if @total_open_orders_num and @total_open_orders[:buy_ids].size > 0 %>
@@ -124,30 +123,17 @@ l3_link = "/main/update_ave_price_vs_ma?value=@k1d_ma20"
   <input type="hidden" name="update_btc_price" value="1"/>
 <% end %>
 <h4>
-  <!-- <ul style="margin-left:-1em">
-    <li>安全性：成本均价在5分MA30以下且价差大于10%<span style="font-weight:bold;color:green;margin:0em 0.35em">√</span></li>
-    <li>方向性：60分MA30持续10次走扬宜分批加仓做多<span style="font-weight:bold;color:red;margin:0em 0.3em;font-size:1.4em">↑</span></li>
-    <li>下一步：5分MA30持续10次走扬可分批加仓做多<span style="margin:0em 0.05em;font-size:1.4em">💰</span></li>
-  </ul> -->
 价位<input type="text" style="width:<%=@text_input_width%>px" name="try_buy_price" value="<%=params[:try_buy_price]%>" onclick="this.select()">
     <% if @try_trade_twd -%>
     <span class="<%=@buy_unit_hint%>"><%end%>买卖<% if @try_trade_twd -%></span><%end%><input type="text" style="width:<%=@text_input_width%>px" name="try_buy_unit" value="<%=params[:try_buy_unit]%>" onclick="this.select()"><span class="<%=@set_price_hint%>">定价</span><input type="text" style="width:<%=@text_input_width%>px" name="try_set_price" value="<%=params[:try_set_price]%>" onclick="this.select()"><span class="<%=@ave_price_hint%>">均价</span><input type="text" style="width:<%=@text_input_width%>px" name="try_ave_price" value="<%=params[:try_ave_price]%>" onclick="this.select()">
-    <!-- <span class="<%=@set_amount_hint%>">限额</span><input type="text" style="width:<%=@text_input_width%>px" name="try_set_amount" value="<%=params[:try_set_amount]%>" onclick="this.select()">//-->
-      <span class="<%=@set_level_hint%>">仓位</span><input type="text" style="width:<%=@text_input_width%>px" name="try_set_level" value="<%=params[:try_set_level]%>" onclick="this.select()">
-    <!-- <span class="<%=@set_batch_hint%>">分批</span><input type="text" style="width:<%=@text_input_width%>px" name="try_set_batch" value="<%=params[:try_set_batch]%>" onclick="this.select()">//-->
+    <span class="<%=@set_level_hint%>">仓位</span><input type="text" style="width:<%=@text_input_width%>px" name="try_set_level" value="<%=params[:try_set_level]%>" onclick="this.select()">
     <input type="submit" value="试算" style="margin-left:1em">
-    <% if (@cal_mode == "LEV" or @cal_mode == "BUY") and @try_buy_price != 0 and @try_buy_unit != 0 %>
+    <% if @enable_order and (@cal_mode == "LEV" or @cal_mode == "BUY") and @try_buy_price != 0 and @try_buy_unit != 0 %>
       <% @try_trade_type = @try_buy_unit > 0 ? '买进' : '卖出' %>
       <% cal_order_amount(@try_buy_price,@try_buy_unit) # 计算下单总额度 %>
-      <%= link_to "下单(#{@try_trade_type}:#{show_btc_sum(@try_buy_unit.abs.to_s,6)} BTC 价格:#{@try_buy_price} 总额:#{@order_amount_twd}|¥#{@order_amount_cny}|$#{@order_amount_usd})", {:action => :place_btc_order, :price => @try_buy_price, :count => @try_buy_unit, :ave_price => @unit_ave_price}, :class => "order_button_link" -%> 
+      <%= link_to "下单(#{@try_trade_type}:#{show_btc_sum(@try_buy_unit.abs.to_s,6)} BTC 价格:#{@try_buy_price} 总额:#{@order_amount_twd}|¥#{@order_amount_cny}|$#{@order_amount_usd})", {:action => :place_btc_order, :price => @try_buy_price, :count => @try_buy_unit, :ave_price => @unit_ave_price}, :class => "order_button_link" -%>
     <% end %>
 </h4>
-<!--
-<hr/>
-<h4>
-  林买入额<input type="text" style="width:<%=@text_input_width%>px" name="h135_cost_change">资产<input type="text" style="width:<%=@text_input_width%>px" name="h135_btc_sum">BTC<input type="text" style="width:<%=@text_input_width%>px" name="h135_usd_sum">USD|孟买入额<input type="text" style="width:<%=@text_input_width%>px" name="h170_cost_change">资产<input type="text" style="width:<%=@text_input_width%>px" name="h170_btc_sum">BTC<input type="text" style="width:<%=@text_input_width%>px" name="h170_usd_sum">USD<input type="submit" value="更新" style="margin-left:1em">
-</h4>
-//-->
 </form>
 <hr/>
 <% form_tag :action => "btc_income", :method => :post do -%>
