@@ -960,7 +960,7 @@ class MainController < ApplicationController
       if resp == 'new_order_to_huobi_ok'
         get_exchange_rate_from_params
         cal_order_amount(price,count)
-        flash[:notice] = "您的下单已提交(于#{Time.now.strftime("%Y-%m-%d %H:%M")}#{type}#{count}BTC价格为#{price}，总额:#{@order_amount_twd}|¥#{@order_amount_cny}|$#{@order_amount_usd})"
+        flash[:notice] = "您的下单已提交(于#{Time.now.strftime("%Y-%m-%d %H:%M")}#{type}#{count}BTC价格为#{price}，总额:#{@order_amount_twd}|¥#{@order_amount_cny}|$#{@order_amount_usd})，成本均价：#{format("%.2f",params[:ave_price])}"
       else
         flash[:notice] = "您的下单失败！"
       end
@@ -1367,10 +1367,10 @@ class MainController < ApplicationController
     else
       @btc_total_budget_warn = ""
     end
-    if @btc_price < @unit_ave_price
-      @ave_price_warn = "green_warn"
-    elsif eval(@ave_price_vs_ma) and @unit_ave_price > eval(@ave_price_vs_ma)
+    if eval(@ave_price_vs_ma) and @unit_ave_price > eval(@ave_price_vs_ma)
       @ave_price_warn = "red_warn"
+    elsif @btc_price < @unit_ave_price
+      @ave_price_warn = "green_warn"
     else
       @ave_price_warn = "square_warn"
     end

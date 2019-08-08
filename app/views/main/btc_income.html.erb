@@ -7,16 +7,20 @@
   <br/>
 <%= link_to "仓位：", :action => :btc_income, :update_btc_price => 1, :get_btc_orders => 1 %>
   <span title="¥<%=@ex_cost_cny%>|$<%=@ex_cost_usd%>"><%=@ex_cost_twd%></span>|<%=format("%.2f",@ex_cost_twd_level)%>%|<span title="¥<%=@btc_hold_cny%>|$<%=@btc_hold_usd%>"><%=@btc_hold_twd%></span>/<span class="<%=@btc_total_budget_warn%>" title="现值：¥<%=@btc_total_budget_cny%>|$<%=@btc_total_budget_usd%>，初始本金：<%=@btc_total_budget_warning%> TWD"><%=@btc_total_budget_twd%></span>|<%=format("%.2f",@btc_hold_twd_level)%>%
-  均价:<%=@trezor_ave_price%>/<span class="<%=@ave_price_warn%>"><%=format("%.2f", @unit_ave_price)%><span class="small_price_diff"><%=@aveprice_shortma_diff_str%></span></span>
+  均价:<%=@trezor_ave_price%>/<span class="<%=@ave_price_warn%>"><%=format("%.2f", @unit_ave_price)%>
+    <% if @ave_price_warn == 'red_warn' %>
+      <span class="small_price_diff"><%=@aveprice_shortma_diff_str%></span>
+    <% end %>
+    </span>
   <br/>
 <%= link_to "损益：", :action => :btc_income, :update_btc_price => 1, :get_btc_orders => 1, :update_huobi_assets => 1 %>
-  <%= link_to format("%.2f",@btc_price), "http://playruby.top:3002/main/kline_chart?symbol=#{@symbol}&period=5min", {:target => "_blank", :title => "汇率：C2T:#{@cny2twd}|U2T:#{@usd2twd}|U2C:#{@usd2cny}|U2H:#{@usdt2husd}"} %>|<span class="<%=@twd_profit_warn%>"><%=@btc_profit_twd%></span>|<span class="<%=@cny_profit_warn%>">¥<%=@btc_profit_cny%></span>|<span class="<%=@usd_profit_warn%>">$<%=@btc_profit_usd%></span>|<span class="<%=@btc_profit_warn%>"><%=format("%.1f", @btc_profit_rate)%>%</span><span title="超过<%=@btc_harvest_unit%>BTC即可卖出[<%=@btc_sum_ex-@btc_harvest_unit%>]BTC平仓(包含每月<%=@btc_month_goal_twd%>|¥<%=@btc_month_goal_cny%>|$<%=@btc_month_goal_usd%>的收益)">
+  <%= link_to format("%.2f",@btc_price), "http://playruby.top:3002/main/kline_chart?symbol=#{@symbol}&period=5min", {:target => "_blank", :title => "汇率：C2T:#{@cny2twd}|U2T:#{@usd2twd}|U2C:#{@usd2cny}|U2H:#{@usdt2husd}"} %>|<span class="<%=@twd_profit_warn%>"><%=@btc_profit_twd%></span>|<span class="<%=@cny_profit_warn%>">¥<%=@btc_profit_cny%></span>|<span class="<%=@usd_profit_warn%>">$<%=@btc_profit_usd%></span>|<span class="<%=@btc_profit_warn%>"><%=format("%.1f", @btc_profit_rate)%>%</span><span title="点击后即可以平仓目标价卖出(预先保留要赚取的<%=@btc_harvest_unit%>BTC及包含每月<%=@btc_month_goal_twd%>|¥<%=@btc_month_goal_cny%>|$<%=@btc_month_goal_usd%>的收益)">
     <% if @btc_sum_ex-@btc_harvest_unit > 0 %>
     <%= link_to "平仓:", "/main/btc_income?try_buy_price=#{@settle_price}&try_buy_unit=-#{show_btc_sum((@btc_sum_ex-@btc_harvest_unit).to_s)}" %>
     <% else %>
       平仓:
     <% end %>
-    <span class="<%=@harvest_unit_warn%>" title="单位：BTC"><%=format("%.4f",@settle_profit)%></span>|$<%=@settle_price%>|<%=link_to(@total_asset_value, {:controller => 'param_changes', :action => 'new', :param_id => '129'}, {:title => "¥#{(@total_asset_value/@cny2twd).to_i}|$#{(@total_asset_value/@usd2twd).to_i}", :target => '_blank'})%>|<span title="平均月收入：<%=@ave_month_income_twd%>|¥<%=@ave_month_income_cny%>|$<%=@ave_month_income_usd%>"><%=link_to(format("%.0f",(@ave_month_income_twd/10000.0))+"萬", {:action => "life_pay"}, {:target => "_blank"})%></span></span>
+    <span class="<%=@harvest_unit_warn%>" title="点击后立刻以现价清仓全部卖出"><%= link_to format("%.4f",@settle_profit), "/main/btc_income?try_buy_price=#{@btc_price}&try_buy_unit=-#{show_btc_sum(@btc_sum_ex.to_s)}" %></span>|$<%=@settle_price%>|<%=link_to(@total_asset_value, {:controller => 'param_changes', :action => 'new', :param_id => '129'}, {:title => "¥#{(@total_asset_value/@cny2twd).to_i}|$#{(@total_asset_value/@usd2twd).to_i}", :target => '_blank'})%>|<span title="平均月收入：<%=@ave_month_income_twd%>|¥<%=@ave_month_income_cny%>|$<%=@ave_month_income_usd%>"><%=link_to(format("%.0f",(@ave_month_income_twd/10000.0))+"萬", {:action => "life_pay"}, {:target => "_blank"})%></span></span>
   <br/>
 <% if @update_btc_price %>
 <%
@@ -27,33 +31,35 @@ lpt = period_title(@kline_long_period)
 <span title="<%=@symbol.upcase%>交易对"><%=spt%>:<span title="MA<%=@short_ma[0]%>"><%=@k60m_ama5%></span>-<span title="MA<%=@short_ma[1]%>"><%=@k60m_ama10%></span>-<span title="MA<%=@short_ma[2]%>"><%=@k60m_ama20%></span>:<span title="买卖比"><%=@bsp60m%></span>|<%=lpt%>:<span title="MA<%=@long_ma[0]%>"><%=@k1d_ama5%></span>-<span title="MA<%=@long_ma[1]%>"><%=@k1d_ama10%></span>-<span title="MA<%=@long_ma[2]%>"><%=@k1d_ama20%></span>:<span title="买卖比"><%=@bsp1d%></span>|<%=@ama_trend%></span>
 <br/>
 <%
-def set_class(sign,size,num=@num_of_ma_warn)
+def set_class(name,sign,size,num=@num_of_ma_warn)
   result = (sign == '+' and size >= num) ? 'red_warn' : 'square_warn'
-  (sign == '-' and size >= num) ? 'green_warn' : result
+  result = (sign == '-' and size >= num) ? 'green_warn' : result
+  result += '_bold' if name == @ave_price_vs_ma
+  return result
 end
 s1_sign = show_sign(@k60m_ma5_updown[0])
 s1_size = @k60m_ma5_updown.size
-s1_class = set_class(s1_sign,s1_size)
+s1_class = set_class('@k60m_ma5',s1_sign,s1_size)
 s1_link = "/main/update_ave_price_vs_ma?value=@k60m_ma5"
 s2_sign = show_sign(@k60m_ma10_updown[0])
 s2_size = @k60m_ma10_updown.size
-s2_class = set_class(s2_sign,s2_size)
+s2_class = set_class('@k60m_ma10',s2_sign,s2_size)
 s2_link = "/main/update_ave_price_vs_ma?value=@k60m_ma10"
 s3_sign = show_sign(@k60m_ma20_updown[0])
 s3_size = @k60m_ma20_updown.size
-s3_class = set_class(s3_sign,s3_size)
+s3_class = set_class('@k60m_ma20',s3_sign,s3_size)
 s3_link = "/main/update_ave_price_vs_ma?value=@k60m_ma20"
 l1_sign = show_sign(@k1d_ma20_updown[0])
 l1_size = @k1d_ma5_updown.size
-l1_class = set_class(l1_sign,l1_size)
+l1_class = set_class('@k1d_ma5',l1_sign,l1_size)
 l1_link = "/main/update_ave_price_vs_ma?value=@k1d_ma5"
 l2_sign = show_sign(@k1d_ma20_updown[0])
 l2_size = @k1d_ma10_updown.size
-l2_class = set_class(l2_sign,l2_size)
+l2_class = set_class('@k1d_ma10',l2_sign,l2_size)
 l2_link = "/main/update_ave_price_vs_ma?value=@k1d_ma10"
 l3_sign = show_sign(@k1d_ma20_updown[0])
 l3_size = @k1d_ma20_updown.size
-l3_class = set_class(l3_sign,l3_size)
+l3_class = set_class('@k1d_ma20',l3_sign,l3_size)
 l3_link = "/main/update_ave_price_vs_ma?value=@k1d_ma20"
 %>
 走势：
@@ -128,7 +134,7 @@ l3_link = "/main/update_ave_price_vs_ma?value=@k1d_ma20"
     <% if @try_buy_price != 0 and @try_buy_unit != 0 %>
       <% @try_trade_type = @try_buy_unit > 0 ? '买进' : '卖出' %>
       <% cal_order_amount(@try_buy_price,@try_buy_unit) # 计算下单总额度 %>
-      <%= link_to "下單(#{@try_trade_type}:#{format("%.6f",@try_buy_unit.abs)} BTC 价格:#{@try_buy_price} 总额:#{@order_amount_twd}|¥#{@order_amount_cny}|$#{@order_amount_usd})", {:action => :place_btc_order, :price => @try_buy_price, :count => format("%.6f",@try_buy_unit)}, :class => "order_button_link" -%>
+      <%= link_to "下单(#{@try_trade_type}:#{format("%.6f",@try_buy_unit.abs)} BTC 价格:#{@try_buy_price} 总额:#{@order_amount_twd}|¥#{@order_amount_cny}|$#{@order_amount_usd})", {:action => :place_btc_order, :price => @try_buy_price, :count => format("%.6f",@try_buy_unit), :ave_price => @unit_ave_price}, :class => "order_button_link" -%>
     <% end %>
 </h4>
 <!--
@@ -141,6 +147,6 @@ l3_link = "/main/update_ave_price_vs_ma?value=@k1d_ma20"
 <hr/>
 <% form_tag :action => "btc_income", :method => :post do -%>
   <input type="hidden" name="from_my_motto_form" value="1"/>
-  <%= text_area_tag 'my_motto', @my_motto, :size => "70x12", :class => "my_motto" %>
+  <%= text_area_tag 'my_motto', @my_motto, :size => "70x15", :class => "my_motto" %>
   <%= image_submit_tag('icon/empty.gif', :width=> 10) %>
 <% end %>

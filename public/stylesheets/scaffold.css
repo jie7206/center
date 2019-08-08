@@ -31,20 +31,6 @@ a.goal_warn:hover { color: white;background-color:#00c;text-decoration:none; }
 a.todo_warn { color: #c00; text-decoration:none;}
 a.todo_warn:visited { color: #c00;text-decoration:none; }
 a.todo_warn:hover { color: white;background-color:#c00;text-decoration:none; }
-a.order_button_link {
-  display:inline-block;
-  width:380px;
-  height:21px;
-  border:1px solid lightgray;
-  color:#fff;
-  background:#4169E1;
-  font-size: 0.7em;
-  font-weight: normal;
-  text-align: center;
-}
-.red_warn a, .green_warn a {
-  color:#fff;
-}
 strong {
   color: #CC0000;
   font-weight: bold;
@@ -286,36 +272,69 @@ p {
   font-family: "宋体";
   font-size:8px;
 }
+/* for btc_income css style */
+a.order_button_link {
+  display:inline-block;
+  width:400px;
+  height:21px;
+  border:1px solid lightgray;
+  color:#fff;
+  background:#4169E1;
+  font-size: 0.7em;
+  font-weight: normal;
+  text-align: center;
+}
+.red_warn a, .green_warn a, .red_warn_bold a, .green_warn_bold a {
+  color:#fff;
+}
 .red_warn {
   background-color:red;
   color:white;
   padding:1px 3px;
-  border: 1px #000079 solid;
+  border: 1px #000000 none;
 }
 .green_warn {
   background-color:green;
   color:white;
   padding:1px 3px;
-  border: 1px #000079 solid;
+  border: 1px #000000 none;
+}
+.red_warn_bold {
+  background-color:red;
+  color:white;
+  padding:1px 3px;
+  border: 3px #0000FF solid;
+}
+.green_warn_bold {
+  background-color:green;
+  color:white;
+  padding:1px 3px;
+  border: 3px #FF0000 solid;
+}
+.square_warn_bold {
+  color:black;
+  font-weight:bold;
+  padding:1px 3px;
+  border: 3px #000000 solid;
 }
 .blue_warn {
   background-color:blue;
   color:white;
   padding:1px 3px;
-  border: 1px #000079 solid;
+  border: 1px #000000 none;
 }
 .gold_warn {
   background-color:gold;
   color:black;
   font-weight:bold;
   padding:1px 3px;
-  border: 1px #000079 solid;
+  border: 1px #000000 none;
 }
 .square_warn {
   color:black;
   font-weight:bold;
   padding:1px 3px;
-  border: 1px #000079 solid;
+  border: 1px #000000 dashed;
 }
 .small_note {
   font-size:0.3em;
