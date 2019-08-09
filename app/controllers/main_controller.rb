@@ -1385,13 +1385,13 @@ class MainController < ApplicationController
     else
       @btc_total_budget_warn = ""
     end
-    if eval(@ave_price_vs_ma) and @btc_price < eval(@ave_price_vs_ma)
-      @btc_price_warn = "green_warn"
+    if @k60m_ma10 and @btc_price < @k60m_ma10
+      @btc_price_warn = "cold_warn"
     end
     if eval(@ave_price_vs_ma) and @unit_ave_price > eval(@ave_price_vs_ma)
       @ave_price_warn = "red_warn"
     elsif @btc_price < @unit_ave_price
-      @ave_price_warn = "green_warn"
+      @ave_price_warn = "cold_warn"
     else
       @ave_price_warn = "square_warn"
     end
@@ -1833,6 +1833,8 @@ class MainController < ApplicationController
     p_budget = Param.find_by_name('btc_total_budget_warning')
     p_budget_content = p_budget.content+','+p_budget.value
     p_budget.update_attributes(:value => @total_usdt_twd,:content => p_budget_content)
+    # 清空下单log
+    clear_btc_order_log
     flash[:notice] = "比特幣投資成本已歸零，且已更新初始投资预算为#{@total_usdt_twd}"
     redirect_to :controller => :params
   end
