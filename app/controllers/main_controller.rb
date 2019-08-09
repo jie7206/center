@@ -1456,6 +1456,8 @@ class MainController < ApplicationController
     @try_set_level = params[:try_set_level] ? params[:try_set_level].to_f : 0.0
     @try_set_batch = params[:try_set_batch] ? params[:try_set_batch].to_f : 0.0
     @try_set_amount = params[:try_set_amount] ? params[:try_set_amount].to_f : 0.0
+    # 是否平仓
+    @clear_sell_all = true if params[:clear_sell_all] == '1'
   end
 
   # 设定表单计算模式
@@ -1588,12 +1590,12 @@ class MainController < ApplicationController
     max_buy_unit = @total_usdt_twd/@usd2twd/@try_buy_price
     adjust_buy_unit(max_buy_unit) if @try_buy_unit > max_buy_unit
     # 验证买入的进阶条件：是否大于BTC单次下单额度上限
-    adjust_buy_unit(@btc_order_limit/@usd2twd/@try_buy_price) if @btc_order_limit > 0 and  @try_buy_price*@try_buy_unit*@usd2twd > @btc_order_limit
+    adjust_buy_unit(@btc_order_limit/@usd2twd/@try_buy_price) if !@cal_mode == "BUY&SET" and @btc_order_limit > 0 and  @try_buy_price*@try_buy_unit*@usd2twd > @btc_order_limit
     # 验证卖出的基本条件
     max_sell_unit = @btc_sum_ex*-1
     adjust_buy_unit(max_sell_unit) if @try_buy_unit < max_sell_unit
     # 验证卖出的进阶条件：是否大于BTC单次下单额度上限
-    adjust_buy_unit(-1*@btc_order_limit/@usd2twd/@try_buy_price) if @btc_order_limit > 0 and  @try_buy_price*@try_buy_unit.abs*@usd2twd > @btc_order_limit
+    adjust_buy_unit(-1*@btc_order_limit/@usd2twd/@try_buy_price) if !@clear_sell_all and  !@cal_mode == "BUY&SET" and @btc_order_limit > 0 and  @try_buy_price*@try_buy_unit.abs*@usd2twd > @btc_order_limit
   end
 
   def adjust_buy_unit(max_buy_unit)
@@ -1661,7 +1663,7 @@ class MainController < ApplicationController
         adjust_level(new_total_cost)
       end
       # 卖太多
-      if @btc_order_limit > 0 and @ex_cost_twd - @btc_order_limit > new_total_cost
+      if !@clear_sell_all and @btc_order_limit > 0 and @ex_cost_twd - @btc_order_limit > new_total_cost
         new_total_cost = @ex_cost_twd - @btc_order_limit
         adjust_level(new_total_cost)
       end

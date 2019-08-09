@@ -17,11 +17,11 @@
   <span class="<%=@btc_price_warn%>">
   <%= link_to format("%.2f",@btc_price), "http://playruby.top:3002/main/kline_chart?symbol=#{@symbol}&period=5min", {:target => "_blank", :title => "汇率：C2T:#{@cny2twd}|U2T:#{@usd2twd}|U2C:#{@usd2cny}|U2H:#{@usdt2husd}"} %></span>|<span class="<%=@twd_profit_warn%>"><%=@btc_profit_twd%></span>|<span class="<%=@cny_profit_warn%>">¥<%=@btc_profit_cny%></span>|<span class="<%=@usd_profit_warn%>">$<%=@btc_profit_usd%></span>|<span class="<%=@btc_profit_warn%>"><%=format("%.1f", @btc_profit_rate)%>%</span><span title="点击后即可以平仓目标价卖出(预先保留要赚取的<%=@btc_harvest_unit%>BTC及包含每月<%=@btc_month_goal_twd%>|¥<%=@btc_month_goal_cny%>|$<%=@btc_month_goal_usd%>的收益)">
     <% if @btc_sum_ex-@btc_harvest_unit > 0 %>
-    <%= link_to "平仓:", "/main/btc_income?try_buy_price=#{@settle_price}&try_buy_unit=-#{show_btc_sum((@btc_sum_ex-@btc_harvest_unit).to_s)}" %>
+    <%= link_to "平仓:", "/main/btc_income?clear_sell_all=1&try_buy_price=#{@settle_price}&try_buy_unit=-#{show_btc_sum((@btc_sum_ex-@btc_harvest_unit).to_s)}" %>
     <% else %>
       平仓:
     <% end %>
-    <span class="<%=@harvest_unit_warn%>" title="点击后立刻以现价清仓全部卖出"><%= link_to format("%.4f",@settle_profit), "/main/btc_income?try_buy_price=#{@btc_price}&try_buy_unit=-#{show_btc_sum(@btc_sum_ex.to_s)}" %></span>|$<%=@settle_price%>|<%=link_to(@total_asset_value, {:controller => 'param_changes', :action => 'new', :param_id => '129'}, {:title => "¥#{(@total_asset_value/@cny2twd).to_i}|$#{(@total_asset_value/@usd2twd).to_i}", :target => '_blank'})%>|<span title="平均月收入：<%=@ave_month_income_twd%>|¥<%=@ave_month_income_cny%>|$<%=@ave_month_income_usd%>"><%=link_to(format("%.0f",(@ave_month_income_twd/10000.0))+"萬", {:action => "life_pay"}, {:target => "_blank"})%></span></span>
+    <span class="<%=@harvest_unit_warn%>" title="点击后立刻以现价清仓全部卖出"><%= link_to format("%.4f",@settle_profit), "/main/btc_income?clear_sell_all=1&try_buy_price=#{@btc_price}&try_buy_unit=-#{show_btc_sum(@btc_sum_ex.to_s)}" %></span>|$<%=@settle_price%>|<%=link_to(@total_asset_value, {:controller => 'param_changes', :action => 'new', :param_id => '129'}, {:title => "¥#{(@total_asset_value/@cny2twd).to_i}|$#{(@total_asset_value/@usd2twd).to_i}", :target => '_blank'})%>|<span title="平均月收入：<%=@ave_month_income_twd%>|¥<%=@ave_month_income_cny%>|$<%=@ave_month_income_usd%>"><%=link_to(format("%.0f",(@ave_month_income_twd/10000.0))+"萬", {:action => "life_pay"}, {:target => "_blank"})%></span></span>
   <br/>
 <% if @update_btc_price %>
 <%
@@ -128,7 +128,7 @@ l3_link = "/main/update_ave_price_vs_ma?value=@k1d_ma20"
     <span class="<%=@buy_unit_hint%>"><%end%>买卖<% if @try_trade_twd -%></span><%end%><input type="text" style="width:<%=@text_input_width%>px" name="try_buy_unit" value="<%=params[:try_buy_unit]%>" onclick="this.select()"><span class="<%=@set_price_hint%>">定价</span><input type="text" style="width:<%=@text_input_width%>px" name="try_set_price" value="<%=params[:try_set_price]%>" onclick="this.select()"><span class="<%=@ave_price_hint%>">均价</span><input type="text" style="width:<%=@text_input_width%>px" name="try_ave_price" value="<%=params[:try_ave_price]%>" onclick="this.select()">
     <span class="<%=@set_level_hint%>">仓位</span><input type="text" style="width:<%=@text_input_width%>px" name="try_set_level" value="<%=params[:try_set_level]%>" onclick="this.select()">
     <input type="submit" value="试算" style="margin-left:1em">
-    <% if @enable_order and (@cal_mode == "LEV" or @cal_mode == "BUY") and @try_buy_price != 0 and @try_buy_unit != 0 %>
+    <% if @clear_sell_all or (@enable_order and (@cal_mode == "LEV" or @cal_mode == "BUY") and @try_buy_price != 0 and @try_buy_unit != 0) %>
       <% @try_trade_type = @try_buy_unit > 0 ? '买进' : '卖出' %>
       <% cal_order_amount(@try_buy_price,@try_buy_unit) # 计算下单总额度 %>
       <%= link_to "下单(#{@try_trade_type}:#{show_btc_sum(@try_buy_unit.abs.to_s,6)} BTC 价格:#{@try_buy_price} 总额:#{@order_amount_twd}|¥#{@order_amount_cny}|$#{@order_amount_usd})", {:action => :place_btc_order, :price => @try_buy_price, :count => @try_buy_unit, :ave_price => @unit_ave_price}, :class => "order_button_link" -%>
