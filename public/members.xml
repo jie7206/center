@@ -1,0 +1,676 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<members type="array">
+  <member>
+    <birthday type="date">1992-03-02</birthday>
+    <birthday-still-unknow type="boolean">false</birthday-still-unknow>
+    <career nil="true"></career>
+    <classification>2</classification>
+    <conductor-id type="integer" nil="true"></conductor-id>
+    <created-at type="datetime">2014-11-12T01:30:10Z</created-at>
+    <email></email>
+    <id type="integer">282</id>
+    <interest nil="true"></interest>
+    <introducer-id type="integer" nil="true"></introducer-id>
+    <is-on-table type="boolean">false</is-on-table>
+    <is-team-leader type="boolean" nil="true"></is-team-leader>
+    <memo></memo>
+    <mobile></mobile>
+    <name>&#28504;&#39062;&#25919;</name>
+    <order-num type="integer">999</order-num>
+    <picture nil="true"></picture>
+    <pray-note></pray-note>
+    <school>3</school>
+    <sex>&#30007;</sex>
+    <updated-at type="datetime">2014-11-17T00:48:15Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">2014-11-10</birthday>
+    <birthday-still-unknow type="boolean">true</birthday-still-unknow>
+    <career nil="true"></career>
+    <classification>1</classification>
+    <conductor-id type="integer" nil="true"></conductor-id>
+    <created-at type="datetime">2014-11-10T02:14:55Z</created-at>
+    <email></email>
+    <id type="integer">277</id>
+    <interest nil="true"></interest>
+    <introducer-id type="integer">69</introducer-id>
+    <is-on-table type="boolean">false</is-on-table>
+    <is-team-leader type="boolean" nil="true"></is-team-leader>
+    <memo></memo>
+    <mobile></mobile>
+    <name>&#24247;&#23569;&#26519;</name>
+    <order-num type="integer">999</order-num>
+    <picture nil="true"></picture>
+    <pray-note></pray-note>
+    <school>none</school>
+    <sex>&#30007;</sex>
+    <updated-at type="datetime">2014-11-12T01:42:15Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">2014-11-10</birthday>
+    <birthday-still-unknow type="boolean">true</birthday-still-unknow>
+    <career nil="true"></career>
+    <classification>1</classification>
+    <conductor-id type="integer" nil="true"></conductor-id>
+    <created-at type="datetime">2014-11-10T02:10:53Z</created-at>
+    <email></email>
+    <id type="integer">274</id>
+    <interest nil="true"></interest>
+    <introducer-id type="integer">24</introducer-id>
+    <is-on-table type="boolean">false</is-on-table>
+    <is-team-leader type="boolean" nil="true"></is-team-leader>
+    <memo></memo>
+    <mobile></mobile>
+    <name>&#30333;&#25991;&#25996;</name>
+    <order-num type="integer">999</order-num>
+    <picture nil="true"></picture>
+    <pray-note>&#39034;&#21033;&#23398;&#20064;&#21407;&#29702;</pray-note>
+    <school>4</school>
+    <sex>&#30007;</sex>
+    <updated-at type="datetime">2014-11-10T02:10:53Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">2014-04-18</birthday>
+    <birthday-still-unknow type="boolean">true</birthday-still-unknow>
+    <career>1</career>
+    <classification>1</classification>
+    <conductor-id type="integer">6</conductor-id>
+    <created-at type="datetime">2014-04-18T10:41:49Z</created-at>
+    <email></email>
+    <id type="integer">259</id>
+    <interest></interest>
+    <introducer-id type="integer">24</introducer-id>
+    <is-on-table type="boolean">false</is-on-table>
+    <is-team-leader type="boolean">false</is-team-leader>
+    <memo></memo>
+    <mobile></mobile>
+    <name>&#26446;&#36229;</name>
+    <order-num type="integer">999</order-num>
+    <picture></picture>
+    <pray-note>&#37325;&#26032;&#23436;&#25972;&#23398;&#20064;&#21407;&#29702;</pray-note>
+    <school>3</school>
+    <sex>&#30007;</sex>
+    <updated-at type="datetime">2014-11-10T02:09:02Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">2014-11-12</birthday>
+    <birthday-still-unknow type="boolean">true</birthday-still-unknow>
+    <career nil="true"></career>
+    <classification>1</classification>
+    <conductor-id type="integer" nil="true"></conductor-id>
+    <created-at type="datetime">2014-11-12T01:41:02Z</created-at>
+    <email></email>
+    <id type="integer">283</id>
+    <interest nil="true"></interest>
+    <introducer-id type="integer">24</introducer-id>
+    <is-on-table type="boolean">false</is-on-table>
+    <is-team-leader type="boolean" nil="true"></is-team-leader>
+    <memo></memo>
+    <mobile></mobile>
+    <name>&#24464;&#20803;&#24378;</name>
+    <order-num type="integer">999</order-num>
+    <picture nil="true"></picture>
+    <pray-note></pray-note>
+    <school>4</school>
+    <sex>&#30007;</sex>
+    <updated-at type="datetime">2014-11-12T01:41:02Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">2014-11-17</birthday>
+    <birthday-still-unknow type="boolean">true</birthday-still-unknow>
+    <career nil="true"></career>
+    <classification>1.5</classification>
+    <conductor-id type="integer" nil="true"></conductor-id>
+    <created-at type="datetime">2014-11-17T00:32:56Z</created-at>
+    <email></email>
+    <id type="integer">284</id>
+    <interest nil="true"></interest>
+    <introducer-id type="integer">24</introducer-id>
+    <is-on-table type="boolean">false</is-on-table>
+    <is-team-leader type="boolean" nil="true"></is-team-leader>
+    <memo></memo>
+    <mobile></mobile>
+    <name>&#26446;&#23159;</name>
+    <order-num type="integer">999</order-num>
+    <picture nil="true"></picture>
+    <pray-note></pray-note>
+    <school></school>
+    <sex>&#22899;</sex>
+    <updated-at type="datetime">2014-11-17T00:32:56Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">2014-11-17</birthday>
+    <birthday-still-unknow type="boolean">true</birthday-still-unknow>
+    <career nil="true"></career>
+    <classification>1.5</classification>
+    <conductor-id type="integer" nil="true"></conductor-id>
+    <created-at type="datetime">2014-11-17T00:33:29Z</created-at>
+    <email></email>
+    <id type="integer">285</id>
+    <interest nil="true"></interest>
+    <introducer-id type="integer" nil="true"></introducer-id>
+    <is-on-table type="boolean">false</is-on-table>
+    <is-team-leader type="boolean" nil="true"></is-team-leader>
+    <memo></memo>
+    <mobile></mobile>
+    <name>&#21476;&#26195;&#26228;</name>
+    <order-num type="integer">999</order-num>
+    <picture nil="true"></picture>
+    <pray-note></pray-note>
+    <school></school>
+    <sex>&#22899;</sex>
+    <updated-at type="datetime">2014-11-17T00:33:29Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">2014-11-17</birthday>
+    <birthday-still-unknow type="boolean">true</birthday-still-unknow>
+    <career nil="true"></career>
+    <classification>1.5</classification>
+    <conductor-id type="integer" nil="true"></conductor-id>
+    <created-at type="datetime">2014-11-17T00:37:09Z</created-at>
+    <email></email>
+    <id type="integer">286</id>
+    <interest nil="true"></interest>
+    <introducer-id type="integer" nil="true"></introducer-id>
+    <is-on-table type="boolean">false</is-on-table>
+    <is-team-leader type="boolean" nil="true"></is-team-leader>
+    <memo></memo>
+    <mobile></mobile>
+    <name>&#21016;&#23431;</name>
+    <order-num type="integer">999</order-num>
+    <picture nil="true"></picture>
+    <pray-note></pray-note>
+    <school></school>
+    <sex>&#30007;</sex>
+    <updated-at type="datetime">2014-11-17T00:37:09Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">2014-11-10</birthday>
+    <birthday-still-unknow type="boolean">true</birthday-still-unknow>
+    <career nil="true"></career>
+    <classification>1</classification>
+    <conductor-id type="integer" nil="true"></conductor-id>
+    <created-at type="datetime">2014-11-10T02:14:13Z</created-at>
+    <email></email>
+    <id type="integer">276</id>
+    <interest nil="true"></interest>
+    <introducer-id type="integer">201</introducer-id>
+    <is-on-table type="boolean">true</is-on-table>
+    <is-team-leader type="boolean" nil="true"></is-team-leader>
+    <memo></memo>
+    <mobile></mobile>
+    <name>&#24339;&#30000;&#23792;</name>
+    <order-num type="integer">999</order-num>
+    <picture nil="true"></picture>
+    <pray-note></pray-note>
+    <school>none</school>
+    <sex>&#30007;</sex>
+    <updated-at type="datetime">2014-11-17T01:33:46Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">2013-07-07</birthday>
+    <birthday-still-unknow type="boolean">true</birthday-still-unknow>
+    <career>2</career>
+    <classification>3</classification>
+    <conductor-id type="integer">69</conductor-id>
+    <created-at type="datetime">2013-07-07T08:07:16Z</created-at>
+    <email></email>
+    <id type="integer">217</id>
+    <interest></interest>
+    <introducer-id type="integer">69</introducer-id>
+    <is-on-table type="boolean">false</is-on-table>
+    <is-team-leader type="boolean">false</is-team-leader>
+    <memo></memo>
+    <mobile></mobile>
+    <name>&#29579;&#22269;&#36229;</name>
+    <order-num type="integer">999</order-num>
+    <picture></picture>
+    <pray-note></pray-note>
+    <school></school>
+    <sex>&#30007;</sex>
+    <updated-at type="datetime">2014-11-17T00:49:06Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">1987-04-26</birthday>
+    <birthday-still-unknow type="boolean">false</birthday-still-unknow>
+    <career nil="true"></career>
+    <classification>1</classification>
+    <conductor-id type="integer" nil="true"></conductor-id>
+    <created-at type="datetime">2014-11-10T02:13:30Z</created-at>
+    <email></email>
+    <id type="integer">275</id>
+    <interest nil="true"></interest>
+    <introducer-id type="integer">24</introducer-id>
+    <is-on-table type="boolean">true</is-on-table>
+    <is-team-leader type="boolean" nil="true"></is-team-leader>
+    <memo></memo>
+    <mobile></mobile>
+    <name>&#33891;&#22825;</name>
+    <order-num type="integer">999</order-num>
+    <picture nil="true"></picture>
+    <pray-note></pray-note>
+    <school>none</school>
+    <sex>&#22899;</sex>
+    <updated-at type="datetime">2014-11-17T01:43:05Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">2014-11-12</birthday>
+    <birthday-still-unknow type="boolean">true</birthday-still-unknow>
+    <career nil="true"></career>
+    <classification>1</classification>
+    <conductor-id type="integer" nil="true"></conductor-id>
+    <created-at type="datetime">2014-11-12T01:18:40Z</created-at>
+    <email></email>
+    <id type="integer">281</id>
+    <interest nil="true"></interest>
+    <introducer-id type="integer">69</introducer-id>
+    <is-on-table type="boolean">true</is-on-table>
+    <is-team-leader type="boolean" nil="true"></is-team-leader>
+    <memo></memo>
+    <mobile></mobile>
+    <name>&#24352;&#31505;&#33509;</name>
+    <order-num type="integer">999</order-num>
+    <picture nil="true"></picture>
+    <pray-note></pray-note>
+    <school>3</school>
+    <sex>&#30007;</sex>
+    <updated-at type="datetime">2014-11-17T01:38:38Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">2013-06-16</birthday>
+    <birthday-still-unknow type="boolean">true</birthday-still-unknow>
+    <career>1</career>
+    <classification>3</classification>
+    <conductor-id type="integer">186</conductor-id>
+    <created-at type="datetime">2013-06-16T21:34:56Z</created-at>
+    <email></email>
+    <id type="integer">210</id>
+    <interest></interest>
+    <introducer-id type="integer" nil="true"></introducer-id>
+    <is-on-table type="boolean">true</is-on-table>
+    <is-team-leader type="boolean">false</is-team-leader>
+    <memo></memo>
+    <mobile>188-1136-7162</mobile>
+    <name>&#24352;&#32005;&#36557;</name>
+    <order-num type="integer">999</order-num>
+    <picture></picture>
+    <pray-note>&#26469;&#21442;&#21152;7&#26376;&#20221;&#19977;&#26085;&#35838;&#31243;</pray-note>
+    <school></school>
+    <sex>&#30007;</sex>
+    <updated-at type="datetime">2014-11-17T01:30:18Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">2014-11-10</birthday>
+    <birthday-still-unknow type="boolean">true</birthday-still-unknow>
+    <career nil="true"></career>
+    <classification>1</classification>
+    <conductor-id type="integer" nil="true"></conductor-id>
+    <created-at type="datetime">2014-11-10T03:03:32Z</created-at>
+    <email></email>
+    <id type="integer">280</id>
+    <interest nil="true"></interest>
+    <introducer-id type="integer">256</introducer-id>
+    <is-on-table type="boolean">false</is-on-table>
+    <is-team-leader type="boolean" nil="true"></is-team-leader>
+    <memo></memo>
+    <mobile></mobile>
+    <name>&#29579;&#26195;&#22372;</name>
+    <order-num type="integer">999</order-num>
+    <picture nil="true"></picture>
+    <pray-note></pray-note>
+    <school>none</school>
+    <sex>&#30007;</sex>
+    <updated-at type="datetime">2014-11-10T03:03:32Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">1984-09-12</birthday>
+    <birthday-still-unknow type="boolean">false</birthday-still-unknow>
+    <career>0</career>
+    <classification>4</classification>
+    <conductor-id type="integer">6</conductor-id>
+    <created-at type="datetime">2009-08-22T01:15:01Z</created-at>
+    <email>xianminying@hotmail.com</email>
+    <id type="integer">6</id>
+    <interest></interest>
+    <introducer-id type="integer">44</introducer-id>
+    <is-on-table type="boolean">false</is-on-table>
+    <is-team-leader type="boolean">true</is-team-leader>
+    <memo></memo>
+    <mobile>152-1021-5174</mobile>
+    <name>&#20924;&#25935;&#29801;</name>
+    <order-num type="integer">6</order-num>
+    <picture>m6.jpg</picture>
+    <pray-note></pray-note>
+    <school>&#21271;&#22823;</school>
+    <sex>&#22899;</sex>
+    <updated-at type="datetime">2014-11-05T05:05:24Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">1989-06-09</birthday>
+    <birthday-still-unknow type="boolean">false</birthday-still-unknow>
+    <career>0</career>
+    <classification>4</classification>
+    <conductor-id type="integer">2</conductor-id>
+    <created-at type="datetime">2009-08-22T02:34:58Z</created-at>
+    <email></email>
+    <id type="integer">24</id>
+    <interest></interest>
+    <introducer-id type="integer" nil="true"></introducer-id>
+    <is-on-table type="boolean">false</is-on-table>
+    <is-team-leader type="boolean">false</is-team-leader>
+    <memo>2013-05-19 	&#21246;&#20908;&#38525; 	&#20027;&#26085;&#31150;&#25308;-&#28858;&#20309;&#25105;&#20497;&#24517;&#38920;&#24859;&#25973;&#20154; 	&#26519;&#20181;&#20625; 	
+2013-04-28 	&#21246;&#20908;&#38525; 	&#20027;&#26085;&#31150;&#25308;-&#31070;&#22240;&#33879;&#20154;&#39006;&#30340;&#28961;&#30693;&#32780;&#24754;&#20663; 	&#26519;&#20181;&#20625; 	
+2013-04-21 	&#21246;&#20908;&#38525; 	&#20027;&#26085;&#31150;&#25308;-&#20320;&#29694;&#22312;&#24184;&#31119;&#21966; 	&#26519;&#20181;&#20625; 	
+2013-04-07 	&#21246;&#20908;&#38525; 	&#20027;&#26085;&#31150;&#25308;-&#31070;&#22914;&#20309;&#25945;&#32946;&#20154;&#39006; 	&#26519;&#20181;&#20625; 	
+2013-03-31 	&#21246;&#20908;&#38525; 	&#20027;&#26085;&#31150;&#25308;-&#25945;&#32946;&#30340;&#30446;&#30340;&#33287;&#27161;&#28310; 	&#26519;&#20181;&#20625; 	
+2013-03-24 	&#21246;&#20908;&#38525; 	&#20027;&#26085;&#31150;&#25308;-&#25945;&#32946;&#30340;&#30495;&#27491;&#24847;&#32681;2 	&#26519;&#20181;&#20625; 	
+2013-03-17 	&#21246;&#20908;&#38525; 	&#20027;&#26085;&#31150;&#25308;-&#25945;&#32946;&#30340;&#30495;&#27491;&#24847;&#32681; 	&#26519;&#20181;&#20625; 	
+2013-03-10 	&#21246;&#20908;&#38525; 	&#20027;&#26085;&#31150;&#25308;-&#20154;&#22312;&#22825;&#23449;&#20013;&#30340;&#20301;&#32622; 	&#26519;&#20181;&#20625; 	
+2013-03-03 	&#21246;&#20908;&#38525; 	&#35469;&#30693;&#33287;&#24863;&#21463;&#31070;&#30340;&#24515;&#24773; 	&#26519;&#20181;&#20625; 	
+2013-03-02 	&#21246;&#20908;&#38525; 	&#24207;&#35542;&#33287;&#21109;&#36896;&#21407;&#29702; 	&#26519;&#20181;&#20625; 	
+2013-02-19 	&#21246;&#20908;&#38525; 	&#20108;&#26085;&#30495;&#29238;&#35242;&#36335;&#31243;&#38728;&#20462;&#26371; 	&#26519;&#20181;&#20625; 	
+2013-01-13 	&#21246;&#20908;&#38525; 	&#20027;&#26085;&#31150;&#25308;-&#26032;&#26371;&#21729;&#19968;&#23565;&#19968;&#39178;&#25104;&#25945;&#32946;&#26041;&#27861; 	&#26519;&#20181;&#20625; 	
+2013-01-06 	&#21246;&#20908;&#38525; 	&#20027;&#26085;&#31150;&#25308;-&#29694;&#20195;&#25885;&#29702; 	&#26519;&#20181;&#20625; 	
+2012-12-30 	&#21246;&#20908;&#38525; 	&#20027;&#26085;&#31150;&#25308;-&#29694;&#20195;&#25885;&#29702; 	&#26519;&#20181;&#20625; 	
+2012-12-24 	&#21246;&#20908;&#38525; 	&#19977;&#26085;&#21407;&#29702;&#38728;&#20462;&#26371;(&#22522;&#20803;&#31680;&#26781;&#20214;) 	&#26519;&#20181;&#20625; 	
+2012-12-23 	&#21246;&#20908;&#38525; 	&#20027;&#26085;&#31150;&#25308;-&#29694;&#20195;&#25885;&#29702; 	&#26519;&#20181;&#20625; 	
+2012-10-21 	&#21246;&#20908;&#38525; 	&#20027;&#26085;&#31150;&#25308;-&#31070;&#30340;&#26088;&#24847;&#33287;&#20491;&#20154;&#23436;&#20840;3 	&#26519;&#20181;&#20625; 	
+2012-10-19 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-10-18 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-10-17 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-10-16 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-10-15 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-10-14 	&#21246;&#20908;&#38525; 	&#20027;&#26085;&#31150;&#25308;-&#31070;&#30340;&#26088;&#24847;&#33287;&#20491;&#20154;&#23436;&#20840;2 	&#26519;&#20181;&#20625; 	
+2012-10-13 	&#21246;&#20908;&#38525; 	&#19968;&#26085;&#21407;&#29702;(&#19977;&#22823;&#31069;&#31119;&#23436;) 	&#26519;&#20181;&#20625; 	
+2012-10-12 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-10-11 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-10-10 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-10-09 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-10-08 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-10-07 	&#21246;&#20908;&#38525; 	&#20027;&#26085;&#31150;&#25308;-&#31070;&#30340;&#26088;&#24847;&#33287;&#20491;&#20154;&#23436;&#20840; 	&#26519;&#20181;&#20625; 	
+2012-09-29 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-09-28 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-09-27 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-09-26 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-09-25 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-09-24 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-09-21 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-09-20 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-09-19 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-09-18 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-09-17 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-09-15 	&#21246;&#20908;&#38525; 	&#38728;&#30028;&#33287;&#32854;&#36066;&#25945;&#32946;&#24433;&#29255; 	&#26519;&#20181;&#20625; 	
+2012-09-14 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-09-13 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-09-12 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-09-11 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-09-10 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-09-08 	&#21246;&#20908;&#38525; 	&#19968;&#26085;&#21407;&#29702;&#31934;&#33775;&#23436; 	&#26519;&#20181;&#20625; 	
+2012-09-07 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-09-06 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-09-05 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-09-04 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-09-03 	&#21246;&#20908;&#38525; 	40&#26085;&#21407;&#29702;&#35611;&#32681;&#35347;&#32244; 	&#26519;&#20181;&#20625; 	
+2012-08-30 	&#21246;&#20908;&#38525; 	&#19968;&#26085;&#20449;&#20208;&#38728;&#20462;&#26371; 	&#23391;&#40599; 	
+2012-08-29 	&#21246;&#20908;&#38525; 	&#20841;&#26085;&#20449;&#20208;&#38728;&#20462;&#26371; 	&#26519;&#20181;&#20625; 	
+2012-08-28 	&#21246;&#20908;&#38525; 	&#20841;&#26085;&#20449;&#20208;&#38728;&#20462;&#26371; 	&#26519;&#20181;&#20625; 	
+2012-07-24 	&#21246;&#20908;&#38525; 	&#20449;&#20208;&#33287;&#29983;&#27963; 	&#26519;&#20181;&#20625; 	
+2012-07-23 	&#21246;&#20908;&#38525; 	&#20449;&#20208;&#33287;&#29983;&#27963; 	&#26519;&#20181;&#20625; 	
+2012-07-22 	&#21246;&#20908;&#38525; 	&#20027;&#26085;&#31150;&#25308;-&#25104;&#29087;&#30340;&#20154;&#26684; 	&#26519;&#20181;&#20625; 	
+2012-07-15 	&#21246;&#20908;&#38525; 	&#38728;&#30028;&#30340;&#23526;&#30456;&#33287;&#22320;&#19978;&#29983;&#27963; 	&#26519;&#20181;&#20625; 	
+2012-07-14 	&#21246;&#20908;&#38525; 	&#38728;&#30028;&#30340;&#23526;&#30456;&#33287;&#22320;&#19978;&#29983;&#27963; 	&#26519;&#20181;&#20625; 	
+2012-07-13 	&#21246;&#20908;&#38525; 	&#20841;&#26085;&#31069;&#31119;&#38728;&#20462;&#26371; 	&#26519;&#20181;&#20625; 	
+2012-07-12 	&#21246;&#20908;&#38525; 	&#20841;&#26085;&#31069;&#31119;&#38728;&#20462;&#26371; 	&#26519;&#20181;&#20625; 	
+2012-07-11 	&#21246;&#20908;&#38525; 	&#22235;&#26085;&#20449;&#20208;&#29983;&#27963;&#38728;&#20462;&#26371; 	&#26519;&#20181;&#20625; 	
+2012-07-10 	&#21246;&#20908;&#38525; 	&#22235;&#26085;&#20449;&#20208;&#29983;&#27963;&#38728;&#20462;&#26371; 	&#26519;&#20181;&#20625; 	
+2012-07-09 	&#21246;&#20908;&#38525; 	&#22235;&#26085;&#20449;&#20208;&#29983;&#27963;&#38728;&#20462;&#26371; 	&#26519;&#20181;&#20625; 	
+2012-07-08 	&#21246;&#20908;&#38525; 	&#22235;&#26085;&#20449;&#20208;&#29983;&#27963;&#38728;&#20462;&#26371; 	&#26519;&#20181;&#20625; 	
+2012-07-07 	&#21246;&#20908;&#38525; 	&#20116;&#26085;&#21407;&#29702;&#38728;&#20462;&#26371; 	&#26519;&#20181;&#20625; 	
+2012-07-06 	&#21246;&#20908;&#38525; 	&#20116;&#26085;&#21407;&#29702;&#38728;&#20462;&#26371; 	&#26519;&#20181;&#20625; 	
+2012-07-05 	&#21246;&#20908;&#38525; 	&#20116;&#26085;&#21407;&#29702;&#38728;&#20462;&#26371; 	&#26519;&#20181;&#20625; 	
+2012-07-04 	&#21246;&#20908;&#38525; 	&#20116;&#26085;&#21407;&#29702;&#38728;&#20462;&#26371; 	&#26519;&#20181;&#20625; 	
+2012-07-03 	&#21246;&#20908;&#38525; 	&#20116;&#26085;&#21407;&#29702;&#38728;&#20462;&#26371; 	&#26519;&#20181;&#20625; 	
+
+&#20849;&#35336; 72 &#31558; </memo>
+    <mobile>135-2250-8156</mobile>
+    <name>&#21246;&#20908;&#38525;</name>
+    <order-num type="integer">24</order-num>
+    <picture>GouDongYang.jpg</picture>
+    <pray-note></pray-note>
+    <school></school>
+    <sex>&#22899;</sex>
+    <updated-at type="datetime">2014-11-12T01:32:42Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">1985-05-02</birthday>
+    <birthday-still-unknow type="boolean">false</birthday-still-unknow>
+    <career>0</career>
+    <classification>4</classification>
+    <conductor-id type="integer">2</conductor-id>
+    <created-at type="datetime">2009-09-07T14:07:19Z</created-at>
+    <email>634510399@QQ.COM</email>
+    <id type="integer">69</id>
+    <interest>&#27494;&#34899;&#12289;&#33258;&#28982;</interest>
+    <introducer-id type="integer">27</introducer-id>
+    <is-on-table type="boolean">false</is-on-table>
+    <is-team-leader type="boolean">false</is-team-leader>
+    <memo>&#21407;&#29702;&#65292;&#30495;&#29238;&#27597;&#30340;&#36335;&#31243;&#65292;&#36824;&#26377;&#20449;&#20208;&#29983;&#27963;&#31616;&#21333;&#21548;&#20102;&#19968;&#36941;&#12290;</memo>
+    <mobile>137-1878-1442</mobile>
+    <name>&#21608;&#36234;</name>
+    <order-num type="integer">3</order-num>
+    <picture>m69.jpg</picture>
+    <pray-note>1)&#24076;&#26395;&#33021;&#35731;&#20182;&#25509;&#21463;&#26356;&#22810;&#20449;&#20208;&#30340;&#25945;&#32946;&#33287;&#23526;&#39636;&#36335;&#31243;&#30340;&#35347;&#32244; 2)&#24076;&#26395;&#33021;&#38918;&#21033;&#25509;&#21463;&#36889;&#19968;&#27425;&#30340;&#31069;&#31119; 3)&#24076;&#26395;&#20182;&#30340;&#24037;&#20316;&#29872;&#22659;&#19981;&#35201;&#32102;&#20182;&#22826;&#22823;&#30340;&#35430;&#29001;</pray-note>
+    <school>&#20154;&#25991;</school>
+    <sex>&#30007;</sex>
+    <updated-at type="datetime">2013-06-13T14:23:10Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">1993-01-19</birthday>
+    <birthday-still-unknow type="boolean">false</birthday-still-unknow>
+    <career>2</career>
+    <classification>3</classification>
+    <conductor-id type="integer">180</conductor-id>
+    <created-at type="datetime">2013-06-22T01:03:10Z</created-at>
+    <email></email>
+    <id type="integer">212</id>
+    <interest></interest>
+    <introducer-id type="integer">69</introducer-id>
+    <is-on-table type="boolean">true</is-on-table>
+    <is-team-leader type="boolean">false</is-team-leader>
+    <memo>&#39640;&#20013;&#27605;&#19994;,&#24605;&#24819;&#21333;&#32431;</memo>
+    <mobile></mobile>
+    <name>&#38472;&#23431;&#27901;</name>
+    <order-num type="integer">3</order-num>
+    <picture></picture>
+    <pray-note>1&#65289;&#21608;&#20108;~&#20116;&#19968;&#20010;&#19979;&#21320;&#26469;&#21548;&#23436;&#19968;&#26085;&#21407;&#29702;(&#22797;&#24402;&#37096;&#20998;)
+2&#65289;&#26469;&#20013;&#24515;&#20307;&#39564;&#35757;&#35835;&#20250;</pray-note>
+    <school></school>
+    <sex>&#30007;</sex>
+    <updated-at type="datetime">2014-11-12T01:29:12Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">1984-04-28</birthday>
+    <birthday-still-unknow type="boolean">false</birthday-still-unknow>
+    <career>2</career>
+    <classification>4</classification>
+    <conductor-id type="integer">1</conductor-id>
+    <created-at type="datetime">2014-03-30T11:36:19Z</created-at>
+    <email></email>
+    <id type="integer">256</id>
+    <interest></interest>
+    <introducer-id type="integer" nil="true"></introducer-id>
+    <is-on-table type="boolean">false</is-on-table>
+    <is-team-leader type="boolean">false</is-team-leader>
+    <memo></memo>
+    <mobile></mobile>
+    <name>&#26954;&#29801;</name>
+    <order-num type="integer">999</order-num>
+    <picture></picture>
+    <pray-note>&#36523;&#20307;&#24674;&#22797;&#20581;&#24247;&#65292;&#31069;&#31119;</pray-note>
+    <school></school>
+    <sex>&#22899;</sex>
+    <updated-at type="datetime">2014-11-12T01:31:06Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">1981-01-14</birthday>
+    <birthday-still-unknow type="boolean">false</birthday-still-unknow>
+    <career nil="true"></career>
+    <classification>3</classification>
+    <conductor-id type="integer" nil="true"></conductor-id>
+    <created-at type="datetime">2014-11-10T02:31:58Z</created-at>
+    <email></email>
+    <id type="integer">278</id>
+    <interest nil="true"></interest>
+    <introducer-id type="integer" nil="true"></introducer-id>
+    <is-on-table type="boolean">false</is-on-table>
+    <is-team-leader type="boolean" nil="true"></is-team-leader>
+    <memo></memo>
+    <mobile></mobile>
+    <name>&#22338;&#35895;&#30693;&#20154;</name>
+    <order-num type="integer">999</order-num>
+    <picture nil="true"></picture>
+    <pray-note></pray-note>
+    <school></school>
+    <sex>&#30007;</sex>
+    <updated-at type="datetime">2014-11-10T02:31:58Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">1974-12-02</birthday>
+    <birthday-still-unknow type="boolean">true</birthday-still-unknow>
+    <career nil="true"></career>
+    <classification>4</classification>
+    <conductor-id type="integer" nil="true"></conductor-id>
+    <created-at type="datetime">2014-11-10T02:39:18Z</created-at>
+    <email></email>
+    <id type="integer">279</id>
+    <interest nil="true"></interest>
+    <introducer-id type="integer" nil="true"></introducer-id>
+    <is-on-table type="boolean">false</is-on-table>
+    <is-team-leader type="boolean" nil="true"></is-team-leader>
+    <memo></memo>
+    <mobile></mobile>
+    <name>&#26519;&#20181;&#20625;</name>
+    <order-num type="integer">999</order-num>
+    <picture nil="true"></picture>
+    <pray-note></pray-note>
+    <school></school>
+    <sex>&#30007;</sex>
+    <updated-at type="datetime">2014-12-08T00:57:06Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">2014-11-24</birthday>
+    <birthday-still-unknow type="boolean">true</birthday-still-unknow>
+    <career nil="true"></career>
+    <classification>1.5</classification>
+    <conductor-id type="integer" nil="true"></conductor-id>
+    <created-at type="datetime">2014-11-24T00:49:24Z</created-at>
+    <email></email>
+    <id type="integer">287</id>
+    <interest nil="true"></interest>
+    <introducer-id type="integer" nil="true"></introducer-id>
+    <is-on-table type="boolean">false</is-on-table>
+    <is-team-leader type="boolean" nil="true"></is-team-leader>
+    <memo></memo>
+    <mobile></mobile>
+    <name>&#26361;&#26195;&#25935;</name>
+    <order-num type="integer">999</order-num>
+    <picture nil="true"></picture>
+    <pray-note></pray-note>
+    <school></school>
+    <sex>&#22899;</sex>
+    <updated-at type="datetime">2014-11-24T00:52:51Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">2014-12-01</birthday>
+    <birthday-still-unknow type="boolean">true</birthday-still-unknow>
+    <career nil="true"></career>
+    <classification>1.5</classification>
+    <conductor-id type="integer" nil="true"></conductor-id>
+    <created-at type="datetime">2014-12-01T00:27:30Z</created-at>
+    <email></email>
+    <id type="integer">288</id>
+    <interest nil="true"></interest>
+    <introducer-id type="integer">212</introducer-id>
+    <is-on-table type="boolean">false</is-on-table>
+    <is-team-leader type="boolean" nil="true"></is-team-leader>
+    <memo></memo>
+    <mobile></mobile>
+    <name>&#33298;&#30922;</name>
+    <order-num type="integer">999</order-num>
+    <picture nil="true"></picture>
+    <pray-note></pray-note>
+    <school></school>
+    <sex>&#30007;</sex>
+    <updated-at type="datetime">2014-12-01T00:27:30Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">1991-11-19</birthday>
+    <birthday-still-unknow type="boolean">false</birthday-still-unknow>
+    <career>0</career>
+    <classification>4</classification>
+    <conductor-id type="integer">271</conductor-id>
+    <created-at type="datetime">2012-07-23T13:28:28Z</created-at>
+    <email></email>
+    <id type="integer">180</id>
+    <interest></interest>
+    <introducer-id type="integer">0</introducer-id>
+    <is-on-table type="boolean">false</is-on-table>
+    <is-team-leader type="boolean">false</is-team-leader>
+    <memo></memo>
+    <mobile></mobile>
+    <name>&#21016;&#30456;&#19996;</name>
+    <order-num type="integer">999</order-num>
+    <picture>LiuXiangDong.jpg</picture>
+    <pray-note></pray-note>
+    <school>&#20854;&#20182;</school>
+    <sex>&#30007;</sex>
+    <updated-at type="datetime">2014-11-05T04:55:13Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">1992-10-19</birthday>
+    <birthday-still-unknow type="boolean">false</birthday-still-unknow>
+    <career>1</career>
+    <classification>2</classification>
+    <conductor-id type="integer">271</conductor-id>
+    <created-at type="datetime">2013-04-29T22:44:55Z</created-at>
+    <email></email>
+    <id type="integer">201</id>
+    <interest></interest>
+    <introducer-id type="integer" nil="true"></introducer-id>
+    <is-on-table type="boolean">true</is-on-table>
+    <is-team-leader type="boolean">false</is-team-leader>
+    <memo></memo>
+    <mobile>135-2274-9263</mobile>
+    <name>&#24352;&#25104;&#36001;</name>
+    <order-num type="integer">2</order-num>
+    <picture>ZhangChengCai.jpg</picture>
+    <pray-note>1)&#21442;&#21152;7&#26376;&#20221;3&#26085;&#35838;&#31243;
+2)&#26469;&#20013;&#24515;&#20307;&#39564;&#35757;&#35835;&#20250;!</pray-note>
+    <school></school>
+    <sex>&#30007;</sex>
+    <updated-at type="datetime">2014-11-12T01:31:26Z</updated-at>
+  </member>
+  <member>
+    <birthday type="date">2014-12-06</birthday>
+    <birthday-still-unknow type="boolean">true</birthday-still-unknow>
+    <career nil="true"></career>
+    <classification>1</classification>
+    <conductor-id type="integer" nil="true"></conductor-id>
+    <created-at type="datetime">2014-12-06T02:35:54Z</created-at>
+    <email></email>
+    <id type="integer">289</id>
+    <interest nil="true"></interest>
+    <introducer-id type="integer">69</introducer-id>
+    <is-on-table type="boolean">false</is-on-table>
+    <is-team-leader type="boolean" nil="true"></is-team-leader>
+    <memo></memo>
+    <mobile></mobile>
+    <name>&#40654;&#25391;&#23431;</name>
+    <order-num type="integer">999</order-num>
+    <picture nil="true"></picture>
+    <pray-note></pray-note>
+    <school>4</school>
+    <sex>&#30007;</sex>
+    <updated-at type="datetime">2014-12-06T02:35:54Z</updated-at>
+  </member>
+</members>

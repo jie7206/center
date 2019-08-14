@@ -1,0 +1,16 @@
+<h2 style="text-align:center">手機佈局WoToken錢包收益試算</h2>
+<% @input_size = 11 # 文字框的宽度 %>
+<%
+# 提取储存值
+t = value_of("params_of_wor_plan").split("&").map {|s| s.split("=")[1]}
+%>
+<% form_tag '/main/cal_wor_plan', :method => :get do -%>
+    <table width="400" align="center" style="background-color:#d8e5f8;border:1px solid;margin-top:5px;padding:7px" id="main_table">
+        <tr><td align="right">投资试算结束日： </td><td><%= text_field_tag "end_date", Date.today+1.year, :size => @input_size %></td></tr>
+        <tr><td align="right">智能筛选单位数： </td><td><%= text_field_tag "smart_unit", 0, :size => @input_size, :onclick => 'this.select();' %></td></tr>
+<% wotoken_phone_arr.each_with_index do |name, idx| %>
+        <tr><td align="right"><%=name%>单位数： </td><td><%= text_field_tag "t#{idx+1}", t[idx], :size => @input_size, :onclick => 'this.select();' %></td></tr>
+<% end %>
+        <tr><td align="center" colspan="2"><br/><%= submit_tag "顯示試算結果", :class => :submit %></td></tr>
+   </table>
+<% end -%>

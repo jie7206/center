@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data>
+	
+	<!-- 外幣對新台幣匯率表 -->
+	<exchange_rates>
+		<currency code="NTD" name="新台幣" value="1"/>
+		<currency code="MCY" name="人民幣" value="5.045"/>
+		<currency code="USD" name="美金" value="30.887"/>
+		<currency code="KRW" name="韓圜" value="0.0278"/>
+	</exchange_rates>
+	
+	<!-- 預設顯示的幣別 -->
+	<default_currency code="MCY"/>
+	
+</data>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data>
+	
+	<!-- 外幣對新台幣匯率表 -->
+	<exchange_rates>
+		<currency code="NTD" name="新台幣" value="1"/>
+		<currency code="MCY" name="人民幣" value="5.045"/>
+		<currency code="USD" name="美金" value="30.887"/>
+		<currency code="KRW" name="韓圜" value="0.0278"/>
+	</exchange_rates>
+	
+	<!-- 預設顯示的幣別 -->
+	<default_currency code="MCY"/>
+	
+	<!-- 所有流動資產列表 -->
+	<flow_assets>
+
+		<!-- 現金 -->
+		<item title="仕傑的人民幣百鈔" amount="1600" currency="MCY"/>
+		<item title="仕傑的人民幣現金" amount="120" currency="MCY"/>
+		<item title="孟麗的人民幣現金" amount="0" currency="MCY"/>
+		<item title="新台幣現金" amount="2250" currency="NTD"/>
+		<item title="韓圜現金" amount="120000" currency="KRW"/>
+		
+		<!-- 銀行存款 -->
+		<item title="我的中國銀行人民幣定存" amount="41000" currency="MCY"/>
+		<item title="我的中國銀行人民幣帳戶" amount="60" currency="MCY"/>
+		<item title="我的中國工商銀行" amount="1629.75" currency="MCY"/>
+		<item title="孟麗的中國銀行人民幣帳戶" amount="150" currency="MCY"/>		
+		<item title="中國建設銀行(含網銀，帳號：6227000011150078491)" amount="93" currency="MCY"/>
+		<item title="中國建設銀行(證券卡)" amount="1000" currency="MCY"/>		
+		<item title="支付寶卡通" amount="0" currency="MCY"/>
+		<item title="支付寶餘額" amount="6.90" currency="MCY"/>		
+		<item title="孟麗的中國銀行美元帳戶" amount="3" currency="USD"/>
+		<item title="台新天母活儲存款(2017-10-0004763-1)" amount="22213" currency="NTD"/>
+		<item title="台新建北活儲存款(台北總公司-0628869,003-15-062886-0-00)" amount="10227" currency="NTD"/>
+		<item title="台新建北活儲存款(003-19-152498-1-00)" amount="0" currency="NTD"/>
+		<item title="中國信託仁愛分行(152540007877)" amount="179" currency="NTD"/>
+		<item title="中華郵政儲金" amount="200" currency="NTD"/>
+		<item title="華僑銀行" amount="107" currency="NTD"/>
+		<item title="國泰世華銀行活存戶" amount="211" currency="NTD"/>
+		<item title="國泰世華銀行證券戶" amount="97" currency="NTD"/>
+		<item title="合作金庫銀行" amount="447" currency="NTD"/>
+		<item title="上海銀行" amount="74" currency="NTD"/>
+		<item title="華南銀行" amount="206" currency="NTD"/>
+		<item title="台北銀行" amount="325" currency="NTD"/>
+		<item title="中興銀行" amount="100" currency="NTD"/>
+		<item title="台灣銀行(ezPay)" amount="300" currency="NTD"/>
+		
+		<!-- 有價證券 -->
+		<item title="台証股票現值" amount="2956" currency="NTD"/>
+		<item title="中國信託基金投資(貝萊德世界礦業基金-歐元-0341)" amount="6196" currency="NTD"/>
+
+	</flow_assets>
+	
+	<!-- 每月生活費預算表 -->
+	<month_use>
+		
+		<!-- 住 -->
+		<item title="房租" amount="3000" currency="MCY"/>
+		<item title="水電費" amount="200" currency="MCY"/>
+		
+		<!-- 食 -->
+		<item title="伙食費" amount="700" currency="MCY"/>
+		<item title="柴米油鹽" amount="100" currency="MCY"/>
+		<item title="文心奶粉費" amount="300" currency="MCY"/>
+		
+		<!-- 育 -->
+		<item title="文心教育費" amount="1400" currency="MCY"/>
+		
+		
+		<!-- 用 -->
+		<item title="孝融尿布費" amount="300" currency="MCY"/>
+		<item title="家居用品費" amount="100" currency="MCY"/>
+		
+		<!-- 理財 -->
+		<!--
+			孟麗太平一諾千金終身壽險20萬(001003495896008) : 9020
+			孟麗太平福禄双至终身寿险10萬 : 3260
+			孟麗太平综合意外伤害保险40萬 : 800
+			孟麗太平综合意外伤害保险附加住院醫療 : 633.5
+			文心太平陽光天使少兒兩全保險(001003495906008) : 512
+			文心太平附加陽光天使少兒重大疾病保險 : 67
+			文心太平狀元附加大學教育年金保險 : 2123
+			文心太平真愛附加豁免保險費定期壽險 : 68.6
+		-->		
+		<item title="保險費" amount="1374" currency="MCY"/>
+		
+		<!-- 個人 -->
+		<!--
+			仕傑:
+					工作日伙食費 : 100
+					手機費 : 100
+					買書費 : 50
+					交通費 : 15					
+					IP電話卡 : 25
+					備用金 : 100
+			孟麗:
+					交通費 : 50
+					手機費 : 100
+					備用金 : 200			
+		-->
+		<item title="仕傑個人用" amount="390" currency="MCY"/>
+		<item title="孟麗個人用" amount="350" currency="MCY"/>
+		
+	</month_use>
+	
+	<!-- 預計的收入項目 -->
+	<plan_get>
+		<item title="拿到工資後存款" amount="0" currency="MCY"/>
+	</plan_get>
+	
+	<!-- 預計的支出項目 -->
+	<plan_use>
+		<item title="回台機票(兩大兩小)" amount="12000" currency="MCY"/>
+		<item title="單眼相機(Nikon D5000)" amount="5000" currency="MCY"/>
+		<item title="佳宝水族箱R138" amount="220" currency="MCY"/>
+	</plan_use>
+		
+</data>

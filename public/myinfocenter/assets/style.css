@@ -1,0 +1,52 @@
+Application {
+	font-family: "微軟正黑體";
+	color: #FFFFFF;
+}
+Button {
+	font-size: 12px;
+	color: #555555;
+	letter-spacing: 1px;			
+}
+Label {
+	color: #555555;
+	letterSpacing:1;
+	textAlign: left;
+}
+ToolTip {
+	font-family: "微軟正黑體";
+	fontSize: 14;
+	color: #AA0000;
+	backgroundColor: #FFFFCC;
+	corner-radius:4;
+	padding: 3px;
+}
+AmPieChart {
+	color: #555555;
+	fontSize: 14;
+}		
+.titleLabel {
+	background-color: #FF0000;
+}
+.littleName {
+	font-size: 15px;
+	text-align: left;
+}
+.newsTextArea {
+	color: #555555;
+	font-size: 13px;
+	text-align: left;
+	font-family: "SimSun";
+	letter-spacing: 1px;
+}
+.lifeItemBar { 
+    font-size: 14px; 
+    background-color: #FFFFFF;
+}
+.amchartsCategoryAxis {
+    font-size: 12px; 
+    color: #555555;	
+}
+.amchartsAmBalloon {
+    font-size: 13px; 
+    color: #FFFFFF;	
+}

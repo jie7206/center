@@ -127,6 +127,7 @@ l3_link = "/main/update_ave_price_vs_ma?value=@k1d_ma20"
     <% if @try_trade_twd -%>
     <span class="<%=@buy_unit_hint%>"><%end%>买卖<% if @try_trade_twd -%></span><%end%><input type="text" style="width:<%=@text_input_width%>px" name="try_buy_unit" value="<%=params[:try_buy_unit]%>" onclick="this.select()"><span class="<%=@set_price_hint%>">定价</span><input type="text" style="width:<%=@text_input_width%>px" name="try_set_price" value="<%=params[:try_set_price]%>" onclick="this.select()"><span class="<%=@ave_price_hint%>">均价</span><input type="text" style="width:<%=@text_input_width%>px" name="try_ave_price" value="<%=params[:try_ave_price]%>" onclick="this.select()">
     <span class="<%=@set_level_hint%>">仓位</span><input type="text" style="width:<%=@text_input_width%>px" name="try_set_level" value="<%=params[:try_set_level]%>" onclick="this.select()">
+    <span class="<%=@set_amount_hint%>">定额</span><input type="text" style="width:<%=@text_input_width%>px" name="try_set_amount" value="<%=params[:try_set_amount]%>" onclick="this.select()">
     <input type="submit" value="试算" style="margin-left:1em">
     <% if @clear_sell_all or (@enable_order and (@cal_mode == "LEV" or @cal_mode == "BUY") and @try_buy_price != 0 and @try_buy_unit != 0) %>
       <% @try_trade_type = @try_buy_unit > 0 ? '买进' : '卖出' %>

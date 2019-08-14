@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+<channel>
+<title>TITLE</title>
+        <image>
+        <title>news.baidu.com</title>
+        <link>http://news.baidu.com</link>
+        <url>http://img.baidu.com/img/logo-news.gif</url>
+        </image>
+<description></description>
+<link>http://news.baidu.com</link>
+<language>zh-cn</language>
+<docs></docs>
+<generator>www.baidu.com</generator>
+<ttl>5</ttl>
+<item>
+        <title>This is the news title1</title>
+        <link><![CDATA[http://news.qianlong.com/28874/2010/06/11/2502@5786393.htm]]></link>
+        <pubDate><![CDATA[Fri, 11 Jun 2010 10:39:00]]></pubDate>
+        <source></source>
+        <author><![CDATA[Michael]]></author>
+        <description><![CDATA[ This is Description]]></description>
+</item>
+<item>
+        <title>This is the news title2</title>
+        <link><![CDATA[http://news.qianlong.com/28874/2010/06/11/2502@5786393.htm]]></link>
+        <pubDate><![CDATA[Fri, 11 Jun 2010 10:39:00]]></pubDate>
+        <source></source>
+        <author><![CDATA[Michael]]></author>
+        <description><![CDATA[ This is Description]]></description>
+</item>
+</channel>
+</rss>

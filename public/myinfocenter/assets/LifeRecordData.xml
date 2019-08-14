@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data>
+	<record>
+		<name>建築</name>
+		<hours>1.5</hours>
+	</record>
+	<record>
+		<name>園藝</name>
+		<hours>5.5</hours>
+	</record>
+	<record>
+		<name>音樂</name>
+		<hours>1.2</hours>
+	</record>
+	<record>
+		<name>書畫</name>
+		<hours>1</hours>
+	</record>
+	<record>
+		<name>編程</name>
+		<hours>11.8</hours>
+	</record>
+	<record>
+		<name>靈修</name>
+		<hours>10</hours>
+	</record>
+	<record>
+		<name>教材</name>
+		<hours>15</hours>
+	</record>
+	<record>
+		<name>講課</name>
+		<hours>18</hours>
+	</record>
+	<record>
+		<name>牧會</name>
+		<hours>5</hours>
+	</record>
+	<record>
+		<name>家人</name>
+		<hours>4</hours>
+	</record>
+</data>
