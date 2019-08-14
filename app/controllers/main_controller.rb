@@ -999,15 +999,18 @@ class MainController < ApplicationController
           update_btc_price
           @update_btc_price = true
           @update_total_asset_value = true
-          update_kline_params
-          @kline_short_period = value_of('kline_short_period')
-          @kline_short_size = value_of('kline_short_size').to_i
-          @kline_long_period = value_of('kline_long_period')
-          @kline_long_size = value_of('kline_long_size').to_i
-          # 获取15分钟K线图数据
-          @k60m = get_kline_data(@kline_short_period,@kline_short_size,@symbol)
-          # 获取4时K线图数据
-          @k1d = get_kline_data(@kline_long_period,@kline_long_size,@symbol)
+          if params[:get_kline_data] == '1'
+            update_kline_params
+            @kline_short_period = value_of('kline_short_period')
+            @kline_short_size = value_of('kline_short_size').to_i
+            @kline_long_period = value_of('kline_long_period')
+            @kline_long_size = value_of('kline_long_size').to_i
+            # 获取15分钟K线图数据
+            @k60m = get_kline_data(@kline_short_period,@kline_short_size,@symbol)
+            # 获取4时K线图数据
+            @k1d = get_kline_data(@kline_long_period,@kline_long_size,@symbol)
+            @get_kline_data = true
+          end
           if params[:get_btc_orders] == '1'
             # 获取在火币上未成交订单资料
             get_btc_orders
@@ -1019,9 +1022,9 @@ class MainController < ApplicationController
             auto_update_asset_from_api
           end
         end
-      rescue TimeoutError,OpenSSL::SSL::SSLError,SocketError
+      rescue TimeoutError,OpenSSL::SSL::SSLError,SocketError,EOFError
         @update_btc_price = false
-        @update_btc_price = false
+        @update_total_asset_value = false
       end
     end
     # 更新账户的买卖数据
@@ -1053,7 +1056,7 @@ class MainController < ApplicationController
     #8.计算平仓后的损益与可直接平仓的值
     cal_settle
     #9.计算K线资料的MA值并判断趋势(如果有连线更新才显示)
-    cal_ma_trend if @update_btc_price
+    cal_ma_trend if @get_kline_data
     #10.显示操作记录
     operate_info
     #11.根据值大小设定显示的style
@@ -1185,8 +1188,8 @@ class MainController < ApplicationController
   #4.计算比特币总投资预算
   def cal_btc_total_budgets
     #火币USDT资产总值
-    get_total_usdt
-    @btc_total_budget_twd = @total_usdt_twd
+    get_total_budget_twd
+    @btc_total_budget_twd = @total_budget_twd
     # 计算能拥有比特币的最大数量
     cal_max_btc_sum
     # 计算持币总值
@@ -1200,7 +1203,7 @@ class MainController < ApplicationController
     case @cal_mode
       when "BUY","SET","BUY&SET","AVE","LEV","AMT","BAT"
         @btc_total_budget_twd -= @try_buy_unit*@try_buy_price*@usd2twd
-        @total_usdt_twd -= @try_buy_unit*@try_buy_price*@usd2twd
+        @total_budget_twd -= @try_buy_unit*@try_buy_price*@usd2twd
         total_usdt2cny_usd
     end
     @btc_total_budget_twd = @btc_total_budget_twd.to_i
@@ -1256,7 +1259,7 @@ class MainController < ApplicationController
     @btc_profit_twd = @btc_profit_cny = @btc_profit_usd = 0
     @btc_profit_rate = 0
     # 含冷钱包的总投资获利
-    @investment_cost = @btc_total_budget_real-@total_usdt_twd
+    @investment_cost = @btc_total_budget_real-@total_budget_twd
     @btc_total_profit_twd = (@btc_sum*@btc_price*@usd2twd - @investment_cost - @total_loan_interests_value).to_i # 总值-投资成本-貸款總利息
     @btc_total_profit_rate = (@btc_total_profit_twd.to_f/@investment_cost)*100
     @btc_total_profit_cny = (@btc_total_profit_twd/@cny2twd).to_i # 总获利值换成人民币
@@ -1279,7 +1282,7 @@ class MainController < ApplicationController
     if @ex_cost_twd > 0
       @settle_profit = (@btc_hold_twd > 0 and @btc_profit_twd > 0) ? (@btc_total_budget_twd-@btc_total_budget_warning-@btc_month_goal_twd)/@usd2twd/@btc_price : 0
       @settle_profit = 0 if @settle_profit < 0
-      @settle_price = ((@btc_total_budget_warning+@btc_month_goal_twd-@total_usdt_twd)/((@btc_sum_ex-@btc_harvest_unit)*@usd2twd)).to_i
+      @settle_price = ((@btc_total_budget_warning+@btc_month_goal_twd-@total_budget_twd)/((@btc_sum_ex-@btc_harvest_unit)*@usd2twd)).to_i
       if @settle_price < 0
         @settle_price = 0
       else
@@ -1363,7 +1366,7 @@ class MainController < ApplicationController
     # 每操作1000元台币必须等几小时才能再操作下一笔
     @next_operate_hours, @next_operate_time = cal_next_trade_time(@last_trade_time,@trade_twd)
     @next_trade_str = @next_operate_time.strftime("%m%d %H:%M")
-    @trade_usd_p = format("%.2f",(@trade_usd*@usd2twd)/(@total_usdt_twd+@trade_usd*@usd2twd)*100)
+    @trade_usd_p = format("%.2f",(@trade_usd*@usd2twd)/(@total_budget_twd+@trade_usd*@usd2twd)*100)
     @remain_minutes_to_order = (@next_operate_time-Time.now).to_i/60
     @trade_type = cal_trade_type
     # 显示CSS警示
@@ -1387,6 +1390,8 @@ class MainController < ApplicationController
     end
     if @k60m_ma10 and @btc_price < @k60m_ma10
       @btc_price_warn = "cold_warn"
+    else
+      @btc_price_warn = "square_warn"
     end
     if eval(@ave_price_vs_ma) and @unit_ave_price > eval(@ave_price_vs_ma)
       @ave_price_warn = "red_warn"
@@ -1527,19 +1532,35 @@ class MainController < ApplicationController
     [5,119].each do |index|
       @total_usdt_twd += AssetItem.find(index).to_ntd
     end
+  end
+
+  # 中国信托而来的投资资金
+  def get_total_twd
+    @total_twd = 0
+    [17].each do |index|
+      @total_twd += AssetItem.find(index).to_ntd
+    end
+  end
+
+  # 所有可用来投资的资金
+  def get_total_budget_twd
+    get_total_usdt
+    get_total_twd
+    @total_budget_twd = (@total_usdt_twd + @total_twd).to_i
     total_usdt2cny_usd
   end
 
   def total_usdt2cny_usd
-    if @total_usdt_twd and @cny2twd and @usd2twd
-      @total_usdt_cny = (@total_usdt_twd/@cny2twd).to_i
-      @total_usdt_usd = @cal_mode ? (@total_usdt_twd/@usd2twd).to_i : AssetItem.find(5).amount
+    if @total_budget_twd and @cny2twd and @usd2twd
+      @total_usdt_cny = (@total_budget_twd/@cny2twd).to_i
+      @total_usdt_usd = (@total_budget_twd/@usd2twd).to_i
+      @total_usdt_usd_ex = AssetItem.find(5).amount
     end
   end
 
   # 计算能拥有比特币的最大数量
   def cal_max_btc_sum
-    @max_ex_sum = @total_usdt_twd/(@btc_price*@usd2twd)
+    @max_ex_sum = @total_budget_twd/(@btc_price*@usd2twd)
     @max_btc_sum = @btc_sum + @max_ex_sum
   end
 
@@ -1586,8 +1607,8 @@ class MainController < ApplicationController
   # 如果超出预算则自动降低能购买的单位数
   def check_try_buy_unit
     # 验证买入的基本条件
-    get_total_usdt
-    max_buy_unit = @total_usdt_twd/@usd2twd/@try_buy_price
+    get_total_budget_twd
+    max_buy_unit = @total_budget_twd/@usd2twd/@try_buy_price
     adjust_buy_unit(max_buy_unit) if @try_buy_unit > max_buy_unit
     # 验证买入的进阶条件：是否大于BTC单次下单额度上限
     adjust_buy_unit(@btc_order_limit/@usd2twd/@try_buy_price) if !@cal_mode == "BUY&SET" and @btc_order_limit > 0 and  @try_buy_price*@try_buy_unit*@usd2twd > @btc_order_limit
@@ -1684,9 +1705,9 @@ class MainController < ApplicationController
   def cal_price_by_batch(batch_num=@try_set_batch)
     if @try_set_batch and @try_set_batch > 0
       # 读取剩余现金
-      get_total_usdt
+      get_total_budget_twd
       # 每批的投资金额
-      batch_cash = (@total_usdt_twd/@usd2twd/batch_num).to_i
+      batch_cash = (@total_budget_twd/@usd2twd/batch_num).to_i
       cal_price_and_units_by_amount(batch_cash)
     end
   end
@@ -1741,7 +1762,7 @@ class MainController < ApplicationController
       @h170_btc_sum = nil
       @h170_usd_sum = nil
       # 执行更新账户的买卖数据
-      if !@cal_mode and @btc_135_sum_api.to_s != value_of("my_btc").split(",")[2]
+      if @h135_btc_sum and @h135_btc_sum > 0 and !@cal_mode and @btc_135_sum_api.to_s != value_of("my_btc").split(",")[2]
         exe_update_btc_assets
         flash[:notice] = "已通过火币API自动更新资产：#{@h135_btc_sum} BTC|#{@h135_usd_sum} USDT"
         @should_update_ave_price_vs_ma = true
@@ -1831,13 +1852,13 @@ class MainController < ApplicationController
     p_cost_ori_value = p_cost.value
     p_cost.update_attributes(:value => "0",:content => p_cost_ori_value)
     # 更新初始投资预算
-    get_total_usdt # 获取火币USDT资产总值
+    get_total_budget_twd # 获取火币USDT资产总值
     p_budget = Param.find_by_name('btc_total_budget_warning')
     p_budget_content = p_budget.content+','+p_budget.value
-    p_budget.update_attributes(:value => @total_usdt_twd,:content => p_budget_content)
+    p_budget.update_attributes(:value => @total_budget_twd,:content => p_budget_content)
     # 清空下单log
     clear_btc_order_log
-    flash[:notice] = "比特幣投資成本已歸零，且已更新初始投资预算为#{@total_usdt_twd}"
+    flash[:notice] = "比特幣投資成本已歸零，且已更新初始投资预算为#{@total_budget_twd}"
     redirect_to :controller => :params
   end
 

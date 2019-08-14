@@ -349,7 +349,7 @@ a.order_button_link {
   color:black;
   font-weight:bold;
   padding:1px 3px;
-  border: 1px #000000 dashed;
+  border: 1px #000000 solid;
 }
 .small_note {
   font-size:0.3em;
