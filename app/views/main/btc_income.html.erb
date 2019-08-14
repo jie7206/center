@@ -7,10 +7,10 @@
   <br/>
 <%= link_to "仓位：", :action => :btc_income, :update_btc_price => 1, :get_kline_data => 1, :get_btc_orders => 1 %>
   <span title="¥<%=@ex_cost_cny%>|$<%=@ex_cost_usd%>"><%=@ex_cost_twd%></span>|<%=format("%.2f",@ex_cost_twd_level)%>%|<span title="¥<%=@btc_hold_cny%>|$<%=@btc_hold_usd%>"><%=@btc_hold_twd%></span>/<span class="<%=@btc_total_budget_warn%>" title="现值：¥<%=@btc_total_budget_cny%>|$<%=@btc_total_budget_usd%>，初始本金：<%=@btc_total_budget_warning%> TWD"><%=@btc_total_budget_twd%></span>|<%=format("%.2f",@btc_hold_twd_level)%>%
-  均价:<%=@trezor_ave_price%>/<span class="<%=@ave_price_warn%>"><%=format("%.2f", @unit_ave_price)%></span>
-    <%# if @ave_price_warn == 'red_warn' %>
-      <!-- <span class="small_price_diff"><%#=@aveprice_shortma_diff_str%></span> -->
-    <%# end %>
+  均价:<%=@trezor_ave_price%>/<span class="<%=@ave_price_warn%>"> <%=format("%.2f", @unit_ave_price)%>
+    <% if @ave_price_warn == 'red_warn' %>
+      <span class="small_price_diff"><%=@aveprice_now_diff_str%></span>
+    <% end %></span>
 
   <br/>
 <%= link_to "损益：", :action => :btc_income, :update_btc_price => 1, :update_huobi_assets => 1 %>

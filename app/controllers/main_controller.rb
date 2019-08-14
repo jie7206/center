@@ -1393,10 +1393,10 @@ class MainController < ApplicationController
     else
       @btc_price_warn = "square_warn"
     end
-    if eval(@ave_price_vs_ma) and @unit_ave_price > eval(@ave_price_vs_ma)
+    if @unit_ave_price > @btc_price*1.03
       @ave_price_warn = "red_warn"
-    elsif @btc_price < @unit_ave_price
-      @ave_price_warn = "cold_warn"
+    # elsif @btc_price < @unit_ave_price*0.98
+    #   @ave_price_warn = "cold_warn"
     else
       @ave_price_warn = "square_warn"
     end
@@ -1602,6 +1602,9 @@ class MainController < ApplicationController
   # 计算比特币每单位均价
   def cal_unit_ave_price
     @unit_ave_price = (@ex_cost_twd > 0 and @btc_sum_ex > 0) ? @ex_cost_twd/@usd2twd/@btc_sum_ex : 0
+    # 计算比特币均价与现价的溢价比
+    @aveprice_now_diff_rate = (@unit_ave_price-@btc_price)/@btc_price*100
+    @aveprice_now_diff_str = "#{add_plus(format("%.1f",@aveprice_now_diff_rate))}%"
   end
 
   # 如果超出预算则自动降低能购买的单位数
