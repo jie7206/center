@@ -129,7 +129,7 @@ l3_link = "/main/update_ave_price_vs_ma?value=@k1d_ma20"
     <span class="<%=@set_level_hint%>">仓位</span><input type="text" style="width:<%=@text_input_width%>px" name="try_set_level" value="<%=params[:try_set_level]%>" onclick="this.select()">
     <span class="<%=@set_amount_hint%>">定额</span><input type="text" style="width:<%=@text_input_width%>px" name="try_set_amount" value="<%=params[:try_set_amount]%>" onclick="this.select()">
     <input type="submit" value="试算" style="margin-left:1em">
-    <% if @clear_sell_all or (@enable_order and (@cal_mode == "LEV" or @cal_mode == "BUY") and @try_buy_price != 0 and @try_buy_unit != 0) %>
+    <% if @clear_sell_all or (@enable_order and (@cal_mode == "LEV" or @cal_mode == "BUY"  or @cal_mode == "AMT") and @try_buy_price != 0 and @try_buy_unit != 0) %>
       <% @try_trade_type = @try_buy_unit > 0 ? '买进' : '卖出' %>
       <% cal_order_amount(@try_buy_price,@try_buy_unit) # 计算下单总额度 %>
       <%= link_to "下单(#{@try_trade_type}:#{show_btc_sum(@try_buy_unit.abs.to_s,6)} BTC 价格:#{@try_buy_price} 总额:#{@order_amount_twd}|¥#{@order_amount_cny}|$#{@order_amount_usd})", {:action => :place_btc_order, :price => @try_buy_price, :count => @try_buy_unit, :ave_price => @unit_ave_price}, :class => "order_button_link" -%>
