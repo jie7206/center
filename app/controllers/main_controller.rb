@@ -1115,6 +1115,8 @@ class MainController < ApplicationController
     @btc_order_limit = value_of('btc_order_limit').to_i
     # BTC下单记录
     @btc_order_log = value_of('btc_order_log')
+    # 均价高于现价多少百分比时以红色显示
+    @unit_ave_price_warn_value = 1+value_of('unit_ave_price_warn_value').to_f/100
     # 火币手续费率
     @ex_fee_rate = 0.002 # 扣USDT(买入时)
     # 获取用户表单输入的资料
@@ -1393,10 +1395,8 @@ class MainController < ApplicationController
     else
       @btc_price_warn = "square_warn"
     end
-    if @unit_ave_price > @btc_price*1.03
+    if @unit_ave_price > @btc_price*@unit_ave_price_warn_value
       @ave_price_warn = "red_warn"
-    # elsif @btc_price < @unit_ave_price*0.98
-    #   @ave_price_warn = "cold_warn"
     else
       @ave_price_warn = "square_warn"
     end
@@ -1461,7 +1461,7 @@ class MainController < ApplicationController
     @try_set_level = params[:try_set_level] ? params[:try_set_level].to_f : 0.0
     @try_set_batch = params[:try_set_batch] ? params[:try_set_batch].to_f : 0.0
     @try_set_amount = params[:try_set_amount] ? params[:try_set_amount].to_f : 0.0
-    # 如果定额超出上限则修改之 
+    # 如果定额超出上限则修改之
     @try_set_amount = @btc_order_limit if @try_set_amount > @btc_order_limit
     # 是否平仓
     @clear_sell_all = true if params[:clear_sell_all] == '1'
