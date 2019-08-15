@@ -1461,6 +1461,8 @@ class MainController < ApplicationController
     @try_set_level = params[:try_set_level] ? params[:try_set_level].to_f : 0.0
     @try_set_batch = params[:try_set_batch] ? params[:try_set_batch].to_f : 0.0
     @try_set_amount = params[:try_set_amount] ? params[:try_set_amount].to_f : 0.0
+    # 如果定额超出上限则修改之 
+    @try_set_amount = @btc_order_limit if @try_set_amount > @btc_order_limit
     # 是否平仓
     @clear_sell_all = true if params[:clear_sell_all] == '1'
   end
