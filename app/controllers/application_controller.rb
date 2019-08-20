@@ -780,12 +780,26 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # 显示成与交易所相同的比特币总数(只保留小数点后8位)
+  def show_btc_sum(str,pos=8)
+    if str.to_f < 0.00000001
+      @btc_sum_ex = 0
+      @ex_cost_twd = 0
+      @ex_cost_twd_level = 0
+      return "0.00000000"
+    end
+    i = str.split(".")[0]
+    f = str.split(".")[1][0..pos-1]
+    (1..7).each {|n| f += "0"*n if f.size == 8-n } if pos == 8 # 补零凑8位小数
+    return "#{i}.#{f}"
+  end
+
   # 获取火币资产资料
   def get_huobi_assets
     resp = get_remote_files('playruby.top','/main/get_huobi_assets','',3002)
     if resp != "get_huobi_assets_error"
       usdt_trade,usdt_frozen,btc_trade,btc_frozen = resp.split(",")
-      @btc_135_sum_api = format("%.10f",btc_trade.to_f+btc_frozen.to_f).to_f
+      @btc_135_sum_api = show_btc_sum(format("%.9f",btc_trade.to_f+btc_frozen.to_f)).to_f
       @usd_135_sum_api = format("%.2f",usdt_trade.to_f+usdt_frozen.to_f).to_f
       @new_135_usd_cost = get_new_135_btc_cost(@usd_135_sum_api)
     end

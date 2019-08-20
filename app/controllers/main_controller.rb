@@ -1106,7 +1106,7 @@ class MainController < ApplicationController
     # 我的投资座右铭
     @my_motto = value_of('my_motto')
     # 每操作1000元台币必须等几小时才能再操作下一笔
-    @btc_operate_interval_hours = value_of('btc_operate_interval_hours').to_f
+    @btc_operate_interval_hours = 1000.0/(value_of('everyday_invest_amount').to_f/24.0)
     # 均价相对于哪个MA值显示警示
     @ave_price_vs_ma = value_of('ave_price_vs_ma')
     # MA值亮灯的阀值(需连续几次涨跌)
@@ -1194,6 +1194,8 @@ class MainController < ApplicationController
     @btc_total_budget_twd = @total_budget_twd
     # 计算能拥有比特币的最大数量
     cal_max_btc_sum
+    # 计算到下次领取年金为止，平均每天能定投多少钱
+    cal_everyday_invest_amount
     # 计算持币总值
     cal_btc_hold_twd
     @btc_total_budget_twd += @btc_hold_twd
@@ -1566,6 +1568,23 @@ class MainController < ApplicationController
     @max_btc_sum = @btc_sum + @max_ex_sum
   end
 
+  # 计算剩余资金到下次领取年金为止，平均每天能定投多少钱
+  def cal_everyday_invest_amount
+    @everyday_invest_amount = (@total_budget_twd/@jinruyi_remain_days).to_i
+    update_everyday_invest_amount
+  end
+
+  # 更新
+  def update_everyday_invest_amount
+    Param.find_by_name('everyday_invest_amount').update_attribute(:value, @everyday_invest_amount)
+    update_btc_order_limit
+  end
+
+  def update_btc_order_limit
+    new_btc_order_limit = @everyday_invest_amount > 1000 ? 1000 : @everyday_invest_amount
+    Param.find_by_name('btc_order_limit').update_attribute(:value, new_btc_order_limit)
+  end
+
   # 比特币短线已实现获利(下个月给孟丽的生活费)
   def keep_short_profit
     AssetItem.find(55).to_ntd
@@ -1588,6 +1607,8 @@ class MainController < ApplicationController
     @loan_amount = @loan_amount + @loan_lixi - 300000
     # 今日貸款總利息
     @total_loan_interests_value = get_total_loan_interest_ntd_array.sum.to_i
+    # 距离下次领取年金的日数
+    @jinruyi_remain_days = (@next_jinruyi_back_date - Date.today).to_i
   end
 
   # 比特币交易总成本(台币)
@@ -1767,10 +1788,12 @@ class MainController < ApplicationController
       @h170_btc_sum = nil
       @h170_usd_sum = nil
       # 执行更新账户的买卖数据
-      if @h135_btc_sum and @h135_btc_sum > 0 and !@cal_mode and @btc_135_sum_api.to_s != value_of("my_btc").split(",")[2]
+      if @h135_btc_sum and @h135_btc_sum > 0 and !@cal_mode and show_btc_sum(format("%.9f",@h135_btc_sum)) != value_of("my_btc").split(",")[2]
         exe_update_btc_assets
-        flash[:notice] = "已通过火币API自动更新资产：#{@h135_btc_sum} BTC|#{@h135_usd_sum} USDT"
+        flash[:notice] = "已通过火币API自动更新资产：#{show_btc_sum(format("%.9f",@h135_btc_sum))} BTC|#{@h135_usd_sum} USDT"
         @should_update_ave_price_vs_ma = true
+      else
+        flash[:notice] = "火币资产无变化，不需要更新，或者稍后重试一次"
       end
     end
   end
@@ -1796,11 +1819,11 @@ class MainController < ApplicationController
     # 更新账户BTC资产
     update_my_btc = false
     if @h135_btc_sum and @h135_btc_sum.to_f > 0
-      @my_btc_arr[2] = @h135_btc_sum
+      @my_btc_arr[2] = show_btc_sum(format("%.9f",@h135_btc_sum))
       update_my_btc = true
     end
     if @h170_btc_sum and @h170_btc_sum.to_f > 0
-      @my_btc_arr[3] = @h170_btc_sum
+      @my_btc_arr[3] = show_btc_sum(format("%.9f",@h170_btc_sum))
       update_my_btc = true
     end
     if update_my_btc

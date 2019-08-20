@@ -42,6 +42,7 @@ module ApplicationHelper
       end
       i = str.split(".")[0]
       f = str.split(".")[1][0..pos-1]
+      (1..7).each {|n| f += "0"*n if f.size == 8-n } if pos == 8 # 补零凑8位小数
       return "#{i}.#{f}"
     end
 
