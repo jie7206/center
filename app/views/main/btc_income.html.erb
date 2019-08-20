@@ -3,9 +3,9 @@
 <%= link_to "总数：", :action => :btc_income %>
   <span title="<%=@my_btc%>"><%=show_btc_sum(format("%.9f",@btc_sum_ex))%>/<%=format("%.8f",@btc_sum)%></span>|<span title="总数：<%=@trezor_jie7206_sum%>，占比：<%=@trezor_jie7206_p%>%，成本：<%=@trezor_cost_twd%>，均价：$<%=@trezor_ave_price%>，投资报酬率：<%=@trezor_profit%>%"><%=@trezor_jie7206_twd%></span>/<%=@btc_value_twd%>|¥<%=@btc_value_cny%>|$<%=@btc_value_usd%><br/>
 <%= link_to "获利：", :action => :btc_income, :update_btc_price => 1 %>
-  <%=@btc_total_profit_twd%>|¥<%=@btc_total_profit_cny%>|$<%=@btc_total_profit_usd%>|<%=format("%.0f", @btc_total_profit_rate)%>%|<span title="初始本金：<%=@btc_total_budget_warning%>，可用余额：<%=@total_usdt_twd.to_i%>+<%=@total_twd%>|¥<%=@total_usdt_cny%>|$<%=@total_usdt_usd%>，贷款利息：<%=@total_loan_interests_value%>，从<%=@loan_begin_date%>到<%=@next_jinruyi_back_date%>共有<%=@loan_lixi_days%>天，届时贷款余额为<%=@loan_amount%>"><%=@total_budget_twd%>(<%=@total_usdt_usd_ex%>)</span>-><span title="到下次领取年金为止，平均每天能定投多少钱"><%=@everyday_invest_amount%></span>/<span title="最多能持有的比特币总数"><%=format("%.3f",@max_ex_sum)%>/<%=format("%.3f",@max_btc_sum)%></span>
+  <%=@btc_total_profit_twd%>|¥<%=@btc_total_profit_cny%>|$<%=@btc_total_profit_usd%>|<%=format("%.0f", @btc_total_profit_rate)%>%|<span title="初始本金：<%=@btc_total_budget_warning%>，可用余额：<%=@total_usdt_twd.to_i%>+<%=@total_twd%>|¥<%=@total_usdt_cny%>|$<%=@total_usdt_usd%>，贷款利息：<%=@total_loan_interests_value%>，从<%=@loan_begin_date%>到<%=@next_jinruyi_back_date%>共有<%=@loan_lixi_days%>天，届时贷款余额为<%=@loan_amount%>"><%=@total_budget_twd%>(<%=@total_usdt_usd_ex%>)</span>-><span title="到下次新资金进来为止(<%=@next_btc_invest_date%>)，平均每天能定投多少钱"><%=@everyday_invest_amount%></span>/<span title="最多能持有的比特币总数"><%=format("%.3f",@max_ex_sum)%>/<%=format("%.3f",@max_btc_sum)%></span>
   <br/>
-<%= link_to "仓位：", :action => :btc_income, :update_btc_price => 1, :get_kline_data => 1, :get_btc_orders => 1 %>
+<%= link_to "仓位：", :action => :btc_income, :update_btc_price => 1, :get_kline_data => 1 %>
   <span title="¥<%=@ex_cost_cny%>|$<%=@ex_cost_usd%>"><%=@ex_cost_twd%></span>|<%=format("%.2f",@ex_cost_twd_level)%>%|<span title="¥<%=@btc_hold_cny%>|$<%=@btc_hold_usd%>"><%=@btc_hold_twd%></span>/<span class="<%=@btc_total_budget_warn%>" title="现值：¥<%=@btc_total_budget_cny%>|$<%=@btc_total_budget_usd%>，初始本金：<%=@btc_total_budget_warning%> TWD"><%=@btc_total_budget_twd%></span>|<%=format("%.2f",@btc_hold_twd_level)%>%
   均价:<%=@trezor_ave_price%>/<span class="<%=@ave_price_warn%>"> <%=format("%.2f", @unit_ave_price)%>
     <% if @ave_price_warn == 'red_warn' %>
@@ -13,7 +13,7 @@
     <% end %></span>
 
   <br/>
-<%= link_to "损益：", :action => :btc_income, :update_btc_price => 1, :update_huobi_assets => 1 %>
+<%= link_to "损益：", :action => :btc_income, :update_btc_price => 1, :update_huobi_assets => 1, :get_btc_orders => 1 %>
   <span class="<%=@btc_price_warn%>">
   <%= link_to format("%.2f",@btc_price), "http://playruby.top:3002/main/kline_chart?symbol=#{@symbol}&period=5min", {:target => "_blank", :title => "汇率：C2T:#{@cny2twd}|U2T:#{@usd2twd}|U2C:#{@usd2cny}|U2H:#{@usdt2husd}"} %></span>|<span class="<%=@twd_profit_warn%>"><%=@btc_profit_twd%></span>|<span class="<%=@cny_profit_warn%>">¥<%=@btc_profit_cny%></span>|<span class="<%=@usd_profit_warn%>">$<%=@btc_profit_usd%></span>|<span class="<%=@btc_profit_warn%>"><%=format("%.1f", @btc_profit_rate)%>%</span><span title="点击后即可以平仓目标价卖出(预先保留要赚取的<%=@btc_harvest_unit%>BTC及包含每月<%=@btc_month_goal_twd%>|¥<%=@btc_month_goal_cny%>|$<%=@btc_month_goal_usd%>的收益)">
     <% if @btc_sum_ex-@btc_harvest_unit > 0 %>

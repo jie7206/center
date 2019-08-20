@@ -1117,6 +1117,8 @@ class MainController < ApplicationController
     @btc_order_log = value_of('btc_order_log')
     # 均价高于现价多少百分比时以红色显示
     @unit_ave_price_warn_value = 1+value_of('unit_ave_price_warn_value').to_f/100
+    # 下次有资金进来投资比特币的日期(用于计算比特币每日定投的额度)
+    @next_btc_invest_date = value_of('next_btc_invest_date').to_date
     # 火币手续费率
     @ex_fee_rate = 0.002 # 扣USDT(买入时)
     # 获取用户表单输入的资料
@@ -1207,7 +1209,7 @@ class MainController < ApplicationController
     case @cal_mode
       when "BUY","SET","BUY&SET","AVE","LEV","AMT","BAT"
         @btc_total_budget_twd -= @try_buy_unit*@try_buy_price*@usd2twd
-        @total_budget_twd -= @try_buy_unit*@try_buy_price*@usd2twd
+        @total_budget_twd -= (@try_buy_unit*@try_buy_price*@usd2twd).to_i
         total_usdt2cny_usd
     end
     @btc_total_budget_twd = @btc_total_budget_twd.to_i
@@ -1570,7 +1572,7 @@ class MainController < ApplicationController
 
   # 计算剩余资金到下次领取年金为止，平均每天能定投多少钱
   def cal_everyday_invest_amount
-    @everyday_invest_amount = (@total_budget_twd/@jinruyi_remain_days).to_i
+    @everyday_invest_amount = (@total_budget_twd/(@next_btc_invest_date - Date.today).to_i).to_i
     update_everyday_invest_amount
   end
 
