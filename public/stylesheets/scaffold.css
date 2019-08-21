@@ -343,7 +343,7 @@ a.order_button_link {
   color:black;
   font-weight:bold;
   padding:1px 3px;
-  border: 1px #000000 none;
+  border: 1px #000000 solid;
 }
 .square_warn {
   color:black;

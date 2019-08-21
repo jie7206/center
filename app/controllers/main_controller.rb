@@ -1526,7 +1526,9 @@ class MainController < ApplicationController
     # 冷钱包里的总值占原始投资资金比例
     @trezor_real_p = (format("%.2f",(@trezor_jie7206_twd/@btc_total_budget_real.to_f)*100)).to_f
     # 冷钱包的比特币的投资报酬率
-    @trezor_cost_twd = @btc_total_budget_real-@btc_total_budget_warning
+    # 冷钱包的投资成本必须扣除@loanable_twd的值才正确(因为@loanable_twd的值并没有实际参与投资)
+    get_loanable_twd
+    @trezor_cost_twd = @btc_total_budget_real-(@btc_total_budget_warning-@loanable_twd)
     @trezor_profit = (format("%.2f",((@trezor_jie7206_twd-@trezor_cost_twd)/@trezor_cost_twd.to_f)*100)).to_f
     # 冷钱包的比特币的投资均价
     @trezor_ave_price = format("%.2f",@trezor_cost_twd/@usd2twd/@trezor_jie7206_sum)
@@ -1548,11 +1550,20 @@ class MainController < ApplicationController
     end
   end
 
+  # 金如意尚可用来投资的安全可贷款余额(在备注中以双底杠包围的数字)
+  def get_loanable_twd
+    if !@loanable_twd
+      matcher = /_(\d)+_/.match(AssetItem.find(95).memo)
+      @loanable_twd = matcher ? matcher[0].gsub("_","").to_i : 0
+    end
+  end
+
   # 所有可用来投资的资金
   def get_total_budget_twd
     get_total_usdt
     get_total_twd
-    @total_budget_twd = (@total_usdt_twd + @total_twd).to_i
+    get_loanable_twd
+    @total_budget_twd = (@total_usdt_twd + @total_twd + @loanable_twd).to_i
     total_usdt2cny_usd
   end
 

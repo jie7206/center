@@ -1,9 +1,9 @@
 <% @text_input_width = 50 %>
 <h4>
 <%= link_to "总数：", :action => :btc_income %>
-  <span title="<%=@my_btc%>"><%=show_btc_sum(format("%.9f",@btc_sum_ex))%>/<%=format("%.8f",@btc_sum)%></span>|<span title="总数：<%=@trezor_jie7206_sum%>，占比：<%=@trezor_jie7206_p%>%，成本：<%=@trezor_cost_twd%>，均价：$<%=@trezor_ave_price%>，投资报酬率：<%=@trezor_profit%>%"><%=@trezor_jie7206_twd%></span>/<%=@btc_value_twd%>|¥<%=@btc_value_cny%>|$<%=@btc_value_usd%><br/>
+  <span title="<%=@my_btc%>"><span class="gold_warn"><%=show_btc_sum(format("%.9f",@btc_sum))%></span><-<%=show_btc_sum(format("%.9f",@btc_sum_ex))%></span>|<span title="总数：<%=@trezor_jie7206_sum%>，占比：<%=@trezor_jie7206_p%>%，成本：<%=@trezor_cost_twd%>，均价：$<%=@trezor_ave_price%>，投资报酬率：<%=@trezor_profit%>%"><%=@trezor_jie7206_twd%></span>/<%=@btc_value_twd%>|¥<%=@btc_value_cny%>|$<%=@btc_value_usd%><br/>
 <%= link_to "获利：", :action => :btc_income, :update_btc_price => 1 %>
-  <%=@btc_total_profit_twd%>|¥<%=@btc_total_profit_cny%>|$<%=@btc_total_profit_usd%>|<%=format("%.0f", @btc_total_profit_rate)%>%|<span title="初始本金：<%=@btc_total_budget_warning%>，可用余额：<%=@total_usdt_twd.to_i%>+<%=@total_twd%>|¥<%=@total_usdt_cny%>|$<%=@total_usdt_usd%>，贷款利息：<%=@total_loan_interests_value%>，从<%=@loan_begin_date%>到<%=@next_jinruyi_back_date%>共有<%=@loan_lixi_days%>天，届时贷款余额为<%=@loan_amount%>"><%=@total_budget_twd%>(<%=@total_usdt_usd_ex%>)</span>-><span title="到下次新资金进来为止(<%=@next_btc_invest_date%>)，平均每天能定投多少钱"><%=@everyday_invest_amount%></span>/<span title="最多能持有的比特币总数"><%=format("%.3f",@max_ex_sum)%>/<%=format("%.3f",@max_btc_sum)%></span>
+  <%=@btc_total_profit_twd%>|¥<%=@btc_total_profit_cny%>|$<%=@btc_total_profit_usd%>|<%=format("%.0f", @btc_total_profit_rate)%>%|<span title="初始本金：<%=@btc_total_budget_warning%>，可用余额：<%=@total_usdt_twd.to_i%>(USDT)+<%=@total_twd%>(中信托)+<%=@loanable_twd%>(金如意)|¥<%=@total_usdt_cny%>|$<%=@total_usdt_usd%>，贷款利息：<%=@total_loan_interests_value%>，从<%=@loan_begin_date%>到<%=@next_jinruyi_back_date%>共有<%=@loan_lixi_days%>天，届时贷款余额为<%=@loan_amount%>"><%=@total_budget_twd%><span title="在火币交易所内实际可用的USDT余额">(<%=@total_usdt_usd_ex%>)</span></span>-><span title="到下次新资金进来为止(<%=@next_btc_invest_date%>)，平均每天能定投多少钱"><%=@everyday_invest_amount%></span>/<span title="最多能持有的比特币总数"><%=format("%.3f",@max_ex_sum)%>/<%=format("%.3f",@max_btc_sum)%></span>
   <br/>
 <%= link_to "仓位：", :action => :btc_income, :update_btc_price => 1, :get_kline_data => 1 %>
   <span title="¥<%=@ex_cost_cny%>|$<%=@ex_cost_usd%>"><%=@ex_cost_twd%></span>|<%=format("%.2f",@ex_cost_twd_level)%>%|<span title="¥<%=@btc_hold_cny%>|$<%=@btc_hold_usd%>"><%=@btc_hold_twd%></span>/<span class="<%=@btc_total_budget_warn%>" title="现值：¥<%=@btc_total_budget_cny%>|$<%=@btc_total_budget_usd%>，初始本金：<%=@btc_total_budget_warning%> TWD"><%=@btc_total_budget_twd%></span>|<%=format("%.2f",@btc_hold_twd_level)%>%
@@ -33,7 +33,7 @@ lpt = period_title(@kline_long_period)
 <br/>
 <%
 def set_class(name,sign,size,num=@num_of_ma_warn)
-  result = (sign == '+' and size >= num) ? 'red_warn' : 'square_warn'
+  result = (sign == '+' and size >= num) ? 'square_warn' : 'square_warn' # 因为囤币不卖，暂时不看涨，所以改成中性的样式square_warn
   result = (sign == '-' and size >= num) ? 'cold_warn' : result
   result += '_bold' if name == @ave_price_vs_ma
   return result
@@ -139,6 +139,6 @@ l3_link = "/main/update_ave_price_vs_ma?value=@k1d_ma20"
 <hr/>
 <% form_tag :action => "btc_income", :method => :post do -%>
   <input type="hidden" name="from_my_motto_form" value="1"/>
-  <%= text_area_tag 'my_motto', @my_motto, :size => "70x15", :class => "my_motto" %>
+  <%= text_area_tag 'my_motto', @my_motto, :size => "70x13", :class => "my_motto" %>
   <%= image_submit_tag('icon/empty.gif', :width=> 10) %>
 <% end %>
