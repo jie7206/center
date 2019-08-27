@@ -950,13 +950,14 @@ class MainController < ApplicationController
 
   # 向火币API下单
   def place_btc_order
-    if params[:price] and params[:price].to_f > 0 and params[:count] and params[:count].to_f != 0
+    if params[:aid] and params[:price] and params[:price].to_f > 0 and params[:count] and params[:count].to_f != 0
+      aid = params[:aid]
       price = params[:price].to_f
       count = params[:count].to_f
       side = count > 0 ? 'buy' : 'sell'
       type = count > 0 ? '买进' : '卖出'
       count = show_btc_sum(count.abs.to_s,6)
-      resp = get_remote_files('playruby.top',"/main/place_btc_order?side=#{side}&price=#{price}&count=#{count}",'',3002)
+      resp = get_remote_files('playruby.top',"/main/place_btc_order?aid=#{aid}&side=#{side}&price=#{price}&count=#{count}",'',3002)
       if resp == 'new_order_to_huobi_ok'
         get_exchange_rate_from_params
         cal_order_amount(price,count.to_f)
@@ -971,12 +972,17 @@ class MainController < ApplicationController
   end
 
   def del_huobi_orders
-    resp = get_remote_files('playruby.top',"/main/del_huobi_orders?order_ids=#{params[:order_ids]}",'',3002)
-    if resp == 'del_huobi_orders_ok'
-      clear_btc_order_log
-      flash[:notice] = "您的撤销下单已提交(于#{Time.now.strftime("%Y-%m-%d %H:%M")} 下单编号：#{params[:order_ids]})"
+    if params[:aid]
+      aid = params[:aid].to_i
+      resp = get_remote_files('playruby.top',"/main/del_huobi_orders?aid=#{aid}&order_ids=#{params[:order_ids]}",'',3002)
+      if resp == 'del_huobi_orders_ok'
+        clear_btc_order_log
+        flash[:notice] = "您的撤销下单已提交(于#{Time.now.strftime("%Y-%m-%d %H:%M")} 下单编号：#{params[:order_ids]})"
+      else
+        flash[:notice] = "您的撤销下单失败！"
+      end
     else
-      flash[:notice] = "您的撤销下单失败！"
+      flash[:notice] = "您的撤销下单失败！(未指明账户)"
     end
     redirect_to :action => :btc_income
   end
@@ -1011,13 +1017,14 @@ class MainController < ApplicationController
             @k1d = get_kline_data(@kline_long_period,@kline_long_size,@symbol)
             @get_kline_data = true
           end
+          aid = params[:aid] ? params[:aid].to_i : 1
           if params[:get_btc_orders] == '1'
             # 获取在火币上未成交订单资料
-            get_btc_orders
+            get_btc_orders aid
           end
           if params[:update_huobi_assets] == '1'
             # 获取在火币上的资产资料
-            get_huobi_assets
+            get_huobi_assets aid
             # 如果交易所里的BTC总数有变化，则自动更新资产资料
             auto_update_asset_from_api
           end
@@ -1111,14 +1118,19 @@ class MainController < ApplicationController
     @ave_price_vs_ma = value_of('ave_price_vs_ma')
     # MA值亮灯的阀值(需连续几次涨跌)
     @num_of_ma_warn = value_of('num_of_ma_warn').to_i
-    # BTC单次下单额度上限(台币)
-    @btc_order_limit = value_of('btc_order_limit').to_i
     # BTC下单记录
     @btc_order_log = value_of('btc_order_log')
     # 均价高于现价多少百分比时以红色显示
     @unit_ave_price_warn_value = 1+value_of('unit_ave_price_warn_value').to_f/100
     # 下次有资金进来投资比特币的日期(用于计算比特币每日定投的额度)
     @next_btc_invest_date = value_of('next_btc_invest_date').to_date
+    # 火币API身份 1: 13581706025 2: 17099311026
+    @aid = value_of('huobi_api_id').to_i
+    # 在交易所可供交易的USDT
+    @total_usdt_usd_ex = @aid == 1 ? AssetItem.find(5).amount : AssetItem.find(119).amount
+    # BTC单次下单额度上限(台币)
+    @btc_order_limit = value_of('btc_order_limit').to_i
+    @btc_order_limit = (@total_usdt_usd_ex*@usd2twd).to_i if @total_usdt_usd_ex*@usd2twd < @btc_order_limit
     # 火币手续费率
     @ex_fee_rate = 0.002 # 扣USDT(买入时)
     # 获取用户表单输入的资料
@@ -1145,7 +1157,7 @@ class MainController < ApplicationController
     @btcs = @my_btc_arr.map {|s| s.to_f}
     # 所有的比特币总数
     @btc_sum = @btcs.sum
-    # 可供交易的比特币总数
+    # 可供交易的比特币总数 冷钱包,jie7206,火币135(2),火币170(3),台湾币托(4)
     @btc_sum_ex = @btcs[2]+@btcs[3]+@btcs[4]
     # 计算储存在冷钱包里的比特币总值
     cal_trezor_twd
@@ -1363,7 +1375,7 @@ class MainController < ApplicationController
 
   #10.显示操作记录
   def operate_info
-    @last_trade_time = Param.find_by_name("btc_total_cost").updated_at
+    @last_trade_time = Param.find_by_name("btc_last_order_time").value.to_time
     @last_trade_str = @last_trade_time.strftime("%m%d %H:%M")
     @interval_hours = format("%.2f",(Time.now - @last_trade_time).to_int/(60*60).to_f)
     @trade_usd = (@btc_total_cost.gsub("-","+").split("+")[-1]).to_f
@@ -1571,7 +1583,6 @@ class MainController < ApplicationController
     if @total_budget_twd and @cny2twd and @usd2twd
       @total_usdt_cny = (@total_budget_twd/@cny2twd).to_i
       @total_usdt_usd = (@total_budget_twd/@usd2twd).to_i
-      @total_usdt_usd_ex = AssetItem.find(5).amount
     end
   end
 
@@ -1590,7 +1601,7 @@ class MainController < ApplicationController
   # 更新
   def update_everyday_invest_amount
     Param.find_by_name('everyday_invest_amount').update_attribute(:value, @everyday_invest_amount)
-    update_btc_order_limit
+    # update_btc_order_limit
   end
 
   def update_btc_order_limit
@@ -1797,13 +1808,17 @@ class MainController < ApplicationController
       @h135_cost_change = @new_135_usd_cost
       @h135_btc_sum = @btc_135_sum_api
       @h135_usd_sum = @usd_135_sum_api
-      @h170_cost_change = nil
-      @h170_btc_sum = nil
-      @h170_usd_sum = nil
+      @h170_cost_change = @new_170_usd_cost
+      @h170_btc_sum = @btc_170_sum_api
+      @h170_usd_sum = @usd_170_sum_api
       # 执行更新账户的买卖数据
       if @h135_btc_sum and @h135_btc_sum > 0 and !@cal_mode and show_btc_sum(format("%.9f",@h135_btc_sum)) != value_of("my_btc").split(",")[2]
         exe_update_btc_assets
-        flash[:notice] = "已通过火币API自动更新资产：#{show_btc_sum(format("%.9f",@h135_btc_sum))} BTC|#{@h135_usd_sum} USDT"
+        flash[:notice] = "已通过火币API自动更新135资产：#{show_btc_sum(format("%.9f",@h135_btc_sum))} BTC|#{@h135_usd_sum} USDT"
+        @should_update_ave_price_vs_ma = true
+      elsif @h170_btc_sum and @h170_btc_sum > 0 and !@cal_mode and show_btc_sum(format("%.9f",@h170_btc_sum)) != value_of("my_btc").split(",")[3]
+        exe_update_btc_assets
+        flash[:notice] = "已通过火币API自动更新170资产：#{show_btc_sum(format("%.9f",@h170_btc_sum))} BTC|#{@h170_usd_sum} USDT"
         @should_update_ave_price_vs_ma = true
       else
         flash[:notice] = "火币资产无变化，不需要更新，或者稍后重试一次"
@@ -1827,6 +1842,7 @@ class MainController < ApplicationController
     end
     if update_btc_total_cost
       Param.find_by_name("btc_total_cost").update_attribute(:value, @btc_total_cost)
+      Param.find_by_name("btc_last_order_time").update_attribute(:value, Time.now)
       clear_btc_order_log
     end
     # 更新账户BTC资产
@@ -1927,6 +1943,15 @@ class MainController < ApplicationController
       when (lv[4]..lv[5])
         update_ave_price_vs_ma '@k1d_ma20'
     end
+  end
+
+  # 在1358170和1709931两个账号中切换
+  def switch_account
+    if params[:aid]
+      new_aid = params[:aid] == '1' ? 2 : 1
+      Param.find_by_name('huobi_api_id').update_attribute(:value, new_aid)
+    end
+    redirect_to :action => :btc_income, :update_btc_price => 1
   end
 
   ########## Function Area Ended ##########

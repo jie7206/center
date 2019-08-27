@@ -767,8 +767,8 @@ class ApplicationController < ActionController::Base
   end
 
   # 获取在火币上未成交订单资料
-  def get_btc_orders
-    resp = get_remote_files('playruby.top','/main/get_btc_orders','',3002)
+  def get_btc_orders(aid=1)
+    resp = get_remote_files('playruby.top',"/main/get_btc_orders?aid=#{aid}",'',3002)
     if resp and resp.index(";")
       ids = resp.split(";")
       buy_ids = ids[0] ? ids[0].split(",") : []
@@ -795,13 +795,19 @@ class ApplicationController < ActionController::Base
   end
 
   # 获取火币资产资料
-  def get_huobi_assets
-    resp = get_remote_files('playruby.top','/main/get_huobi_assets','',3002)
+  def get_huobi_assets(aid=1)
+    resp = get_remote_files('playruby.top',"/main/get_huobi_assets/?aid=#{aid}",'',3002)
     if resp != "get_huobi_assets_error"
       usdt_trade,usdt_frozen,btc_trade,btc_frozen = resp.split(",")
-      @btc_135_sum_api = show_btc_sum(format("%.9f",btc_trade.to_f+btc_frozen.to_f)).to_f
-      @usd_135_sum_api = format("%.2f",usdt_trade.to_f+usdt_frozen.to_f).to_f
-      @new_135_usd_cost = get_new_135_btc_cost(@usd_135_sum_api)
+      if aid == 1
+        @btc_135_sum_api = show_btc_sum(format("%.9f",btc_trade.to_f+btc_frozen.to_f)).to_f
+        @usd_135_sum_api = format("%.2f",usdt_trade.to_f+usdt_frozen.to_f).to_f
+        @new_135_usd_cost = get_new_135_btc_cost(@usd_135_sum_api)
+      elsif aid == 2
+        @btc_170_sum_api = show_btc_sum(format("%.9f",btc_trade.to_f+btc_frozen.to_f)).to_f
+        @usd_170_sum_api = format("%.2f",usdt_trade.to_f+usdt_frozen.to_f).to_f
+        @new_170_usd_cost = get_new_170_btc_cost(@usd_170_sum_api)
+      end
     end
   end
 
@@ -809,6 +815,15 @@ class ApplicationController < ActionController::Base
   def get_new_135_btc_cost(new_usd)
     if new_usd and new_usd > 0
       return format("%.4f",AssetItem.find(5).amount-new_usd).to_f
+    else
+      return 0
+    end
+  end
+
+  # 计算这一笔下单所需花费的美元
+  def get_new_170_btc_cost(new_usd)
+    if new_usd and new_usd > 0
+      return format("%.4f",AssetItem.find(119).amount-new_usd).to_f
     else
       return 0
     end
