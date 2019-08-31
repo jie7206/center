@@ -1137,7 +1137,7 @@ class ApplicationController < ActionController::Base
       @fusion_charts_data += "<set label='#{date.strftime("%Y-%m-%d")}' value='#{this_value.to_i}' />"
     end
     # 设定最大值和最小值
-    factor = 1.3 # 调整上下值，让图好看点
+    factor = 1.05 # 调整上下值，让图好看点，值越小离边界越近，不可小于1
     min_value = data_arr.min ; max_value = data_arr.max ; mid_value = (max_value + min_value)/2.to_i
     # 与中轴距离 = 最大值-中间值
     center_diff = (max_value - mid_value).abs
