@@ -3,10 +3,10 @@
 # require 'lib/functions'
 require 'net/https'
 require 'uri'
-include ApplicationHelper
 
 class ApplicationController < ActionController::Base
 
+  include ApplicationHelper
   helper :all # include all helpers, all the time
   before_filter :ini_var #所有全域参数在此设定
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
@@ -50,7 +50,7 @@ class ApplicationController < ActionController::Base
   def cal_total_asset_value
     # 计算數字貨幣资产总值
     if @from_btc_income and @btc_price
-       @digital_currency_sum = format("%.2f",@trezor_jie7206_twd).to_f + format("%.2f",@total_usdt_twd).to_f + format("%.2f",@btc_hold_twd).to_f
+       @digital_currency_sum = format("%.2f",@trezor_btc_twd).to_f + format("%.2f",@total_usdt_twd).to_f + format("%.2f",@btc_hold_twd).to_f
     else
       @btc_price = value_of('btc_price').to_f
       @digital_currency_sum = sum_money_of('digital_currency')
@@ -68,7 +68,7 @@ class ApplicationController < ActionController::Base
     # 更新平均月收入
     @ave_month_income_twd = cal_ave_month_income(@total_asset_value)
     # 新增或更新"我的資產總值(含固定资产)"變化紀錄
-    if @update_total_asset_value and !@cal_mode # 不能在试算模式中更新
+    if @btc_price and @update_total_asset_value and !@cal_mode # 不能在试算模式中更新
       insert_or_update_param_change_record('my_net_asset_value',@total_asset_value)
       update_my_btc_assets(@btc_price)
     end

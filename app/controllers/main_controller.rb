@@ -1376,14 +1376,14 @@ class MainController < ApplicationController
   #10.显示操作记录
   def operate_info
     @last_trade_time = Param.find_by_name("btc_last_order_time").value.to_time
-    @last_trade_str = @last_trade_time.strftime("%m%d %H:%M")
+    @last_trade_str = @last_trade_time.strftime("%y%m%d %H:%M")
     @interval_hours = format("%.2f",(Time.now - @last_trade_time).to_int/(60*60).to_f)
     @trade_usd = (@btc_total_cost.gsub("-","+").split("+")[-1]).to_f
     @trade_twd = (@trade_usd*@usd2twd).to_i
     @trade_cny = (@trade_twd/@cny2twd).to_i
     # 每操作1000元台币必须等几小时才能再操作下一笔
     @next_operate_hours, @next_operate_time = cal_next_trade_time(@last_trade_time,@trade_twd)
-    @next_trade_str = @next_operate_time.strftime("%m%d %H:%M")
+    @next_trade_str = @next_operate_time.strftime("%y%m%d %H:%M")
     @trade_usd_p = format("%.2f",(@trade_usd*@usd2twd)/(@total_budget_twd+@trade_usd*@usd2twd)*100)
     @remain_minutes_to_order = ((@next_operate_time-(Time.now+8.hours)).to_i)/60
     @trade_type = cal_trade_type
@@ -1530,20 +1530,28 @@ class MainController < ApplicationController
   # 计算储存在冷钱包里的比特币总值
   def cal_trezor_twd
     # 储存在冷钱包里的比特币总数
-    @trezor_jie7206_sum = @btcs[0]+@btcs[1]
+    @trezor_linmeng_sum = @btcs[0]
+    @trezor_jie7206_sum = @btcs[1]
+    @trezor_btc_sum = @trezor_linmeng_sum+@trezor_jie7206_sum
     # 储存在冷钱包里的比特币值多少台币
+    @trezor_linmeng_twd = (@btc_price*@trezor_linmeng_sum*@usd2twd).to_i
     @trezor_jie7206_twd = (@btc_price*@trezor_jie7206_sum*@usd2twd).to_i
+    @trezor_btc_twd = (@btc_price*@trezor_btc_sum*@usd2twd).to_i
+    # 使用个人冷钱包养老，如果活到100岁每天能花多少钱
+    @days_to_100 = ("2074-12-2".to_date - Date.today).to_i
+    @day_pay_to_100_twd = (@trezor_jie7206_twd/@days_to_100).to_i
+    @day_pay_to_100_cny = (@day_pay_to_100_twd/@cny2twd).to_i
     # 冷钱包里的比特币占总数多少
-    @trezor_jie7206_p = (format("%.2f",(@trezor_jie7206_sum/@btc_sum)*100)).to_f
+    @trezor_jie7206_p = (format("%.2f",(@trezor_btc_sum/@btc_sum)*100)).to_f
     # 冷钱包里的总值占原始投资资金比例
-    @trezor_real_p = (format("%.2f",(@trezor_jie7206_twd/@btc_total_budget_real.to_f)*100)).to_f
+    @trezor_real_p = (format("%.2f",(@trezor_btc_twd/@btc_total_budget_real.to_f)*100)).to_f
     # 冷钱包的比特币的投资报酬率
     # 冷钱包的投资成本必须扣除@loanable_twd的值才正确(因为@loanable_twd的值并没有实际参与投资)
     get_loanable_twd
     @trezor_cost_twd = @btc_total_budget_real-(@btc_total_budget_warning-@loanable_twd)
-    @trezor_profit = (format("%.2f",((@trezor_jie7206_twd-@trezor_cost_twd)/@trezor_cost_twd.to_f)*100)).to_f
+    @trezor_profit = (format("%.2f",((@trezor_btc_twd-@trezor_cost_twd)/@trezor_cost_twd.to_f)*100)).to_f
     # 冷钱包的比特币的投资均价
-    @trezor_ave_price = format("%.2f",@trezor_cost_twd/@usd2twd/@trezor_jie7206_sum)
+    @trezor_ave_price = format("%.2f",@trezor_cost_twd/@usd2twd/@trezor_btc_sum)
   end
 
   # 火币USDT资产总值
