@@ -1158,7 +1158,11 @@ class MainController < ApplicationController
     # 所有的比特币总数
     @btc_sum = @btcs.sum
     # 可供交易的比特币总数 冷钱包,jie7206,火币135(2),火币170(3),台湾币托(4)
-    @btc_sum_ex = @btcs[2]+@btcs[3]+@btcs[4]
+    @btc_sum_ex_135 = @btcs[2]
+    @btc_sum_ex_170 = @btcs[3]
+    @btc_sum_ex_bito = @btcs[4]
+    @btc_sum_ex = @btc_sum_ex_135 + @btc_sum_ex_170 + @btc_sum_ex_bito
+    @btc_sum_ex_max = [@btc_sum_ex_135, @btc_sum_ex_170, @btc_sum_ex_bito].max
     # 计算储存在冷钱包里的比特币总值
     cal_trezor_twd
     # 依据计算模式更新相应的值
