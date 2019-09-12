@@ -76,6 +76,8 @@ class ApplicationController < ActionController::Base
 
   # 所有全域参数在此设定
   def ini_var
+    # 火币API服务器域名
+    @@huobi_host = value_of("huobi_host")
   	# 預設為北京地区:亲友99大中華圈0中國大陸1北京2上海3廣州4武漢5大連6天津7廈門8首爾9官校10
     session[:default_area_id] ||= value_of('default_area_id')
     # 载入人員报表栏位的中文标题
@@ -830,11 +832,11 @@ class ApplicationController < ActionController::Base
   end
 
   # 从网路API获取最新的比特币报价
-  def  get_price_from_api(url='https://api.huobi.br.com/market/history/kline?period=1min&size=1&symbol=btchusd',param_name='btc_price',symbol=nil)
+  def  get_price_from_api(url="https://#{@@huobi_host}/market/history/kline?period=1min&size=1&symbol=btchusd",param_name='btc_price',symbol=nil)
     if !symbol
       symbol = value_of('use_husd_or_usdt') == 'husd' ? 'btchusd' : 'btcusdt'
     end
-    url = "https://api.huobi.br.com/market/history/kline?period=1min&size=1&symbol=#{symbol}"
+    url = "https://#{@@huobi_host}/market/history/kline?period=1min&size=1&symbol=#{symbol}"
     resp = get_ssl_response(url)
     root = ActiveSupport::JSON.decode(resp.to_json)
     body = ActiveSupport::JSON.decode(root["body"])
@@ -847,7 +849,7 @@ class ApplicationController < ActionController::Base
 
   # 从网路API获取最新的比特币报价(多笔资料)
   def get_kline_data(period="15min",size=100,symbol="btcusdt")
-    url = "https://api.huobi.br.com/market/history/kline?period=#{period}&size=#{size}&symbol=#{symbol}"
+    url = "https://#{@@huobi_host}/market/history/kline?period=#{period}&size=#{size}&symbol=#{symbol}"
     resp = get_ssl_response(url)
     root = ActiveSupport::JSON.decode(resp.to_json)
     body = ActiveSupport::JSON.decode(root["body"])
@@ -860,7 +862,7 @@ class ApplicationController < ActionController::Base
 
   # 读取火币USDT/HUSD交易对汇率
   def get_husd_price
-    format("%.4f",get_price_from_api(url='https://api.huobi.br.com/market/history/kline?period=1min&size=1',param_name='ex_rates_USDT_to_HUSD',symbol='usdthusd')).to_f
+    format("%.4f",get_price_from_api(url="https://#{@@huobi_host}/market/history/kline?period=1min&size=1",param_name='ex_rates_USDT_to_HUSD',symbol='usdthusd')).to_f
   end
 
   # 更新火币USDT/HUSD交易对汇率

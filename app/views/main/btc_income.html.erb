@@ -21,7 +21,7 @@
     <% else %>
       平仓:
     <% end %>
-    <span class="<%=@harvest_unit_warn%>" title="点击后立刻以现价清仓全部卖出"><%= link_to format("%.2f",@settle_profit), "/main/btc_income?clear_sell_all=1&try_buy_price=#{@btc_price}&try_buy_unit=-#{show_btc_sum(@btc_sum_ex.to_s)}" %></span>|$<%=@settle_price%>|<%=link_to(@total_asset_value, {:controller => 'param_changes', :action => 'new', :param_id => '129'}, {:title => "¥#{(@total_asset_value/@cny2twd).to_i}|$#{(@total_asset_value/@usd2twd).to_i}", :target => '_blank'})%>|<span title="平均月收入：<%=@ave_month_income_twd%>|¥<%=@ave_month_income_cny%>|$<%=@ave_month_income_usd%>"><%=link_to(format("%.0f",(@ave_month_income_twd/10000.0))+"萬", {:action => "life_pay"}, {:target => "_blank"})%></span>|<span title="使用个人冷钱包养老，如果活到100岁每天能花多少钱"><%=@day_pay_to_100_twd%>(¥<%=@day_pay_to_100_cny%>)</span></span>
+    <span class="<%=@harvest_unit_warn%>" title="点击后立刻以现价清仓全部卖出"><%= link_to format("%.2f",@settle_profit), "/main/btc_income?clear_sell_all=1&try_buy_price=#{@btc_price}&try_buy_unit=-#{show_btc_sum(@btc_sum_ex.to_s)}" %></span>|$<%=@settle_price%>|<%=link_to(@total_asset_value, {:controller => 'param_changes', :action => 'new', :param_id => '129'}, {:title => "¥#{(@total_asset_value/@cny2twd).to_i}|$#{(@total_asset_value/@usd2twd).to_i}", :target => '_blank'})%>|<span title="平均月收入：<%=@ave_month_income_twd%>|¥<%=@ave_month_income_cny%>|$<%=@ave_month_income_usd%>，与20190405(240萬)相差<%=@total_asset_value-2400000%>"><%=link_to(format("%.0f",(@ave_month_income_twd/10000.0))+"萬", {:action => "life_pay"}, {:target => "_blank"})%></span>|<span title="使用个人冷钱包养老，如果活到100岁每天能花多少钱"><%=@day_pay_to_100_twd%>(¥<%=@day_pay_to_100_cny%>)</span></span>
   <br/>
 <% if @get_kline_data %>
 <%
