@@ -1187,9 +1187,23 @@ class MainController < ApplicationController
           p = 1.0-@ex_fee_rate
           @btc_sum += @try_buy_unit*p
           @btc_sum_ex += @try_buy_unit*p
+          if @aid == 1
+            @btc_sum_ex_135 += @try_buy_unit*p
+          elsif @aid == 2
+            @btc_sum_ex_170 += @try_buy_unit*p
+          else
+            @btc_sum_ex_bito += @try_buy_unit*p
+          end
         else
           @btc_sum += @try_buy_unit
           @btc_sum_ex += @try_buy_unit
+          if @aid == 1
+            @btc_sum_ex_135 += @try_buy_unit
+          elsif @aid == 2
+            @btc_sum_ex_170 += @try_buy_unit
+          else
+            @btc_sum_ex_bito += @try_buy_unit
+          end
         end
         # 更新在冷钱包里的比特币总值与比例
         cal_trezor_twd
