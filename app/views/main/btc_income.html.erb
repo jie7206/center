@@ -1,17 +1,15 @@
 <% @text_input_width = 50 %>
 <h4>
-<%= link_to "总数：", :action => :btc_income %>
-  <span title="<%=@my_btc%>"><span class="gold_warn"><%=show_btc_sum(format("%.9f",@btc_sum))%></span><-<span title="交易所：<%=show_btc_sum(format("%.9f",@btc_sum_ex_135))%>,<%=show_btc_sum(format("%.9f",@btc_sum_ex_170))%>,<%=show_btc_sum(format("%.9f",@btc_sum_ex_bito))%>总数：<%=show_btc_sum(format("%.9f",@btc_sum_ex))%>"><%=show_btc_sum(format("%.9f",@btc_sum_ex_max))%></span></span>|<span title="总数：<%=@trezor_btc_sum%>，占比：<%=@trezor_jie7206_p%>%，成本：<%=@trezor_cost_twd%>，均价：$<%=@trezor_ave_price%>，投资报酬率：<%=@trezor_profit%>%"><%=@trezor_btc_twd%></span>/<%=@btc_value_twd%>|¥<%=@btc_value_cny%>|$<%=@btc_value_usd%><br/>
-<%= link_to "获利：", :action => :btc_income, :update_btc_price => 1 %>
-  <%=@btc_total_profit_twd%>|¥<%=@btc_total_profit_cny%>|$<%=@btc_total_profit_usd%>|<%=format("%.0f", @btc_total_profit_rate)%>%|<span title="初始本金：<%=@btc_total_budget_warning%>，可用余额：<%=@total_usdt_twd.to_i%>(USDT)+<%=@total_twd%>(中信托)+<%=@loanable_twd%>(金如意)|¥<%=@total_usdt_cny%>|$<%=@total_usdt_usd%>，贷款利息：<%=@total_loan_interests_value%>，从<%=@loan_begin_date%>到<%=@next_jinruyi_back_date%>共有<%=@loan_lixi_days%>天，届时贷款余额为<%=@loan_amount%>"><%=@total_budget_twd%><span title="在火币交易所内实际可用的USDT余额(点击切换账号)">(<%= link_to @total_usdt_usd_ex, :action => :switch_account, :aid => @aid %>)</span></span>-><span title="到下次新资金进来为止(<%=@next_btc_invest_date%>)，平均每天能定投 <%=@everyday_invest_amount%> 新台币"><%=@everyday_invest_amount%></span>/<span title="最多能持有的比特币总数"><%=format("%.3f",@max_ex_sum)%>/<%=format("%.3f",@max_btc_sum)%></span>
-  <br/>
-<%= link_to "仓位：", :action => :btc_income, :update_btc_price => 1, :get_kline_data => 1 %>
-  <span title="¥<%=@ex_cost_cny%>|$<%=@ex_cost_usd%>"><%=@ex_cost_twd%></span>|<%=format("%.2f",@ex_cost_twd_level)%>%|<span title="¥<%=@btc_hold_cny%>|$<%=@btc_hold_usd%>"><%=@btc_hold_twd%></span>/<span class="<%=@btc_total_budget_warn%>" title="现值：¥<%=@btc_total_budget_cny%>|$<%=@btc_total_budget_usd%>，初始本金：<%=@btc_total_budget_warning%> TWD"><%=@btc_total_budget_twd%></span>|<%=format("%.2f",@btc_hold_twd_level)%>%
+<%= link_to "仓位：", :action => :btc_income, :update_btc_price => 1 %>
+  <span title="<%=@ex_cost_twd%>|¥<%=@ex_cost_cny%>|$<%=@ex_cost_usd%>"><%=@ex_cost_twd%></span>|<%=format("%.2f",@ex_cost_twd_level)%>%|<span title="¥<%=@btc_hold_cny%>|$<%=@btc_hold_usd%>"><%=@btc_hold_twd%></span>/<span class="<%=@btc_total_budget_warn%>" title="现值：¥<%=@btc_total_budget_cny%>|$<%=@btc_total_budget_usd%>，初始本金：<%=@btc_total_budget_warning%> TWD"><%=@btc_total_budget_twd%></span>|<%=format("%.2f",@btc_hold_twd_level)%>%
   均价:<%=@trezor_ave_price%>/<span class="<%=@ave_price_warn%>"> <%=format("%.2f", @unit_ave_price)%>
     <% if @ave_price_warn == 'red_warn' %>
       <span class="small_price_diff"><%=@aveprice_now_diff_str%></span>
-    <% end %></span>
-
+    <% end %></span><br/>
+<%= link_to "总数：", :action => :btc_income %>
+  <span title="<%=@my_btc%>"><span class="gold_warn"><%=show_btc_sum(format("%.9f",@btc_sum))%></span><-<span title="交易所：<%=show_btc_sum(format("%.9f",@btc_sum_ex_135))%>,<%=show_btc_sum(format("%.9f",@btc_sum_ex_170))%>,<%=show_btc_sum(format("%.9f",@btc_sum_ex_bito))%>总数：<%=show_btc_sum(format("%.9f",@btc_sum_ex))%>"><%=show_btc_sum(format("%.9f",@btc_sum_ex_max))%></span></span>|<span title="总数：<%=@trezor_btc_sum%>，占比：<%=@trezor_jie7206_p%>%，成本：<%=@trezor_cost_twd%>，均价：$<%=@trezor_ave_price%>，投资报酬率：<%=@trezor_profit%>%"><%=@trezor_btc_twd%></span>/<%=@btc_value_twd%>|¥<%=@btc_value_cny%>|$<%=@btc_value_usd%><br/>
+<%= link_to "获利：", :action => :btc_income, :update_btc_price => 1, :get_kline_data => 1 %>
+  <%=@btc_total_profit_twd%>|¥<%=@btc_total_profit_cny%>|$<%=@btc_total_profit_usd%>|<%=format("%.0f", @btc_total_profit_rate)%>%|<span title="初始本金：<%=@btc_total_budget_warning%>，可用余额：<%=@total_usdt_twd.to_i%>(USDT)+<%=@total_twd%>(中信托)+<%=@loanable_twd%>(金如意)|¥<%=@total_usdt_cny%>|$<%=@total_usdt_usd%>，贷款利息：<%=@total_loan_interests_value%>，从<%=@loan_begin_date%>到<%=@next_jinruyi_back_date%>共有<%=@loan_lixi_days%>天，届时贷款余额为<%=@loan_amount%>"><%=@total_budget_twd%><span title="在火币交易所内实际可用的USDT余额(点击切换账号)">(<%= link_to @total_usdt_usd_ex, :action => :switch_account, :aid => @aid %>)</span></span>-><span title="到下次新资金进来为止(<%=@next_btc_invest_date%>)，平均每天能定投 <%=@everyday_invest_amount%> 新台币"><%=@everyday_invest_amount%></span>/<span title="最多能持有的比特币总数"><%=format("%.3f",@max_ex_sum)%>/<%=format("%.3f",@max_btc_sum)%></span>
   <br/>
 <%= link_to "损益：", :action => :btc_income, :aid => @aid, :update_btc_price => 1, :update_huobi_assets => 1, :get_btc_orders => 1 %>
   <span class="<%=@btc_price_warn%>">
