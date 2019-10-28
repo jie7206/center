@@ -1,24 +1,19 @@
 <% @text_input_width = 50 %>
 <h4>
+<%= link_to "仓位：", :action => :btc_income, :update_btc_price => 1, :get_kline_data => 1 %>
+  <span title="<%=@ex_cost_twd%>|¥<%=@ex_cost_cny%>|$<%=@ex_cost_usd%>"><%=@ex_cost_twd%></span>|<%=format("%.2f",@ex_cost_twd_level)%>%|<span title="¥<%=@btc_hold_cny%>|$<%=@btc_hold_usd%>"><%=@btc_hold_twd%></span>/<span class="<%=@btc_total_budget_warn%>" title="现值：¥<%=@btc_total_budget_cny%>|$<%=@btc_total_budget_usd%>，初始本金：<%=@btc_total_budget_warning%> TWD"><%=@btc_total_budget_twd%></span>|<%=format("%.2f",@btc_hold_twd_level)%>%
+  均价:<%=@trezor_ave_price%>/<span class="<%=@ave_price_warn%>"><%=format("%.2f", @unit_ave_price)%>
+    <% if @ave_price_warn == 'red_warn' %>
+      <span class="small_price_diff"><%=@aveprice_now_diff_str%></span>
+    <% end %></span><br/>
 <%= link_to "总数：", :action => :btc_income, :update_btc_price => 1 %>
   <span title="<%=@my_btc%>"><span class="gold_warn"><%=show_btc_sum(format("%.9f",@btc_sum))%></span><-<span title="交易所：<%=show_btc_sum(format("%.9f",@btc_sum_ex_135))%>,<%=show_btc_sum(format("%.9f",@btc_sum_ex_170))%>,<%=show_btc_sum(format("%.9f",@btc_sum_ex_bito))%>总数：<%=show_btc_sum(format("%.9f",@btc_sum_ex))%>"><%=show_btc_sum(format("%.9f",@btc_sum_ex_max))%></span></span>|<span title="总数：<%=@trezor_btc_sum%>，占比：<%=@trezor_jie7206_p%>%，成本：<%=@trezor_cost_twd%>，均价：$<%=@trezor_ave_price%>，投资报酬率：<%=@trezor_profit%>%"><%=@trezor_btc_twd%></span>/<%=@btc_value_twd%>|¥<%=@btc_value_cny%>|$<%=@btc_value_usd%><br/>
 <%= link_to "获利：", :action => :btc_income %>
   <%=@btc_total_profit_twd%>|¥<%=@btc_total_profit_cny%>|$<%=@btc_total_profit_usd%>|<%=format("%.0f", @btc_total_profit_rate)%>%|<span title="初始本金：<%=@btc_total_budget_warning%>，可用余额：<%=@total_usdt_twd.to_i%>(USDT)+<%=@total_twd%>(中信托)+<%=@loanable_twd%>(金如意)|¥<%=@total_usdt_cny%>|$<%=@total_usdt_usd%>，贷款利息：<%=@total_loan_interests_value%>，从<%=@loan_begin_date%>到<%=@next_jinruyi_back_date%>共有<%=@loan_lixi_days%>天，届时贷款余额为<%=@loan_amount%>"><%=@total_budget_twd%><span title="在火币交易所内实际可用的USDT余额(点击切换账号)">(<%= link_to @total_usdt_usd_ex, :action => :switch_account, :aid => @aid %>)</span></span>-><span title="到下次新资金进来为止(<%=@next_btc_invest_date%>)，平均每天能定投 <%=@everyday_invest_amount%> 新台币"><%=@everyday_invest_amount%></span>/<span title="最多能持有的比特币总数"><%=format("%.3f",@max_ex_sum)%>/<%=format("%.3f",@max_btc_sum)%></span><br/>
-<%= link_to "仓位：", :action => :btc_income, :update_btc_price => 1, :get_kline_data => 1 %>
-  <span title="<%=@ex_cost_twd%>|¥<%=@ex_cost_cny%>|$<%=@ex_cost_usd%>"><%=@ex_cost_twd%></span>|<%=format("%.2f",@ex_cost_twd_level)%>%|<span title="¥<%=@btc_hold_cny%>|$<%=@btc_hold_usd%>"><%=@btc_hold_twd%></span>/<span class="<%=@btc_total_budget_warn%>" title="现值：¥<%=@btc_total_budget_cny%>|$<%=@btc_total_budget_usd%>，初始本金：<%=@btc_total_budget_warning%> TWD"><%=@btc_total_budget_twd%></span>|<%=format("%.2f",@btc_hold_twd_level)%>%
-  均价:<%=@trezor_ave_price%>/<span class="<%=@ave_price_warn%>"> <%=format("%.2f", @unit_ave_price)%>
-    <% if @ave_price_warn == 'red_warn' %>
-      <span class="small_price_diff"><%=@aveprice_now_diff_str%></span>
-    <% end %></span><br/>
 <%= link_to "损益：", :action => :btc_income, :aid => @aid, :update_btc_price => 1, :update_huobi_assets => 1, :get_btc_orders => 1 %>
   <span class="<%=@btc_price_warn%>">
-  <%= link_to format("%.2f",@btc_price), "http://playruby.top:3002/main/kline_chart?symbol=#{@symbol}&period=5min", {:target => "_blank", :title => "汇率：C2T:#{@cny2twd}|U2T:#{@usd2twd}|U2C:#{@usd2cny}|U2H:#{@usdt2husd}"} %></span>|<span class="<%=@twd_profit_warn%>"><%=@btc_profit_twd%></span>|<span class="<%=@cny_profit_warn%>">¥<%=@btc_profit_cny%></span>|<span class="<%=@usd_profit_warn%>">$<%=@btc_profit_usd%></span>|<span class="<%=@btc_profit_warn%>"><%=format("%.1f", @btc_profit_rate)%>%</span><span title="点击后即可以平仓目标价卖出(预先保留要赚取的<%=@btc_harvest_unit%>BTC及包含每月<%=@btc_month_goal_twd%>|¥<%=@btc_month_goal_cny%>|$<%=@btc_month_goal_usd%>的收益)">
-    <% if @btc_sum_ex-@btc_harvest_unit > 0 %>
-    <%= link_to "平仓:", "/main/btc_income?clear_sell_all=1&try_buy_price=#{@settle_price}&try_buy_unit=-#{show_btc_sum((@btc_sum_ex-@btc_harvest_unit).to_s)}" %>
-    <% else %>
-      平仓:
-    <% end %>
-    <span class="<%=@harvest_unit_warn%>" title="点击后立刻以现价清仓全部卖出"><%= link_to format("%.2f",@settle_profit), "/main/btc_income?clear_sell_all=1&try_buy_price=#{@btc_price}&try_buy_unit=-#{show_btc_sum(@btc_sum_ex.to_s)}" %></span>|$<%=@settle_price%>|<%=link_to(@total_asset_value, {:controller => 'param_changes', :action => 'new', :param_id => '129'}, {:title => "¥#{(@total_asset_value/@cny2twd).to_i}|$#{(@total_asset_value/@usd2twd).to_i}", :target => '_blank'})%>|<span title="平均月收入：<%=@ave_month_income_twd%>|¥<%=@ave_month_income_cny%>|$<%=@ave_month_income_usd%>，与20190405(240萬)相差<%=@total_asset_value-2400000%>"><%=link_to(format("%.0f",(@ave_month_income_twd/10000.0))+"萬", {:action => "life_pay"}, {:target => "_blank"})%></span>|<span title="使用个人冷钱包养老，如果活到100岁每天能花多少钱"><%=@day_pay_to_100_twd%>(¥<%=@day_pay_to_100_cny%>)</span></span>
+  <%= link_to format("%.2f",@btc_price), "http://playruby.top:3002/main/kline_chart?symbol=#{@symbol}&period=5min", {:target => "_blank", :title => "汇率：C2T:#{@cny2twd}|U2T:#{@usd2twd}|U2C:#{@usd2cny}|U2H:#{@usdt2husd}"} %></span>|<span class="<%=@twd_profit_warn%>"><%=@btc_profit_twd%></span>|<span class="<%=@cny_profit_warn%>">¥<%=@btc_profit_cny%></span>|<!--span class="<%=@usd_profit_warn%>">$<%=@btc_profit_usd%></span>|//--><span class="<%=@btc_profit_warn%>"><%=format("%.0f", @btc_profit_rate)%>%</span>|目标价$<%=@settle_price%>-><%= @btc_month_goal_arr.join %>|<%=link_to(@total_asset_value, {:controller => 'param_changes', :action => 'new', :param_id => '129'}, {:title => "¥#{(@total_asset_value/@cny2twd).to_i}|$#{(@total_asset_value/@usd2twd).to_i}", :target => '_blank'})%>|<span title="平均月收入：<%=@ave_month_income_twd%>|¥<%=@ave_month_income_cny%>|$<%=@ave_month_income_usd%>，与20190405(240萬)相差<%=@total_asset_value-2400000%>"><%=link_to(format("%.0f",(@ave_month_income_twd/10000.0))+"萬", {:action => "life_pay"}, {:target => "_blank"})%></span>
+    <!--|<span title="使用个人冷钱包养老，如果活到100岁每天能花多少钱"><%=@day_pay_to_100_twd%>(¥<%=@day_pay_to_100_cny%>)</span>//-->
   <br/>
 <% if @get_kline_data %>
 <%
@@ -95,6 +90,7 @@ l3_link = "/main/update_ave_price_vs_ma?value=@k1d_ma20"
 </span>
   <br/>
 <% end %>
+<!--
 操作：
   <span>
     <% if @try_buy_price > 0 and @try_buy_unit != 0 %>
@@ -113,6 +109,7 @@ l3_link = "/main/update_ave_price_vs_ma?value=@k1d_ma20"
       <span class="cold_warn" title="<%=@btc_order_log%>"><%= link_to "未成交(#{@total_open_orders[:sell_ids].size})", "/main/del_huobi_orders?aid=#{@aid}&order_ids=#{@total_open_orders[:sell_ids].join(",")}" %></span>
     <% end %>
   </span><br/>
+//-->
 </h4>
 <hr/>
 <form method="get" id="try_btc_form">
